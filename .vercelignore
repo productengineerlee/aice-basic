@@ -1,0 +1,23 @@
+/.git/
+/.vercel/
+/.next/
+/node_modules/
+
+# Local secrets and generated files
+/.env*
+*.log
+/tmp/
+
+# Root-level source materials and one-time maintenance assets
+/AICE 시험_샘플문항_Basic_분류1/
+/AICE 시험_샘플문항_Basic_분류2/
+/AICE 시험_샘플문항_Basic_분류3/
+/AICE 시험_샘플문항_Basic_회귀1/
+/AICE 시험_샘플문항_Basic_회귀2/
+/AICE_시험_샘플문항_Basic_회귀3/
+/data/
+/docs/
+/scripts/
+/supabase/
+/*.docx
+/build_planning_doc.py

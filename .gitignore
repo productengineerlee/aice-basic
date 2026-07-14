@@ -1,0 +1,10 @@
+node_modules/
+.next/
+out/
+.env*
+!.env.example
+*.log
+.vercel/
+tmp/docx_render/
+
+.vercel

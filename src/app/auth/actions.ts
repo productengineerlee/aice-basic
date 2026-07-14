@@ -1,0 +1,111 @@
+"use server";
+
+import { redirect } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
+
+export type AuthState = { error?: string; success?: string };
+
+const message = (error: unknown) => error instanceof Error ? error.message : "요청을 처리하지 못했습니다.";
+const siteUrl = () => {
+  const candidate = process.env.NEXT_PUBLIC_SITE_URL
+    ?? process.env.NEXT_PUBLIC_VERCEL_URL
+    ?? process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL
+    ?? process.env.VERCEL_URL
+    ?? "http://localhost:3000";
+  const url = candidate.startsWith("http://") || candidate.startsWith("https://") ? candidate : `https://${candidate}`;
+  return url.replace(/\/+$/, "");
+};
+
+const authMessage = (value: string) => {
+  if (value === "Invalid login credentials") return "이메일 또는 비밀번호가 올바르지 않습니다.";
+  if (value === "Email not confirmed") return "이메일 인증을 완료한 뒤 로그인해 주세요.";
+  if (value.toLowerCase().includes("password")) return "비밀번호를 확인해 주세요. 비밀번호는 8자 이상이어야 합니다.";
+  return value;
+};
+
+function isValidBirthDate(value: string) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+  const date = new Date(`${value}T00:00:00.000Z`);
+  return !Number.isNaN(date.getTime())
+    && date.toISOString().slice(0, 10) === value
+    && value >= "1900-01-01"
+    && value <= new Date().toISOString().slice(0, 10);
+}
+
+export async function signUp(_: AuthState, formData: FormData): Promise<AuthState> {
+  const email = String(formData.get("email") ?? "").trim().toLowerCase();
+  const password = String(formData.get("password") ?? "");
+  const confirmPassword = String(formData.get("confirmPassword") ?? "");
+  const birthDate = String(formData.get("birthDate") ?? "");
+  const terms = formData.get("terms") === "on";
+  const privacy = formData.get("privacy") === "on";
+
+  if (!email || !birthDate) return { error: "이메일과 생년월일을 입력해 주세요." };
+  if (password.length < 8) return { error: "비밀번호는 8자 이상이어야 합니다." };
+  if (password !== confirmPassword) return { error: "비밀번호가 일치하지 않습니다." };
+  if (!terms || !privacy) return { error: "필수 약관에 동의해 주세요." };
+  if (!isValidBirthDate(birthDate)) return { error: "올바른 생년월일을 입력해 주세요." };
+
+  let sessionCreated = false;
+  try {
+    const supabase = await createClient();
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: `${siteUrl()}/auth/callback`,
+        data: { birth_date: birthDate, terms_version: "2026-07-12", privacy_version: "2026-07-12" },
+      },
+    });
+    if (error) return { error: authMessage(error.message) };
+    sessionCreated = Boolean(data.session);
+  } catch (error) { return { error: message(error) }; }
+
+  if (sessionCreated) redirect("/dashboard");
+  return { success: "인증 메일을 보냈습니다. 이메일의 인증 링크를 확인해 주세요." };
+}
+
+export async function signIn(_: AuthState, formData: FormData): Promise<AuthState> {
+  const email = String(formData.get("email") ?? "").trim().toLowerCase();
+  const password = String(formData.get("password") ?? "");
+  if (!email || !password) return { error: "이메일과 비밀번호를 입력해 주세요." };
+  try {
+    const supabase = await createClient();
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) return { error: authMessage(error.message) };
+  } catch (error) { return { error: message(error) }; }
+  redirect("/dashboard");
+}
+
+export async function requestPasswordReset(_: AuthState, formData: FormData): Promise<AuthState> {
+  const email = String(formData.get("email") ?? "").trim().toLowerCase();
+  if (!email) return { error: "이메일을 입력해 주세요." };
+  try {
+    const supabase = await createClient();
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${siteUrl()}/auth/callback?next=/auth/update-password`,
+    });
+    if (error) return { error: authMessage(error.message) };
+    return { success: "비밀번호 재설정 링크를 이메일로 보냈습니다." };
+  } catch (error) { return { error: message(error) }; }
+}
+
+export async function updatePassword(_: AuthState, formData: FormData): Promise<AuthState> {
+  const password = String(formData.get("password") ?? "");
+  const confirmPassword = String(formData.get("confirmPassword") ?? "");
+  if (password.length < 8) return { error: "비밀번호는 8자 이상이어야 합니다." };
+  if (password !== confirmPassword) return { error: "비밀번호가 일치하지 않습니다." };
+  try {
+    const supabase = await createClient();
+    const { error } = await supabase.auth.updateUser({ password });
+    if (error) return { error: authMessage(error.message) };
+    await supabase.auth.signOut({ scope: "local" });
+    return { success: "비밀번호가 변경되었습니다. 새 비밀번호로 로그인해 주세요." };
+  } catch (error) { return { error: message(error) }; }
+}
+
+export async function signOut() {
+  const supabase = await createClient();
+  await supabase.auth.signOut();
+  redirect("/");
+}
