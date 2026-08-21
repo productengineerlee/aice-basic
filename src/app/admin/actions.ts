@@ -122,10 +122,13 @@ export async function updateQuestionAction(formData: FormData) {
   }).eq("question_id", id);
   if (keyError) redirectMessage(returnTo, "error", `정답 저장 실패: ${keyError.message}`);
 
-  for (const choiceId of choiceIds) {
-    const { error } = await admin.from("question_choices").update({ content: choiceContents.get(choiceId)! }).eq("id", choiceId).eq("question_id", id);
-    if (error) redirectMessage(returnTo, "error", `보기 저장 실패: ${error.message}`);
-  }
+  const choiceResults = await Promise.all(
+    [...choiceIds].map((choiceId) =>
+      admin.from("question_choices").update({ content: choiceContents.get(choiceId)! }).eq("id", choiceId).eq("question_id", id),
+    ),
+  );
+  const choiceError = choiceResults.find((result) => result.error)?.error;
+  if (choiceError) redirectMessage(returnTo, "error", `보기 저장 실패: ${choiceError.message}`);
 
   const sectionTotals = new Map<string, number>();
   for (const item of prospective.filter(item => item.is_active)) sectionTotals.set(item.section_id, (sectionTotals.get(item.section_id) ?? 0) + Number(item.score));

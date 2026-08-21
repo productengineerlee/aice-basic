@@ -1,5 +1,6 @@
 import "server-only";
 
+import { unstable_cache } from "next/cache";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { Database } from "@/types/database";
 
@@ -52,11 +53,19 @@ function feedback(
   };
 }
 
+const fetchDiagnosticRules = unstable_cache(
+  async (): Promise<Rule[]> => {
+    const admin = createAdminClient();
+    const { data, error } = await admin.from("diagnostic_rules").select("*").eq("is_active", true).order("priority", { ascending: false });
+    if (error || !data) throw new Error("Supabase 진단 규칙을 불러오지 못했습니다.");
+    return data as Rule[];
+  },
+  ["diagnostic_rules_active"],
+  { revalidate: 3600, tags: ["diagnostic_rules"] },
+);
+
 export async function generateDiagnostics(sections: SectionScore[], questions: QuestionScore[]): Promise<DiagnosticSummary> {
-  const admin = createAdminClient();
-  const { data, error } = await admin.from("diagnostic_rules").select("*").eq("is_active", true).order("priority", { ascending: false });
-  if (error || !data) throw new Error("Supabase 진단 규칙을 불러오지 못했습니다.");
-  const rules = data as Rule[];
+  const rules = await fetchDiagnosticRules();
 
   const sectionFeedback = sections.map((section) => {
     const rule = matchRule(rules, section.percentage, "section", section.code);

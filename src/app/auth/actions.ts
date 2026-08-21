@@ -6,15 +6,18 @@ import { createClient } from "@/lib/supabase/server";
 export type AuthState = { error?: string; success?: string };
 
 const message = (error: unknown) => error instanceof Error ? error.message : "요청을 처리하지 못했습니다.";
-const siteUrl = () => {
-  const candidate = process.env.NEXT_PUBLIC_SITE_URL
-    ?? process.env.NEXT_PUBLIC_VERCEL_URL
-    ?? process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL
-    ?? process.env.VERCEL_URL
-    ?? "http://localhost:3000";
-  const url = candidate.startsWith("http://") || candidate.startsWith("https://") ? candidate : `https://${candidate}`;
-  return url.replace(/\/+$/, "");
-};
+
+// 모듈 초기화 시 1회만 계산
+const _siteUrlCandidate = process.env.NEXT_PUBLIC_SITE_URL
+  ?? process.env.NEXT_PUBLIC_VERCEL_URL
+  ?? process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL
+  ?? process.env.VERCEL_URL
+  ?? "http://localhost:3000";
+const SITE_URL = (_siteUrlCandidate.startsWith("http://") || _siteUrlCandidate.startsWith("https://")
+  ? _siteUrlCandidate
+  : `https://${_siteUrlCandidate}`
+).replace(/\/+$/, "");
+const siteUrl = () => SITE_URL;
 
 const authMessage = (value: string) => {
   if (value === "Invalid login credentials") return "이메일 또는 비밀번호가 올바르지 않습니다.";

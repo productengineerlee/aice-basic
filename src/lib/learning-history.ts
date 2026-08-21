@@ -70,7 +70,7 @@ export async function loadLearningHistory(userId: string, requestedPage: number,
 
   const [{ data: historyRows, error: historyError }, { data: gradedRows, error: gradedError }] = await Promise.all([
     historyQuery,
-    admin.from("attempts").select("id,exam_id,graded_at,submitted_at,total_score,passed").eq("user_id", userId).eq("status", "graded").not("total_score", "is", null).order("graded_at", { ascending: true }),
+    admin.from("attempts").select("id,exam_id,graded_at,submitted_at,total_score,passed").eq("user_id", userId).eq("status", "graded").not("total_score", "is", null).order("graded_at", { ascending: false }).limit(ANALYTICS_ATTEMPT_LIMIT + 12),
   ]);
   if (historyError || gradedError || !historyRows || !gradedRows) throw new Error("학습 이력을 불러오지 못했습니다.");
 
@@ -81,7 +81,8 @@ export async function loadLearningHistory(userId: string, requestedPage: number,
     return { id: row.id, examId: row.exam_id, examSlug: exam?.slug ?? "", examTitle: exam?.title ?? "삭제되거나 보관된 시험", status: row.status, startedAt: row.started_at, resultAt: row.graded_at ?? row.submitted_at, totalScore: score, maxScore, percentage: score === null ? null : percentage(score, maxScore), passed: row.passed, correctCount: row.correct_count, answeredCount: row.answered_count };
   });
 
-  const graded = gradedRows.map(row => {
+  // gradedRows는 DESC 순서로 조회되므로 역순 정렬하여 오래된 순으로 변환
+  const graded = gradedRows.slice().reverse().map(row => {
     const exam = examById.get(row.exam_id);
     const score = Number(row.total_score ?? 0);
     return { ...row, score, exam, percentage: percentage(score, exam?.totalScore ?? 100) };
