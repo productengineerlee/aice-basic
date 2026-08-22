@@ -333,24 +333,38 @@ a { text-decoration: none; color: inherit; }
    same grid structure as original, new visual style
    ============================================================ */
 .exam-facts {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  max-width: 1040px;
-  margin: 56px auto;
-  border-radius: 56px;
-  overflow: hidden;
-  background: linear-gradient(135deg, var(--blue), var(--blue-h));
-  box-shadow: 0 20px 48px -16px rgba(37,99,235,0.45);
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  max-width: 680px;
+  margin: 64px auto;
 }
 .exam-facts > div {
-  padding: 26px 24px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  padding: 0 22px;
   text-align: center;
-  border-right: 1px solid rgba(255,255,255,0.18);
 }
-.exam-facts > div:first-child { padding-left: 44px; }
-.exam-facts > div:last-child { border-right: none; padding-right: 44px; }
-.exam-facts b { font-size: 32px; font-weight: 800; color: #fff; display: block; line-height: 1; }
-.exam-facts span { font-size: 12px; color: rgba(255,255,255,0.65); margin-top: 8px; display: block; letter-spacing: 0.3px; }
+.exam-facts > div::before {
+  content: "";
+  width: 18px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--blue);
+  margin-bottom: 12px;
+}
+.exam-facts > div:not(:first-child)::after {
+  content: "";
+  position: absolute;
+  left: 0; top: 6px; bottom: 6px;
+  width: 1px;
+  background: var(--line);
+}
+.exam-facts b { font-size: 30px; font-weight: 800; color: var(--navy); display: block; line-height: 1; }
+.exam-facts span { font-size: 12px; color: var(--muted); margin-top: 8px; display: block; letter-spacing: 0.3px; }
 
 /* ============================================================
    SECTIONS
@@ -568,9 +582,8 @@ footer { border-top: 1px solid var(--line); }
   .site-header nav { display: none; }
   .hero { grid-template-columns: 1fr; padding-top: 56px; padding-bottom: 64px; gap: 40px; }
   .hero h1 { font-size: 38px; }
-  .exam-facts { grid-template-columns: repeat(2, 1fr); margin: 48px 24px; border-radius: 32px; }
-  .exam-facts > div:nth-child(2) { border-right: none; }
-  .exam-facts > div:first-child, .exam-facts > div:last-child { padding-left: 24px; padding-right: 24px; }
+  .exam-facts { display: grid; grid-template-columns: repeat(2, 1fr); max-width: 380px; margin: 48px auto; row-gap: 32px; column-gap: 8px; }
+  .exam-facts > div::after { display: none; }
   .feature-grid { grid-template-columns: repeat(2, 1fr); }
   .exam-grid { grid-template-columns: repeat(2, 1fr); }
 }
@@ -582,7 +595,7 @@ footer { border-top: 1px solid var(--line); }
   .hero-actions .primary, .hero-actions .secondary { width: 100%; justify-content: center; }
   .trust { flex-direction: column; gap: 10px; }
   .feature-grid, .exam-grid { grid-template-columns: 1fr; }
-  .exam-facts { grid-template-columns: repeat(2, 1fr); margin: 40px 16px; border-radius: 24px; }
+  .exam-facts { margin: 40px auto; }
   .section { padding: 64px 20px; }
   .footer-inner { flex-direction: column; align-items: flex-start; gap: 10px; }
 }
