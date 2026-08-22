@@ -71,13 +71,10 @@ a { text-decoration: none; color: inherit; }
 .brand b { color: var(--blue); }
 
 .brand-mark {
-  width: 34px;
-  height: 34px;
+  width: 32px;
+  height: 32px;
   border-radius: 9px;
-  display: grid;
-  place-items: center;
-  background: var(--blue);
-  color: #fff;
+  object-fit: contain;
   flex-shrink: 0;
 }
 

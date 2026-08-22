@@ -1,6 +1,7 @@
 import Link from "next/link";
+import Image from "next/image";
 import { redirect } from "next/navigation";
-import { ArrowLeft, ArrowRight, BarChart3, BookOpenCheck, BrainCircuit, CheckCircle2, Clock3, LogOut, Target } from "lucide-react";
+import { ArrowLeft, ArrowRight, BarChart3, BookOpenCheck, CheckCircle2, Clock3, LogOut, Target } from "lucide-react";
 import { signOut } from "@/app/auth/actions";
 import { loadLearningHistory, type TrendItem } from "@/lib/learning-history";
 import { createClient } from "@/lib/supabase/server";
@@ -37,7 +38,7 @@ export default async function MyPage({ searchParams }: { searchParams: Promise<{
   const pageHref = (page: number) => `/mypage?page=${page}${learning.selectedExamId ? `&exam=${encodeURIComponent(learning.selectedExamId)}` : ""}`;
 
   return <main className="mypage-shell">
-    <header><Link className="mypage-brand" href="/" aria-label="랜딩 페이지"><span><BrainCircuit /></span>AICE <b>LAB</b></Link><nav><Link href="/exams">모의고사</Link>{profile?.role === "admin" && <Link href="/admin">관리자 콘솔</Link>}<form action={signOut}><button><LogOut />로그아웃</button></form></nav></header>
+    <header><Link className="mypage-brand" href="/" aria-label="랜딩 페이지"><Image src="/logo-mark.png" alt="" width={32} height={32} className="brand-mark" />AICE <b>LAB</b></Link><nav><Link href="/exams">모의고사</Link>{profile?.role === "admin" && <Link href="/admin">관리자 콘솔</Link>}<form action={signOut}><button><LogOut />로그아웃</button></form></nav></header>
     <section className="mypage-container">
       <Link className="mypage-back" href="/dashboard"><ArrowLeft />대시보드</Link>
       <div className="mypage-title"><div><span>MY LEARNING REPORT</span><h1>{name}님의 학습 분석</h1><p>응시 기록과 역량별 성취도를 바탕으로 다음 학습 방향을 확인하세요.</p></div><Link href="/exams"><BookOpenCheck />새 모의고사</Link></div>

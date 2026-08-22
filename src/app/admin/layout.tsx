@@ -1,6 +1,7 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Suspense } from "react";
-import { BarChart3, BookOpenCheck, BrainCircuit, ClipboardList, LayoutDashboard, LogOut } from "lucide-react";
+import { BarChart3, BookOpenCheck, ClipboardList, LayoutDashboard, LogOut } from "lucide-react";
 import { signOut } from "@/app/auth/actions";
 import { requireAdmin } from "@/lib/admin-auth";
 import { LoadingScreen } from "@/components/system/loading-screen";
@@ -10,7 +11,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const { user, profile } = await requireAdmin();
   return <div className="admin-shell">
     <aside className="admin-sidebar">
-      <Link className="admin-brand" href="/admin"><span><BrainCircuit size={20} /></span>AICE <b>LAB</b></Link>
+      <Link className="admin-brand" href="/admin"><Image src="/logo-mark.png" alt="" width={32} height={32} className="brand-mark" />AICE <b>LAB</b></Link>
       <nav>
         <Link href="/admin"><LayoutDashboard />관리자 홈</Link>
         <Link href="/admin/exams"><BookOpenCheck />시험·문항 관리</Link>

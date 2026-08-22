@@ -24,6 +24,7 @@ export default async function Home() {
       {/* ── HEADER ── */}
       <header className="site-header">
         <a className="brand" href="/">
+          <Image src="/logo-mark.png" alt="AICE LAB" width={32} height={32} className="brand-mark" priority />
           <span>AICE <b>LAB</b></span>
         </a>
         <nav>
