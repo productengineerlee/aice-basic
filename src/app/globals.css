@@ -61,7 +61,7 @@ a { text-decoration: none; color: inherit; }
 .brand {
   display: flex;
   align-items: center;
-  gap: 9px;
+  gap: 4px;
   font-size: 18px;
   font-weight: 800;
   color: var(--navy);
