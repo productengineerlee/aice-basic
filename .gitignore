@@ -6,5 +6,6 @@ out/
 *.log
 .vercel/
 tmp/docx_render/
+supabase/.temp/
 
 .vercel

@@ -24,6 +24,11 @@ function redirectMessage(path: string, key: "saved" | "error", message: string):
   url.searchParams.set(key, message);
   redirect(`${url.pathname}${url.search}`);
 }
+function resolveReturnTo(formData: FormData, fallback: string) { return adminPath(text(formData, "returnTo"), fallback); }
+function parseOrRedirect<T>(returnTo: string, parse: () => T): T {
+  try { return parse(); }
+  catch (error) { redirectMessage(returnTo, "error", error instanceof Error ? error.message : "입력값을 확인해 주세요."); }
+}
 
 export async function updateExamAction(formData: FormData) {
   await assertAdminAction();
@@ -33,7 +38,7 @@ export async function updateExamAction(formData: FormData) {
   const status = text(formData, "status") as ExamStatus;
   const duration = numberValue(formData, "durationMinutes");
   const passingScore = numberValue(formData, "passingScore");
-  const returnTo = adminPath(text(formData, "returnTo"), `/admin/exams/${id}`);
+  const returnTo = resolveReturnTo(formData, `/admin/exams/${id}`);
   if (!title || !examStatuses.includes(status) || duration < 1 || duration > 600 || passingScore < 0) redirectMessage(returnTo, "error", "시험 설정값을 확인해 주세요.");
   const { data: exam } = await admin.from("exams").select("total_score").eq("id", id).maybeSingle();
   if (!exam || passingScore > Number(exam.total_score)) redirectMessage(returnTo, "error", "합격 점수는 총점보다 높을 수 없습니다.");
@@ -56,7 +61,7 @@ export async function updateQuestionAction(formData: FormData) {
   await assertAdminAction();
   const admin = createAdminClient();
   const id = text(formData, "id");
-  const returnTo = adminPath(text(formData, "returnTo"), `/admin/questions/${id}`);
+  const returnTo = resolveReturnTo(formData, `/admin/questions/${id}`);
   const { data: question, error: questionError } = await admin.from("questions").select("id,exam_id,type").eq("id", id).maybeSingle();
   if (questionError || !question) redirectMessage(returnTo, "error", "문항을 찾을 수 없습니다.");
 
@@ -92,6 +97,7 @@ export async function updateQuestionAction(formData: FormData) {
   const decimalPlaces = decimalPlacesRaw === null ? null : Number(decimalPlacesRaw);
   const tolerance = toleranceRaw === null ? null : Number(toleranceRaw);
   if ((decimalPlaces !== null && (!Number.isInteger(decimalPlaces) || decimalPlaces < 0 || decimalPlaces > 10)) || (tolerance !== null && (!Number.isFinite(tolerance) || tolerance < 0))) redirectMessage(returnTo, "error", "채점 자릿수와 허용 오차를 확인해 주세요.");
+  if ((gradingType === "absolute_tolerance" || gradingType === "relative_tolerance") && tolerance === null) redirectMessage(returnTo, "error", "이 채점 방식은 허용 오차 값이 반드시 필요합니다.");
 
   const prospective = (allQuestions ?? []).map(item => item.id === id ? { ...item, score, section_id: sectionId, is_active: isActive } : item);
   const totalScore = prospective.filter(item => item.is_active).reduce((sum, item) => sum + Number(item.score), 0);
@@ -109,6 +115,16 @@ export async function updateQuestionAction(formData: FormData) {
     is_active: isActive,
   }).eq("id", id);
   if (updateError) redirectMessage(returnTo, "error", `문항 저장 실패: ${updateError.message}`);
+
+  // Recompute section/exam totals right away, since they only depend on the questions write above
+  // (already committed) and not on the answer_keys/choices writes below. Keeping this next to the
+  // questions write means a later failure in those steps can never leave totals stale relative to
+  // the new score that's already live.
+  const sectionTotals = new Map<string, number>();
+  for (const item of prospective.filter(item => item.is_active)) sectionTotals.set(item.section_id, (sectionTotals.get(item.section_id) ?? 0) + Number(item.score));
+  const { data: sections } = await admin.from("exam_sections").select("id").eq("exam_id", question.exam_id);
+  await Promise.all((sections ?? []).map(item => admin.from("exam_sections").update({ max_score: Number((sectionTotals.get(item.id) ?? 0).toFixed(2)) }).eq("id", item.id)));
+  await admin.from("exams").update({ total_score: Number(totalScore.toFixed(2)) }).eq("id", question.exam_id);
 
   const { error: keyError } = await admin.from("answer_keys").update({
     grading_type: gradingType,
@@ -129,12 +145,6 @@ export async function updateQuestionAction(formData: FormData) {
   );
   const choiceError = choiceResults.find((result) => result.error)?.error;
   if (choiceError) redirectMessage(returnTo, "error", `보기 저장 실패: ${choiceError.message}`);
-
-  const sectionTotals = new Map<string, number>();
-  for (const item of prospective.filter(item => item.is_active)) sectionTotals.set(item.section_id, (sectionTotals.get(item.section_id) ?? 0) + Number(item.score));
-  const { data: sections } = await admin.from("exam_sections").select("id").eq("exam_id", question.exam_id);
-  await Promise.all((sections ?? []).map(item => admin.from("exam_sections").update({ max_score: Number((sectionTotals.get(item.id) ?? 0).toFixed(2)) }).eq("id", item.id)));
-  await admin.from("exams").update({ total_score: Number(totalScore.toFixed(2)) }).eq("id", question.exam_id);
 
   revalidatePath(returnTo.split("?")[0]);
   revalidatePath(`/admin/exams/${question.exam_id}`);
@@ -167,6 +177,10 @@ function diagnosticInput(formData: FormData): DiagnosticInput {
   return { sectionCode, competencyTag, minPercentage, maxPercentage, level, comment, recommendation: nullable(formData, "recommendation"), priority: Math.round(priority), isActive: formData.get("isActive") === "on" };
 }
 
+// NOTE: read-then-write check, not a DB constraint — two admins creating/activating overlapping
+// rules for the same section/tag at the same moment could both pass this check before either
+// insert commits. Acceptable for now (admin-only, low-traffic, low-stakes); a real fix needs a
+// DB-level exclusion constraint on (section_code, competency_tag, percentage range).
 async function ensureNoDiagnosticOverlap(input: DiagnosticInput, excludeId?: string) {
   if (!input.isActive) return;
   const admin = createAdminClient();
@@ -179,10 +193,9 @@ async function ensureNoDiagnosticOverlap(input: DiagnosticInput, excludeId?: str
 export async function updateDiagnosticRuleAction(formData: FormData) {
   await assertAdminAction();
   const id = text(formData, "id");
-  const returnTo = adminPath(text(formData, "returnTo"), "/admin/diagnostics");
-  let input: DiagnosticInput;
-  try { input = diagnosticInput(formData); await ensureNoDiagnosticOverlap(input, id); }
-  catch (error) { redirectMessage(returnTo, "error", error instanceof Error ? error.message : "진단 규칙을 확인해 주세요."); }
+  const returnTo = resolveReturnTo(formData, "/admin/diagnostics");
+  const input = parseOrRedirect(returnTo, () => diagnosticInput(formData));
+  await ensureNoDiagnosticOverlap(input, id).catch((error: unknown) => redirectMessage(returnTo, "error", error instanceof Error ? error.message : "진단 규칙을 확인해 주세요."));
   const admin = createAdminClient();
   const { error } = await admin.from("diagnostic_rules").update({
     section_code: input.sectionCode, competency_tag: input.competencyTag,
@@ -197,10 +210,9 @@ export async function updateDiagnosticRuleAction(formData: FormData) {
 
 export async function createDiagnosticRuleAction(formData: FormData) {
   await assertAdminAction();
-  const returnTo = adminPath(text(formData, "returnTo"), "/admin/diagnostics");
-  let input: DiagnosticInput;
-  try { input = diagnosticInput(formData); await ensureNoDiagnosticOverlap(input); }
-  catch (error) { redirectMessage(returnTo, "error", error instanceof Error ? error.message : "진단 규칙을 확인해 주세요."); }
+  const returnTo = resolveReturnTo(formData, "/admin/diagnostics");
+  const input = parseOrRedirect(returnTo, () => diagnosticInput(formData));
+  await ensureNoDiagnosticOverlap(input).catch((error: unknown) => redirectMessage(returnTo, "error", error instanceof Error ? error.message : "진단 규칙을 확인해 주세요."));
   const admin = createAdminClient();
   const { error } = await admin.from("diagnostic_rules").insert({
     section_code: input.sectionCode, competency_tag: input.competencyTag,
@@ -217,7 +229,7 @@ export async function deleteDiagnosticRuleAction(formData: FormData) {
   await assertAdminAction();
   const admin = createAdminClient();
   const id = text(formData, "id");
-  const returnTo = adminPath(text(formData, "returnTo"), "/admin/diagnostics");
+  const returnTo = resolveReturnTo(formData, "/admin/diagnostics");
   const { data: rule } = await admin.from("diagnostic_rules").select("section_code,competency_tag").eq("id", id).maybeSingle();
   if (!rule) redirectMessage(returnTo, "error", "삭제할 규칙을 찾을 수 없습니다.");
   if (!rule.section_code && !rule.competency_tag) redirectMessage(returnTo, "error", "공통 기본 규칙은 삭제할 수 없습니다.");
@@ -225,4 +237,61 @@ export async function deleteDiagnosticRuleAction(formData: FormData) {
   if (error) redirectMessage(returnTo, "error", `규칙 삭제 실패: ${error.message}`);
   revalidatePath("/admin/diagnostics");
   redirectMessage(returnTo, "saved", "진단 규칙을 삭제했습니다.");
+}
+
+type TheoryInput = { sectionCode: string; competencyTag: string | null; title: string; body: string; sortOrder: number; isActive: boolean };
+
+function theoryInput(formData: FormData): TheoryInput {
+  const sectionCode = text(formData, "sectionCode");
+  const competencyTag = nullable(formData, "competencyTag");
+  const title = text(formData, "title");
+  const body = text(formData, "body");
+  const sortOrder = numberValue(formData, "sortOrder");
+  if (!sectionCode || !title || !body) throw new Error("영역·제목·본문을 모두 입력해 주세요.");
+  return { sectionCode, competencyTag, title, body, sortOrder: Math.round(sortOrder), isActive: formData.get("isActive") === "on" };
+}
+
+function revalidateTheory() {
+  revalidatePath("/admin/theory");
+  revalidatePath("/theory");
+}
+
+export async function createTheoryContentAction(formData: FormData) {
+  await assertAdminAction();
+  const returnTo = resolveReturnTo(formData, "/admin/theory");
+  const input = parseOrRedirect(returnTo, () => theoryInput(formData));
+  const admin = createAdminClient();
+  const { error } = await admin.from("theory_content").insert({
+    section_code: input.sectionCode, competency_tag: input.competencyTag,
+    title: input.title, body: input.body, sort_order: input.sortOrder, is_active: input.isActive,
+  });
+  if (error) redirectMessage(returnTo, "error", `핵심이론 추가 실패: ${error.message}`);
+  revalidateTheory();
+  redirectMessage(returnTo, "saved", "새 핵심이론을 추가했습니다.");
+}
+
+export async function updateTheoryContentAction(formData: FormData) {
+  await assertAdminAction();
+  const id = text(formData, "id");
+  const returnTo = resolveReturnTo(formData, "/admin/theory");
+  const input = parseOrRedirect(returnTo, () => theoryInput(formData));
+  const admin = createAdminClient();
+  const { error } = await admin.from("theory_content").update({
+    section_code: input.sectionCode, competency_tag: input.competencyTag,
+    title: input.title, body: input.body, sort_order: input.sortOrder, is_active: input.isActive,
+  }).eq("id", id);
+  if (error) redirectMessage(returnTo, "error", `핵심이론 저장 실패: ${error.message}`);
+  revalidateTheory();
+  redirectMessage(returnTo, "saved", "핵심이론을 저장했습니다.");
+}
+
+export async function deleteTheoryContentAction(formData: FormData) {
+  await assertAdminAction();
+  const admin = createAdminClient();
+  const id = text(formData, "id");
+  const returnTo = resolveReturnTo(formData, "/admin/theory");
+  const { error } = await admin.from("theory_content").delete().eq("id", id);
+  if (error) redirectMessage(returnTo, "error", `핵심이론 삭제 실패: ${error.message}`);
+  revalidateTheory();
+  redirectMessage(returnTo, "saved", "핵심이론을 삭제했습니다.");
 }

@@ -5,7 +5,7 @@ import { useActionState, useState, useEffect } from "react";
 import type { AuthState } from "@/app/auth/actions";
 
 type Mode = "login" | "signup" | "forgot" | "update";
-type Props = { mode: Mode; action: (state: AuthState, data: FormData) => Promise<AuthState> };
+type Props = { mode: Mode; action: (state: AuthState, data: FormData) => Promise<AuthState>; next?: string };
 
 const copy = {
   login:  { title: "다시 만나서 반가워요",   sub: "학습을 이어가려면 로그인하세요.",        button: "로그인" },
@@ -14,7 +14,7 @@ const copy = {
   update: { title: "새 비밀번호 설정",        sub: "앞으로 사용할 비밀번호를 입력하세요.",    button: "비밀번호 변경" },
 };
 
-export function AuthForm({ mode, action }: Props) {
+export function AuthForm({ mode, action, next }: Props) {
   const [state, formAction, pending] = useActionState(action, {});
   const [nameVal,  setNameVal]  = useState("");
   const [emailVal, setEmailVal] = useState("");
@@ -35,6 +35,7 @@ export function AuthForm({ mode, action }: Props) {
         <p>{copy[mode].sub}</p>
       </div>
       <form action={formAction} className="auth-form">
+        {next && <input type="hidden" name="next" value={next} />}
         {/* 이름 — 회원가입 전용 */}
         {mode === "signup" && (
           <label>

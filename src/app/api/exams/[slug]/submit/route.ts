@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { AttemptStoreError, loadAttemptResult, persistGradingResult, prepareSubmission, type DraftInput } from "@/lib/attempts";
+import { AttemptStoreError, getExamContext, loadAttemptResult, persistGradingResult, prepareSubmission, type DraftInput } from "@/lib/attempts";
 import { gradeExam } from "@/lib/grading";
 import { createClient } from "@/lib/supabase/server";
 
@@ -41,18 +41,20 @@ export async function POST(request: Request, { params }: { params: Promise<{ slu
     const { slug } = await params;
     retryContext = { slug, userId: user.id, attemptId: body.attemptId };
 
-    const existing = await loadAttemptResult(slug, user.id, body.attemptId);
+    const context = await getExamContext(slug);
+
+    const existing = await loadAttemptResult(context, user.id, body.attemptId);
     if (existing) return response(existing, requestId, 200, true);
 
-    const prepared = await prepareSubmission(slug, body.attemptId, user.id, body);
-    const graded = await gradeExam(slug, prepared.answers);
-    if (!graded) return response({ error: "시험을 찾을 수 없습니다.", requestId }, requestId, 404);
-    const result = await persistGradingResult(slug, body.attemptId, user.id, prepared, graded);
+    const prepared = await prepareSubmission(context, body.attemptId, user.id, body);
+    const graded = await gradeExam(context, prepared.answers);
+    const result = await persistGradingResult(context, body.attemptId, user.id, prepared, graded);
     return response(result, requestId, 200, false);
   } catch (error) {
     if (error instanceof AttemptStoreError && error.status === 409 && retryContext) {
       try {
-        const existing = await loadAttemptResult(retryContext.slug, retryContext.userId, retryContext.attemptId);
+        const retryContextData = await getExamContext(retryContext.slug);
+        const existing = await loadAttemptResult(retryContextData, retryContext.userId, retryContext.attemptId);
         if (existing) return response(existing, requestId, 200, true);
       } catch (replayError) {
         console.error(`[submit-replay:${requestId}]`, replayError);

@@ -3,11 +3,12 @@ import "server-only";
 import { unstable_cache } from "next/cache";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { Database } from "@/types/database";
+import { type DiagnosticLevel, levelLabel } from "@/lib/diagnostic-level";
 
+export { type DiagnosticLevel, levelLabel };
 type Rule = Database["public"]["Tables"]["diagnostic_rules"]["Row"];
 type SectionScore = { code: string; title: string; earnedScore: number; maxScore: number; correctCount: number; questionCount: number; percentage: number };
 type QuestionScore = { tags: string[]; isCorrect: boolean; awardedScore: number; maxScore: number };
-export type DiagnosticLevel = "foundation" | "weak" | "developing" | "strong";
 export type DiagnosticFeedback = {
   scope: "section" | "competency";
   code: string;
@@ -37,12 +38,27 @@ function matchRule(rules: Rule[], percentage: number, scope: "section" | "compet
   return [...applicable, ...fallback].sort((a, b) => b.priority - a.priority)[0];
 }
 
+type MinimalRule = Pick<Rule, "id" | "level" | "comment" | "recommendation">;
+
+/** Used when no diagnostic_rules row (not even a generic section_code=null/competency_tag=null
+ * fallback) covers a given percentage. A content gap here should degrade to a generic message,
+ * not 500 the whole exam's grading/result page for every student. */
+function builtinFallbackRule(title: string, percentage: number): MinimalRule {
+  const level: DiagnosticLevel = percentage >= 80 ? "strong" : percentage >= 60 ? "developing" : percentage >= 40 ? "weak" : "foundation";
+  return {
+    id: "builtin-fallback",
+    level,
+    comment: `${title} 점수는 ${percentage}%입니다.`,
+    recommendation: "오답 해설을 확인하고 같은 유형을 다시 풀어보세요.",
+  };
+}
+
 function feedback(
   scope: "section" | "competency",
   code: string,
   title: string,
   scores: Pick<DiagnosticFeedback, "earnedScore" | "maxScore" | "correctCount" | "questionCount" | "percentage">,
-  rule: Rule,
+  rule: MinimalRule,
 ): DiagnosticFeedback {
   return {
     scope, code, title, ...scores,
@@ -68,8 +84,7 @@ export async function generateDiagnostics(sections: SectionScore[], questions: Q
   const rules = await fetchDiagnosticRules();
 
   const sectionFeedback = sections.map((section) => {
-    const rule = matchRule(rules, section.percentage, "section", section.code);
-    if (!rule) throw new Error(`${section.title} 영역에 적용할 진단 규칙이 없습니다.`);
+    const rule = matchRule(rules, section.percentage, "section", section.code) ?? builtinFallbackRule(section.title, section.percentage);
     return feedback("section", section.code, section.title, {
       earnedScore: section.earnedScore, maxScore: section.maxScore, correctCount: section.correctCount,
       questionCount: section.questionCount, percentage: section.percentage,
@@ -87,8 +102,7 @@ export async function generateDiagnostics(sections: SectionScore[], questions: Q
   }
   const competencies = [...aggregates.entries()].map(([tag, score]) => {
     const percentage = score.maxScore ? Number((score.earnedScore / score.maxScore * 100).toFixed(1)) : 0;
-    const rule = matchRule(rules, percentage, "competency", tag);
-    if (!rule) throw new Error(`${tag} 역량에 적용할 진단 규칙이 없습니다.`);
+    const rule = matchRule(rules, percentage, "competency", tag) ?? builtinFallbackRule(tag, percentage);
     return feedback("competency", tag, tag, {
       earnedScore: Number(score.earnedScore.toFixed(2)), maxScore: Number(score.maxScore.toFixed(2)),
       correctCount: score.correctCount, questionCount: score.questionCount, percentage,

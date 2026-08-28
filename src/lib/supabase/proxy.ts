@@ -17,6 +17,7 @@ export async function updateSession(request: NextRequest) {
       },
     },
   });
-  await supabase.auth.getClaims();
+  const { error } = await supabase.auth.getClaims();
+  if (error) console.error("[proxy] session refresh failed:", error.message);
   return response;
 }

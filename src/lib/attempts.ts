@@ -14,11 +14,12 @@ type AttemptAnswerRow = Database["public"]["Tables"]["attempt_answers"]["Row"];
 type AnswerKeyRow = Database["public"]["Tables"]["answer_keys"]["Row"];
 
 type AdminClient = ReturnType<typeof createAdminClient>;
-type Context = {
+export type Context = {
   exam: ExamRow;
   sections: SectionRow[];
   questions: QuestionRow[];
   choices: ChoiceRow[];
+  answerKeys: AnswerKeyRow[];
   questionByNumber: Map<number, QuestionRow>;
   questionById: Map<string, QuestionRow>;
   choiceById: Map<string, ChoiceRow>;
@@ -45,7 +46,11 @@ function fail(message: string, status = 500): never {
   throw new AttemptStoreError(message, status);
 }
 
-async function getContext(admin: AdminClient, slug: string): Promise<Context> {
+/** Fetches everything needed to run/grade one exam attempt. Callers should fetch this once per
+ * request and thread it through, rather than calling this per sub-step (it used to be called up
+ * to 4x in a single /submit request). */
+export async function getExamContext(slug: string): Promise<Context> {
+  const admin = createAdminClient();
   const { data: exam, error: examError } = await admin
     .from("exams")
     .select("*")
@@ -62,16 +67,21 @@ async function getContext(admin: AdminClient, slug: string): Promise<Context> {
   if (sectionError || questionError || !sections || !questions) fail("시험 문항을 불러오지 못했습니다.");
 
   const questionIds = questions.map((question) => question.id);
-  const { data: choices, error: choiceError } = questionIds.length
-    ? await admin.from("question_choices").select("*").in("question_id", questionIds).order("sort_order")
-    : { data: [] as ChoiceRow[], error: null };
-  if (choiceError || !choices) fail("문항 보기를 불러오지 못했습니다.");
+  const [{ data: choices, error: choiceError }, { data: answerKeys, error: keyError }] = questionIds.length
+    ? await Promise.all([
+        admin.from("question_choices").select("*").in("question_id", questionIds).order("sort_order"),
+        admin.from("answer_keys").select("*").in("question_id", questionIds),
+      ])
+    : [{ data: [] as ChoiceRow[], error: null }, { data: [] as AnswerKeyRow[], error: null }];
+  if (choiceError || keyError || !choices || !answerKeys) fail("문항 보기·정답을 불러오지 못했습니다.");
+  if (answerKeys.length !== questions.length) fail("Supabase 정답 데이터가 완전하지 않습니다.");
 
   return {
     exam,
     sections,
     questions,
     choices,
+    answerKeys,
     questionByNumber: new Map(questions.map((question) => [question.number, question])),
     questionById: new Map(questions.map((question) => [question.id, question])),
     choiceById: new Map(choices.map((choice) => [choice.id, choice])),
@@ -105,13 +115,12 @@ async function getAttempt(
 }
 
 export async function prepareSubmission(
-  slug: string,
+  context: Context,
   attemptId: string,
   userId: string,
   input: DraftInput,
 ): Promise<DraftInput> {
   const admin = createAdminClient();
-  const context = await getContext(admin, slug);
   const attempt = await getAttempt(admin, context, attemptId, userId, true);
   const graceDeadline = new Date(attempt.expires_at).getTime() + 30_000;
   if (Date.now() <= graceDeadline) return input;
@@ -183,17 +192,24 @@ function buildAnswerRows(
   return rows;
 }
 
+/** Upserts the given rows, then removes only DB rows that are both absent from `rows` and have
+ * no answer recorded (pure flag-only placeholders). Rows that already carry a real answer are
+ * never deleted here, even if this call's snapshot doesn't include them — autosave requests can
+ * arrive out of order (retry, network jitter), and an older request's smaller snapshot must not
+ * be able to wipe out an answer a newer request already persisted. */
 async function syncAnswerRows(admin: AdminClient, attemptId: string, rows: Database["public"]["Tables"]["attempt_answers"]["Insert"][]) {
   const { data: existing, error: existingError } = await admin
     .from("attempt_answers")
-    .select("question_id")
+    .select("question_id,selected_choice_id,answer_text")
     .eq("attempt_id", attemptId);
   if (existingError) fail("기존 답안을 확인하지 못했습니다.");
 
   const active = new Set(rows.map((row) => String(row.question_id)));
-  const stale = (existing ?? []).map((row) => row.question_id).filter((id) => !active.has(id));
-  if (stale.length) {
-    const { error } = await admin.from("attempt_answers").delete().eq("attempt_id", attemptId).in("question_id", stale);
+  const staleUnanswered = (existing ?? [])
+    .filter((row) => !active.has(row.question_id) && !row.selected_choice_id && !String(row.answer_text ?? "").trim())
+    .map((row) => row.question_id);
+  if (staleUnanswered.length) {
+    const { error } = await admin.from("attempt_answers").delete().eq("attempt_id", attemptId).in("question_id", staleUnanswered);
     if (error) fail("삭제된 답안을 반영하지 못했습니다.");
   }
   if (rows.length) {
@@ -204,7 +220,7 @@ async function syncAnswerRows(admin: AdminClient, attemptId: string, rows: Datab
 
 export async function startOrResumeAttempt(slug: string, userId: string): Promise<AttemptDraft> {
   const admin = createAdminClient();
-  const context = await getContext(admin, slug);
+  const context = await getExamContext(slug);
   const now = new Date();
   const nowIso = now.toISOString();
 
@@ -269,7 +285,7 @@ export async function startOrResumeAttempt(slug: string, userId: string): Promis
 
 export async function saveAttemptDraft(slug: string, attemptId: string, userId: string, input: DraftInput) {
   const admin = createAdminClient();
-  const context = await getContext(admin, slug);
+  const context = await getExamContext(slug);
   await getAttempt(admin, context, attemptId, userId);
   const rows = buildAnswerRows(context, attemptId, input);
   await syncAnswerRows(admin, attemptId, rows);
@@ -281,14 +297,13 @@ export async function saveAttemptDraft(slug: string, attemptId: string, userId: 
 }
 
 export async function persistGradingResult(
-  slug: string,
+  context: Context,
   attemptId: string,
   userId: string,
   input: DraftInput,
   result: GradingResult,
 ): Promise<GradingResult> {
   const admin = createAdminClient();
-  const context = await getContext(admin, slug);
   await getAttempt(admin, context, attemptId, userId, true);
   const graded = new Map(result.questions.map((question) => [question.number, { isCorrect: question.isCorrect, awardedScore: question.awardedScore }]));
   const rows = buildAnswerRows(context, attemptId, input, graded);
@@ -311,8 +326,12 @@ export async function persistGradingResult(
   const { error: sectionError } = await admin.from("section_results").upsert(sectionRows, { onConflict: "attempt_id,section_id" });
   if (sectionError) fail("영역별 결과를 저장하지 못했습니다.");
 
+  // Compare-and-swap: only actually persists if the attempt is still in_progress/expired.
+  // A concurrent duplicate submit (double-click, retry racing an auto-submit) that loses this
+  // race gets a 409 instead of silently overwriting the winner's score — the route layer already
+  // handles that 409 by returning the persisted (winning) result instead of erroring out.
   const submittedAt = new Date().toISOString();
-  const { error: attemptError } = await admin.from("attempts").update({
+  const { data: updatedAttempt, error: attemptError } = await admin.from("attempts").update({
     status: "graded",
     submitted_at: submittedAt,
     graded_at: submittedAt,
@@ -320,15 +339,15 @@ export async function persistGradingResult(
     correct_count: result.correctCount,
     answered_count: result.answeredCount,
     passed: result.passed,
-  }).eq("id", attemptId).eq("user_id", userId);
+  }).eq("id", attemptId).eq("user_id", userId).in("status", ["in_progress", "expired"]).select("id").maybeSingle();
   if (attemptError) fail("최종 응시 결과를 저장하지 못했습니다.");
+  if (!updatedAttempt) fail("이미 채점이 완료된 응시입니다.", 409);
 
   return { ...result, id: attemptId, submittedAt };
 }
 
-export async function loadAttemptResult(slug: string, userId: string, attemptId?: string): Promise<GradingResult | null> {
+export async function loadAttemptResult(context: Context, userId: string, attemptId?: string): Promise<GradingResult | null> {
   const admin = createAdminClient();
-  const context = await getContext(admin, slug);
   let query = admin
     .from("attempts")
     .select("*")

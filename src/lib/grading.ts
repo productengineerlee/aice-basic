@@ -1,7 +1,7 @@
 import "server-only";
 
-import { createAdminClient } from "@/lib/supabase/admin";
 import { generateDiagnostics, type DiagnosticSummary } from "@/lib/diagnostics";
+import type { Context } from "@/lib/attempts";
 import type { Database } from "@/types/database";
 
 type AnswerKey = Database["public"]["Tables"]["answer_keys"]["Row"];
@@ -52,29 +52,10 @@ function checkValue(user: string, key: AnswerKey) {
   return false;
 }
 
-export async function gradeExam(slug: string, submitted: SubmittedAnswers): Promise<GradingResult | null> {
-  const admin = createAdminClient();
-  const { data: exam, error: examError } = await admin
-    .from("exams")
-    .select("id,slug,title,passing_score,total_score")
-    .eq("slug", slug)
-    .eq("status", "published")
-    .maybeSingle();
-  if (examError) throw new Error("Supabase에서 시험을 불러오지 못했습니다.");
-  if (!exam) return null;
-
-  const [{ data: sections, error: sectionError }, { data: questions, error: questionError }] = await Promise.all([
-    admin.from("exam_sections").select("id,code,title,max_score,sort_order").eq("exam_id", exam.id).order("sort_order"),
-    admin.from("questions").select("id,section_id,number,prompt,score,competency_tags").eq("exam_id", exam.id).eq("is_active", true).order("number"),
-  ]);
-  if (sectionError || questionError || !sections || !questions) throw new Error("Supabase에서 채점 문항을 불러오지 못했습니다.");
-
-  const questionIds = questions.map((question) => question.id);
-  const [{ data: choices, error: choiceError }, { data: answerKeys, error: keyError }] = await Promise.all([
-    admin.from("question_choices").select("id,question_id,label,content,sort_order").in("question_id", questionIds).order("sort_order"),
-    admin.from("answer_keys").select("*").in("question_id", questionIds),
-  ]);
-  if (choiceError || keyError || !choices || !answerKeys || answerKeys.length !== questions.length) throw new Error("Supabase 정답 데이터가 완전하지 않습니다.");
+/** Pure grading over an already-fetched Context — call getExamContext() once per request and
+ * pass it in here, rather than each having its own Supabase round trip. */
+export async function gradeExam(context: Context, submitted: SubmittedAnswers): Promise<GradingResult> {
+  const { exam, sections, questions, choices, answerKeys } = context;
 
   const sectionById = new Map(sections.map((section) => [section.id, section]));
   const keyByQuestion = new Map(answerKeys.map((key) => [key.question_id, key]));

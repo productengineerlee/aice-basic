@@ -1,0 +1,15 @@
+.theory-container{max-width:820px}
+.theory-view{margin-top:8px}
+.theory-tabs{display:flex;gap:4px;border-bottom:1px solid #e4eaf0;margin-bottom:20px;overflow-x:auto}
+.theory-tabs button{border:0;background:none;padding:12px 16px;font-size:13px;font-weight:700;color:#667085;border-bottom:2px solid transparent;white-space:nowrap;cursor:pointer}
+.theory-tabs button.active{color:#1976d2;border-color:#1976d2}
+.theory-overview{font-size:14px;line-height:1.7;color:#435263;background:#f7f9fc;border-radius:10px;padding:16px 18px;margin:0 0 20px}
+.theory-list{display:flex;flex-direction:column;gap:8px}
+.theory-item{background:#fff;border:1px solid #e1e8ee;border-radius:10px;overflow:hidden}
+.theory-item summary{list-style:none;cursor:pointer;padding:15px 18px;display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:14px;font-weight:700;color:#122b45}
+.theory-item summary::-webkit-details-marker{display:none}
+.theory-item summary svg{width:16px;color:#8c98a4;transition:.2s;flex-shrink:0}
+.theory-item summary svg.rotate{transform:rotate(180deg)}
+.theory-item-body{padding:0 18px 18px;font-size:13px;line-height:1.7;color:#435263;border-top:1px solid #edf1f4;padding-top:14px;margin-top:-2px}
+.theory-empty{color:#8a97a4;font-size:13px;padding:30px 0;text-align:center}
+@media(max-width:620px){.theory-tabs button{padding:10px 12px;font-size:12px}}

@@ -22,6 +22,7 @@ export interface Database {
       attempt_answers: Table<{ id: string; attempt_id: string; question_id: string; selected_choice_id: string | null; answer_text: string | null; is_flagged: boolean; is_correct: boolean | null; awarded_score: number | null; answered_at: string; graded_at: string | null }>;
       section_results: Table<{ id: string; attempt_id: string; section_id: string; earned_score: number; max_score: number; correct_count: number; question_count: number; percentage: number }>;
       diagnostic_rules: Table<{ id: string; section_code: string | null; competency_tag: string | null; min_percentage: number; max_percentage: number; level: string; comment: string; recommendation: string | null; priority: number; is_active: boolean }>;
+      theory_content: Table<{ id: string; section_code: string; competency_tag: string | null; title: string; body: string; sort_order: number; is_active: boolean; created_at: string; updated_at: string }>;
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;

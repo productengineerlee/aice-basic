@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { safeNext } from "@/lib/safe-redirect";
 
 export type AuthState = { error?: string; success?: string; name?: string; email?: string };
 
@@ -76,7 +77,7 @@ export async function signIn(_: AuthState, formData: FormData): Promise<AuthStat
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) return { error: authMessage(error.message) };
   } catch (error) { return { error: message(error) }; }
-  redirect("/dashboard");
+  redirect(safeNext(formData.get("next")));
 }
 
 export async function requestPasswordReset(_: AuthState, formData: FormData): Promise<AuthState> {
