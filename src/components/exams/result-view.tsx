@@ -6,10 +6,17 @@ import Link from "next/link";
 import { ArrowLeft, BarChart3, CheckCircle2, ChevronDown, RotateCcw, XCircle } from "lucide-react";
 import type { GradingResult } from "@/lib/grading";
 
-function Radar({ values }: { values: number[] }) {
-  const c = 100, r = 72, n = values.length;
+function Radar({ values, labels }: { values: number[]; labels: string[] }) {
+  const c = 100, r = 60, n = values.length;
   const point = (i: number, p: number) => { const a = -Math.PI / 2 + i * 2 * Math.PI / n; return `${c + Math.cos(a) * r * p / 100},${c + Math.sin(a) * r * p / 100}`; };
-  return <svg className="radar" viewBox="0 0 200 200">{[25, 50, 75, 100].map(v => <polygon key={v} points={values.map((_, i) => point(i, v)).join(" ")} className="radar-ring" />)}{values.map((_, i) => <line key={i} x1={c} y1={c} x2={point(i, 100).split(",")[0]} y2={point(i, 100).split(",")[1]} className="radar-axis" />)}<polygon points={values.map((v, i) => point(i, v)).join(" ")} className="radar-value" />{values.map((v, i) => { const [x, y] = point(i, v).split(","); return <circle key={i} cx={x} cy={y} r="3" className="radar-dot" />; })}</svg>;
+  const labelPos = (i: number) => {
+    const a = -Math.PI / 2 + i * 2 * Math.PI / n;
+    const cosA = Math.cos(a), sinA = Math.sin(a);
+    const anchor = cosA > 0.3 ? "start" : cosA < -0.3 ? "end" : "middle";
+    const dy = sinA > 0.3 ? 9 : sinA < -0.3 ? -3 : 4;
+    return { x: c + cosA * (r + 16), y: c + sinA * (r + 16) + dy, anchor };
+  };
+  return <svg className="radar" viewBox="-20 0 240 200">{[25, 50, 75, 100].map(v => <polygon key={v} points={values.map((_, i) => point(i, v)).join(" ")} className="radar-ring" />)}{values.map((_, i) => <line key={i} x1={c} y1={c} x2={point(i, 100).split(",")[0]} y2={point(i, 100).split(",")[1]} className="radar-axis" />)}<polygon points={values.map((v, i) => point(i, v)).join(" ")} className="radar-value" />{values.map((v, i) => { const [x, y] = point(i, v).split(","); return <circle key={i} cx={x} cy={y} r="3" className="radar-dot" />; })}{labels.map((label, i) => { const p = labelPos(i); return <text key={i} x={p.x} y={p.y} textAnchor={p.anchor} className="radar-axis-label">{label}</text>; })}</svg>;
 }
 
 function legacyComment(p: number) {
@@ -19,6 +26,7 @@ function legacyComment(p: number) {
   return "기초 개념과 AIDU 메뉴 흐름부터 다시 익히는 것이 좋습니다.";
 }
 const levelLabel = { foundation: "기초 보강", weak: "집중 보강", developing: "발전 단계", strong: "강점" } as const;
+const sectionShortLabel: Record<string, string> = { eda: "데이터 분석", preprocessing: "전처리", modeling: "모델링", evaluation: "성능평가" };
 
 export function ResultView({ slug }: { slug: string }) {
   const [result, setResult] = useState<GradingResult | null>(null);
@@ -49,7 +57,7 @@ export function ResultView({ slug }: { slug: string }) {
     <section className="result-container">
       <div className="result-grid">
         <article className="result-card"><h2>영역별 점수</h2><div className="section-bars">{result.sections.map(section => <div key={section.code}><b>{section.earnedScore}<small>/{section.maxScore}</small></b><div className="bar-track"><i style={section.percentage > 0 ? { height: `${Math.max(section.percentage, 4)}%` } : { height: 0 }} /></div><span>{section.title}</span></div>)}</div></article>
-        <article className="result-card radar-card"><h2>영역별 역량 균형</h2><Radar values={result.sections.map(section => section.percentage)} /><div className="radar-labels">{result.sections.map(section => <span key={section.code}>{section.title}<b>{section.percentage}%</b></span>)}</div></article>
+        <article className="result-card radar-card"><h2>영역별 역량 균형</h2><Radar values={result.sections.map(section => section.percentage)} labels={result.sections.map(section => sectionShortLabel[section.code] ?? section.title)} /><div className="radar-labels">{result.sections.map(section => <span key={section.code}>{section.title}<b>{section.percentage}%</b></span>)}</div></article>
       </div>
 
       <section className="competency-section"><div className="diagnostic-heading"><div><h2>영역별 진단</h2><p>영역별 정답과 배점을 기준으로 강점과 보강 방법을 안내합니다.</p></div></div><div className="competency-grid">{result.sections.map(section => { const diagnostic = sectionDiagnostics.get(section.code); const level = diagnostic?.level ?? "developing"; return <article className={`competency-card level-${level}`} key={section.code}><div className="competency-top"><div><span>{levelLabel[level]}</span><h3>{section.title}</h3></div><b>{section.percentage}<small>%</small></b></div><div className="competency-meter"><i style={{ width: `${section.percentage}%` }} /></div><small className="competency-count">정답 {section.correctCount}/{section.questionCount} · {section.earnedScore}/{section.maxScore}점</small><p>{diagnostic?.comment ?? legacyComment(section.percentage)}</p><p className="action-line"><b>보강 방법</b>{diagnostic?.recommendation ?? "오답 해설을 확인하고 같은 유형을 다시 풀어보세요."}</p></article>; })}</div></section>
