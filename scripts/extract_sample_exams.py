@@ -41,8 +41,10 @@ def classify(prompt: str) -> tuple[str, list[str]]:
         if "알고리즘의 유형" in p: tags.append("문제 유형 판단")
         if "머신러닝" in p or "ml 모델" in p: tags.append("머신러닝")
         if "딥러닝" in p: tags.append("딥러닝")
-        for metric in ["accuracy","precision","recall","f1 score","r2","mae","mse","설명력","재현율"]:
-            if metric in p: tags.append("모델 평가 지표")
+        has_metric=any(metric in p for metric in ["accuracy","precision","recall","f1 score","r2","mae","mse","설명력","재현율"])
+        if has_metric:
+            tags.append("모델 평가 지표")
+            return "evaluation", tags
         return "modeling", tags or ["모델 설정"]
     tags=[]
     for key,label in [("기술통계","기초통계"),("표준편차","기초통계"),("중앙값","기초통계"),("최빈값","기초통계"),("상관관계","상관관계"),("히트맵","히트맵"),("박스차트","박스차트"),("iqr","이상치"),("이상치","이상치"),("시각화","시각화"),("분포","분포차트"),("변수의 유형","데이터 유형")]:

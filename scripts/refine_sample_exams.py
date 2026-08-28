@@ -15,7 +15,10 @@ def refine(prompt):
         if "알고리즘의 유형" in p: tags.append("문제 유형 판단")
         if "머신러닝" in p or "ml 모델" in p: tags.append("머신러닝")
         if "딥러닝" in p: tags.append("딥러닝")
-        if any(x in p for x in ["accuracy","precision","recall","f1 score","r2","mae","mse","설명력","재현율"]): tags.append("모델 평가 지표")
+        has_metric=any(x in p for x in ["accuracy","precision","recall","f1 score","r2","mae","mse","설명력","재현율"])
+        if has_metric:
+            tags.append("모델 평가 지표")
+            return "evaluation",tags
         return "modeling",tags or ["모델 설정"]
     if any(x in p for x in ["대체하시오","결측값 처리","데이터 가공 후","인코딩하시오","정규화하시오","스케일링하시오"]):
         return "preprocessing",["결측치 처리"] if "결측" in p else ["데이터 가공"]
