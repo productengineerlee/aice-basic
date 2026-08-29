@@ -28,6 +28,7 @@ export default async function Home() {
           <span>AICE <b>LAB</b></span>
         </a>
         <nav>
+          <a href="/theory">핵심이론</a>
           <a href="#exams">샘플모의고사</a>
           <a href="#" className="nav-disabled">실전모의고사<span className="nav-soon">준비중</span></a>
           <a href="#">AIDU설치</a>
