@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Plus, Save, Trash2 } from "lucide-react";
 import { createTheoryContentAction, deleteTheoryContentAction, updateTheoryContentAction } from "@/app/admin/actions";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { EXTRA_THEORY_SECTIONS } from "@/lib/theory";
 import { TheoryBodyField } from "@/components/theory/theory-body-field";
 
 export default async function AdminTheoryPage({ searchParams }: { searchParams: Promise<{ scope?: string; tag?: string; saved?: string; error?: string }> }) {
@@ -10,11 +11,13 @@ export default async function AdminTheoryPage({ searchParams }: { searchParams: 
   const admin = createAdminClient();
   const [{ data: items }, { data: sections }, { data: questions }] = await Promise.all([
     admin.from("theory_content").select("*").order("sort_order"),
-    admin.from("exam_sections").select("code,title").order("sort_order"),
+    admin.from("exam_sections").select("code,title,sort_order").order("sort_order"),
     admin.from("questions").select("competency_tags").eq("is_active", true),
   ]);
-  const uniqueSections = [...new Map((sections ?? []).map(section => [section.code, section])).values()];
-  const tags = [...new Set((questions ?? []).flatMap(question => question.competency_tags))].sort((a, b) => a.localeCompare(b, "ko"));
+  const uniqueSections = [...new Map((sections ?? []).map(section => [section.code, section])).values(), ...EXTRA_THEORY_SECTIONS]
+    .sort((a, b) => a.sort_order - b.sort_order);
+  const usedTags = (items ?? []).map(item => item.competency_tag).filter((tag): tag is string => Boolean(tag));
+  const tags = [...new Set([...(questions ?? []).flatMap(question => question.competency_tags), ...usedTags])].sort((a, b) => a.localeCompare(b, "ko"));
   const selectedTag = tags.includes(query.tag ?? "") ? query.tag! : tags[0] ?? "";
   const visibleItems = (items ?? []).filter(item => scope === "overview" ? !item.competency_tag : item.competency_tag === selectedTag);
   const returnTo = scope === "topic" ? `/admin/theory?scope=topic&tag=${encodeURIComponent(selectedTag)}` : "/admin/theory?scope=overview";
