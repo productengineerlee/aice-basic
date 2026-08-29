@@ -295,3 +295,26 @@ export async function deleteTheoryContentAction(formData: FormData) {
   revalidateTheory();
   redirectMessage(returnTo, "saved", "핵심이론을 삭제했습니다.");
 }
+
+const THEORY_IMAGE_TYPES: Record<string, string> = { "image/png": "png", "image/jpeg": "jpg", "image/webp": "webp", "image/gif": "gif" };
+const THEORY_IMAGE_MAX_BYTES = 5 * 1024 * 1024;
+
+export async function uploadTheoryImageAction(formData: FormData): Promise<{ url: string } | { error: string }> {
+  try {
+    await assertAdminAction();
+  } catch (error) {
+    return { error: error instanceof Error ? error.message : "관리자 권한이 필요합니다." };
+  }
+  const file = formData.get("file");
+  if (!(file instanceof File)) return { error: "파일을 선택해 주세요." };
+  const ext = THEORY_IMAGE_TYPES[file.type];
+  if (!ext) return { error: "PNG, JPEG, WEBP, GIF 이미지만 업로드할 수 있습니다." };
+  if (file.size > THEORY_IMAGE_MAX_BYTES) return { error: "이미지 용량은 5MB 이하만 가능합니다." };
+
+  const admin = createAdminClient();
+  const objectPath = `${crypto.randomUUID()}.${ext}`;
+  const { error } = await admin.storage.from("theory-images").upload(objectPath, file, { contentType: file.type, upsert: false });
+  if (error) return { error: `이미지 업로드 실패: ${error.message}` };
+  const { data } = admin.storage.from("theory-images").getPublicUrl(objectPath);
+  return { url: data.publicUrl };
+}

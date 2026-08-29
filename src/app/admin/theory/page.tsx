@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Plus, Save, Trash2 } from "lucide-react";
 import { createTheoryContentAction, deleteTheoryContentAction, updateTheoryContentAction } from "@/app/admin/actions";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { TheoryBodyField } from "@/components/theory/theory-body-field";
 
 export default async function AdminTheoryPage({ searchParams }: { searchParams: Promise<{ scope?: string; tag?: string; saved?: string; error?: string }> }) {
   const query = await searchParams;
@@ -31,7 +32,7 @@ export default async function AdminTheoryPage({ searchParams }: { searchParams: 
         <div className="rule-card-head"><div><span>{item.section_code ? sectionTitle.get(item.section_code) ?? item.section_code : ""}</span><h3>{item.title}</h3></div><label className="switch-label"><input type="checkbox" name="isActive" defaultChecked={item.is_active} /><span>공개</span></label></div>
         <div className="form-grid two"><label><span>영역</span><select name="sectionCode" defaultValue={item.section_code}>{uniqueSections.map(section => <option value={section.code} key={section.code}>{section.title}</option>)}</select></label><label><span>정렬 순서</span><input type="number" name="sortOrder" defaultValue={item.sort_order} /></label></div>
         <label><span>제목</span><input type="text" name="title" defaultValue={item.title} required /></label>
-        <label><span>본문</span><textarea name="body" rows={4} defaultValue={item.body} required /></label>
+        <label><span>본문</span><TheoryBodyField name="body" defaultValue={item.body} required /></label>
         <button className="admin-secondary"><Save />저장</button>
       </form>
       <form action={deleteTheoryContentAction} className="rule-delete-form"><input type="hidden" name="id" value={item.id} /><input type="hidden" name="returnTo" value={returnTo} /><button title="삭제"><Trash2 />삭제</button></form>
@@ -40,7 +41,7 @@ export default async function AdminTheoryPage({ searchParams }: { searchParams: 
     <details className="admin-panel new-rule"><summary><Plus />새 이론 콘텐츠 추가</summary><form action={createTheoryContentAction} className="admin-form"><input type="hidden" name="returnTo" value={returnTo} />
       <div className="form-grid two"><label><span>영역</span><select name="sectionCode" defaultValue={uniqueSections[0]?.code}>{uniqueSections.map(section => <option value={section.code} key={section.code}>{section.title}</option>)}</select></label><label><span>역량 태그 (비우면 영역 개요)</span><input type="text" name="competencyTag" list="theory-tags" defaultValue={scope === "topic" ? selectedTag : ""} placeholder="예: 기초통계" /><datalist id="theory-tags">{tags.map(tag => <option value={tag} key={tag} />)}</datalist></label></div>
       <div className="form-grid two"><label><span>제목</span><input type="text" name="title" required /></label><label><span>정렬 순서</span><input type="number" name="sortOrder" defaultValue="0" /></label></div>
-      <label><span>본문</span><textarea name="body" rows={4} required /></label>
+      <label><span>본문</span><TheoryBodyField name="body" required /></label>
       <label className="check-row"><input type="checkbox" name="isActive" defaultChecked /><span>추가 즉시 공개합니다.</span></label>
       <button className="admin-primary"><Plus />이론 추가</button>
     </form></details>
