@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Award, FileQuestion } from "lucide-react";
+import { ArrowRight, FileQuestion } from "lucide-react";
 import { ExamHeader } from "@/components/exams/exam-header";
 import { listCertifications } from "@/lib/certifications";
 import "../exams/exams.css";
@@ -24,7 +24,6 @@ export default async function LicensePage() {
           <div className="catalog-grid">
             {certifications.map((cert) => (
               <article className="catalog-card" key={cert.code}>
-                <div className="catalog-card-top"><span className="kind-pill quiz"><Award size={13} />자격증</span></div>
                 <h2>{cert.name}</h2>
                 {cert.description && <p className="license-card-desc">{cert.description}</p>}
                 <div className="catalog-meta"><span><FileQuestion />모의문제 {cert.examCount}종</span></div>

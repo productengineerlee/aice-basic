@@ -9,9 +9,9 @@ function parseBody(value: unknown): (DraftInput & { attemptId: string }) | null 
   if (typeof body.attemptId !== "string" || !/^[0-9a-f-]{36}$/i.test(body.attemptId)) return null;
   if (!body.answers || typeof body.answers !== "object" || Array.isArray(body.answers)) return null;
   const entries = Object.entries(body.answers as Record<string, unknown>);
-  if (entries.length > 100 || entries.some(([key, answer]) => !/^\d+$/.test(key) || typeof answer !== "string" || answer.length > 500)) return null;
+  if (entries.length > 200 || entries.some(([key, answer]) => !/^\d+$/.test(key) || typeof answer !== "string" || answer.length > 500)) return null;
   const flagged = body.flagged ?? [];
-  if (!Array.isArray(flagged) || flagged.length > 100 || flagged.some((number) => !Number.isInteger(number) || Number(number) < 1 || Number(number) > 500)) return null;
+  if (!Array.isArray(flagged) || flagged.length > 200 || flagged.some((number) => !Number.isInteger(number) || Number(number) < 1 || Number(number) > 500)) return null;
   return { attemptId: body.attemptId, answers: Object.fromEntries(entries) as Record<string, string>, flagged: [...new Set(flagged as number[])] };
 }
 

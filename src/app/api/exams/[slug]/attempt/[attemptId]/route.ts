@@ -7,8 +7,8 @@ function parseDraft(value: unknown): DraftInput | null {
   const body = value as { answers?: unknown; flagged?: unknown };
   if (!body.answers || typeof body.answers !== "object" || Array.isArray(body.answers)) return null;
   const entries = Object.entries(body.answers as Record<string, unknown>);
-  if (entries.length > 100 || entries.some(([key, answer]) => !/^\d+$/.test(key) || typeof answer !== "string" || answer.length > 500)) return null;
-  if (!Array.isArray(body.flagged) || body.flagged.length > 100 || body.flagged.some((number) => !Number.isInteger(number) || Number(number) < 1 || Number(number) > 500)) return null;
+  if (entries.length > 200 || entries.some(([key, answer]) => !/^\d+$/.test(key) || typeof answer !== "string" || answer.length > 500)) return null;
+  if (!Array.isArray(body.flagged) || body.flagged.length > 200 || body.flagged.some((number) => !Number.isInteger(number) || Number(number) < 1 || Number(number) > 500)) return null;
   return { answers: Object.fromEntries(entries) as Record<string, string>, flagged: [...new Set(body.flagged as number[])] };
 }
 
