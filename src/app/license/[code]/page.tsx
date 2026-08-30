@@ -85,7 +85,7 @@ export default async function LicenseDetailPage({ params }: { params: Promise<{ 
                 const items = stats.tagStats.filter((tag) => tag.sectionCode === section.code);
                 if (!items.length) return null;
                 return (
-                  <div className="tag-group" key={section.code}>
+                  <div className="stat-group" key={section.code}>
                     <h3>{section.title}</h3>
                     <div className="tag-stat-list">
                       {items.map((tag) => (
@@ -105,14 +105,25 @@ export default async function LicenseDetailPage({ params }: { params: Promise<{ 
 
         {stats.hardestQuestions.length > 0 && (
           <details className="license-accordion">
-            <summary><div className="license-section-head"><h2>가장 많이 틀린 문항</h2><p>응시 5회 이상 문항 중 정답률이 낮은 순입니다.</p></div><ChevronDown /></summary>
-            <div className="accordion-body hardest-list">
-              {stats.hardestQuestions.map((question) => (
-                <div className="hardest-row" key={question.questionId}>
-                  <p>{question.prompt}<small>{question.examTitle} · {question.number}번 · 응시 {question.attemptCount}회</small></p>
-                  <b>{question.accuracy}%</b>
-                </div>
-              ))}
+            <summary><div className="license-section-head"><h2>가장 많이 틀린 문항</h2><p>과목별로 묶어 응시 5회 이상 문항 중 정답률이 낮은 순입니다.</p></div><ChevronDown /></summary>
+            <div className="accordion-body">
+              {stats.sectionStats.map((section) => {
+                const items = stats.hardestQuestions.filter((question) => question.sectionCode === section.code);
+                if (!items.length) return null;
+                return (
+                  <div className="stat-group" key={section.code}>
+                    <h3>{section.title}</h3>
+                    <div className="hardest-list">
+                      {items.map((question) => (
+                        <div className="hardest-row" key={question.questionId}>
+                          <p>{question.prompt}<small>{question.examTitle} · {question.number}번 · 응시 {question.attemptCount}회</small></p>
+                          <b>{question.accuracy}%</b>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </details>
         )}

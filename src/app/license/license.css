@@ -35,8 +35,11 @@
 .stat-meter{height:6px;background:#edf1f4;border-radius:6px;overflow:hidden;margin-bottom:8px}
 .stat-meter i{display:block;height:100%;background:#1976d2;border-radius:6px}
 
-.tag-group+.tag-group{margin-top:22px}
-.tag-group h3{font-size:13px;font-weight:800;color:#1976d2;margin:0 0 10px;padding-bottom:8px;border-bottom:1px solid #eef2f5}
+.tag-stat-row .stat-meter{height:16px;border-radius:8px}
+.tag-stat-row .stat-meter i{background:linear-gradient(90deg,#68b3f3,#1976d2);border-radius:8px}
+
+.stat-group+.stat-group{margin-top:22px}
+.stat-group h3{font-size:13px;font-weight:800;color:#1976d2;margin:0 0 10px;padding-bottom:8px;border-bottom:1px solid #eef2f5}
 .tag-stat-list{display:flex;flex-direction:column;gap:10px}
 .tag-stat-row{display:grid;grid-template-columns:1fr 90px 60px;gap:12px;align-items:center;background:#fff;border:1px solid #eef2f5;border-radius:10px;padding:12px 16px}
 .tag-stat-row span:first-child{font-size:13px;color:#2c3e50}
