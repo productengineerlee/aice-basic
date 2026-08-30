@@ -187,6 +187,7 @@ a { text-decoration: none; color: inherit; }
   gap: 48px;
   align-items: center;
   padding: 80px max(24px, calc((100vw - 1200px) / 2)) 64px;
+  background: var(--bg);
 }
 .eyebrow {
   display: inline-flex;
