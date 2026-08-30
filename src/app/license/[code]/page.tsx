@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ArrowRight, CalendarClock, ChevronDown, Clock3, FileQuestion } from "lucide-react";
+import { ArrowLeft, ArrowRight, ChevronDown, Clock3, FileQuestion } from "lucide-react";
 import { ExamHeader } from "@/components/exams/exam-header";
 import { getCertification } from "@/lib/certifications";
 import { getCertificationStats, getWrongAnswerNotebook } from "@/lib/license-stats";
@@ -37,14 +37,10 @@ export default async function LicenseDetailPage({ params }: { params: Promise<{ 
           <span className="kind-pill quiz">자격증 문제풀이</span>
           <h1>{cert.name}</h1>
           {cert.description && <p>{cert.description}</p>}
-          <div className="license-hero-meta">
-            <span>누적 응시 데이터 {stats.attemptCount.toLocaleString()}건</span>
-            <span>문항 {stats.questionCount}개</span>
-          </div>
         </div>
 
         <section className="license-section">
-          <div className="license-section-head"><h2><CalendarClock size={17} style={{ verticalAlign: "-3px", marginRight: 6 }} />시험 일정</h2></div>
+          <div className="license-section-head"><h2>시험 일정</h2></div>
           {cert.schedules.length === 0 ? (
             <p className="schedule-empty">등록된 시험 일정이 없습니다.</p>
           ) : (
