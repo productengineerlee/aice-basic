@@ -21,6 +21,7 @@ export type SectionStat = { code: string; title: string; attemptCount: number; c
 export type CertificationStats = {
   questionCount: number;
   attemptCount: number;
+  respondentCount: number;
   sectionStats: SectionStat[];
   tagStats: TagStat[];
   hardestQuestions: QuestionStat[];
@@ -38,7 +39,7 @@ export async function getCertificationStats(certificationId: string): Promise<Ce
   const { data: exams, error: examError } = await admin.from("exams").select("id,slug,title").eq("certification_id", certificationId);
   if (examError) throw new Error("자격증 시험 목록을 불러오지 못했습니다.");
   const examIds = (exams ?? []).map((exam) => exam.id);
-  if (!examIds.length) return { questionCount: 0, attemptCount: 0, sectionStats: [], tagStats: [], hardestQuestions: [] };
+  if (!examIds.length) return { questionCount: 0, attemptCount: 0, respondentCount: 0, sectionStats: [], tagStats: [], hardestQuestions: [] };
   const examById = new Map((exams ?? []).map((exam) => [exam.id, exam]));
 
   const [{ data: sections, error: sectionError }, { data: questions, error: questionError }] = await Promise.all([
@@ -109,7 +110,17 @@ export async function getCertificationStats(certificationId: string): Promise<Ce
     .slice(0, HARDEST_LIMIT);
 
   const attemptCount = questionStats.reduce((sum, stat) => sum + stat.attemptCount, 0);
-  return { questionCount: questionStats.length, attemptCount, sectionStats, tagStats, hardestQuestions };
+
+  // 응시자 수는 문항별 정오 데이터에 저장되지 않으므로, 시험(A형/B형)별로 가장 많이 응답된
+  // 문항의 attemptCount(공백이 가장 적은 문항)를 그 시험의 응시자 수 근사치로 삼아 합산한다.
+  const respondentByExam = new Map<string, number>();
+  for (const stat of questionStats) {
+    const current = respondentByExam.get(stat.examSlug) ?? 0;
+    if (stat.attemptCount > current) respondentByExam.set(stat.examSlug, stat.attemptCount);
+  }
+  const respondentCount = [...respondentByExam.values()].reduce((sum, value) => sum + value, 0);
+
+  return { questionCount: questionStats.length, attemptCount, respondentCount, sectionStats, tagStats, hardestQuestions };
 }
 
 export type WrongAnswerItem = {
@@ -119,6 +130,7 @@ export type WrongAnswerItem = {
   submittedAt: string | null;
   number: number;
   prompt: string;
+  sectionCode: string;
   choices: { label: string; content: string }[];
   selectedLabel: string | null;
   correctLabel: string | null;
@@ -148,15 +160,17 @@ export async function getWrongAnswerNotebook(userId: string, certificationId: st
   if (!wrongAnswers?.length) return [];
   const questionIds = [...new Set(wrongAnswers.map((answer) => answer.question_id))];
 
-  const [{ data: questions, error: questionError }, { data: choices, error: choiceError }, { data: answerKeys, error: keyError }] = await Promise.all([
-    admin.from("questions").select("id,exam_id,number,prompt").in("id", questionIds),
+  const [{ data: questions, error: questionError }, { data: choices, error: choiceError }, { data: answerKeys, error: keyError }, { data: sections, error: sectionError }] = await Promise.all([
+    admin.from("questions").select("id,exam_id,section_id,number,prompt").in("id", questionIds),
     admin.from("question_choices").select("id,question_id,label,content").in("question_id", questionIds).order("sort_order"),
     admin.from("answer_keys").select("question_id,correct_choice_id,explanation").in("question_id", questionIds),
+    admin.from("exam_sections").select("id,code").in("exam_id", examIds),
   ]);
-  if (questionError || choiceError || keyError || !questions || !choices || !answerKeys) throw new Error("오답노트 문항 정보를 불러오지 못했습니다.");
+  if (questionError || choiceError || keyError || sectionError || !questions || !choices || !answerKeys || !sections) throw new Error("오답노트 문항 정보를 불러오지 못했습니다.");
   const questionById = new Map(questions.map((question) => [question.id, question]));
   const keyByQuestion = new Map(answerKeys.map((key) => [key.question_id, key]));
   const choiceById = new Map(choices.map((choice) => [choice.id, choice]));
+  const sectionCodeById = new Map(sections.map((section) => [section.id, section.code]));
 
   return wrongAnswers
     .map((answer) => {
@@ -172,6 +186,7 @@ export async function getWrongAnswerNotebook(userId: string, certificationId: st
         submittedAt: attempt?.submitted_at ?? null,
         number: question.number,
         prompt: question.prompt,
+        sectionCode: sectionCodeById.get(question.section_id) ?? "",
         choices: choices.filter((choice) => choice.question_id === question.id).map((choice) => ({ label: choice.label, content: choice.content })),
         selectedLabel: answer.selected_choice_id ? choiceById.get(answer.selected_choice_id)?.label ?? null : null,
         correctLabel: key?.correct_choice_id ? choiceById.get(key.correct_choice_id)?.label ?? null : null,

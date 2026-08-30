@@ -64,7 +64,7 @@ export default async function LicenseDetailPage({ params }: { params: Promise<{ 
 
         {stats.sectionStats.length > 0 && (
           <section className="license-section">
-            <div className="license-section-head"><h2>출제범위별 전체 통계</h2><p>지금까지 응시자들의 정답률입니다.</p></div>
+            <div className="license-section-head"><h2>출제범위별 전체 통계</h2><p>지금까지 총 {stats.respondentCount.toLocaleString()}명 응시자들의 정답률 통계데이터입니다.</p></div>
             <div className="section-bars">
               {stats.sectionStats.map((section) => (
                 <div key={section.code}>
@@ -142,20 +142,31 @@ export default async function LicenseDetailPage({ params }: { params: Promise<{ 
         </section>
 
         {user && wrongAnswers.length > 0 && (
-          <section className="license-section">
-            <div className="license-section-head"><h2>내 오답노트</h2><p>최근 응시에서 틀린 문항 {wrongAnswers.length}개입니다.</p></div>
-            <div className="notebook-list">
-              {wrongAnswers.map((item, index) => (
-                <article className="notebook-card" key={`${item.attemptId}-${item.number}-${index}`}>
-                  <p>{item.number}. {item.prompt}</p>
-                  <div className="notebook-meta">
-                    <span className="wrong">내 답 {item.selectedLabel ? `${item.selectedLabel}번` : "미응답"}</span>
-                    <span className="correct">정답 {item.correctLabel ? `${item.correctLabel}번` : "-"}</span>
+          <details className="license-accordion">
+            <summary><div className="license-section-head"><h2>내 오답노트</h2><p>과목별로 묶어 최근 응시에서 틀린 문항 {wrongAnswers.length}개를 보여줍니다.</p></div><ChevronDown /></summary>
+            <div className="accordion-body">
+              {stats.sectionStats.map((section) => {
+                const items = wrongAnswers.filter((item) => item.sectionCode === section.code);
+                if (!items.length) return null;
+                return (
+                  <div className="stat-group" key={section.code}>
+                    <h3>{section.title}</h3>
+                    <div className="notebook-list">
+                      {items.map((item, index) => (
+                        <article className="notebook-card" key={`${item.attemptId}-${item.number}-${index}`}>
+                          <p>{item.number}. {item.prompt}</p>
+                          <div className="notebook-meta">
+                            <span className="wrong">내 답 {item.selectedLabel ? `${item.selectedLabel}번` : "미응답"}</span>
+                            <span className="correct">정답 {item.correctLabel ? `${item.correctLabel}번` : "-"}</span>
+                          </div>
+                        </article>
+                      ))}
+                    </div>
                   </div>
-                </article>
-              ))}
+                );
+              })}
             </div>
-          </section>
+          </details>
         )}
       </section>
     </main>
