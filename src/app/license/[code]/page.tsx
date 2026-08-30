@@ -79,7 +79,7 @@ export default async function LicenseDetailPage({ params }: { params: Promise<{ 
 
         {stats.tagStats.length > 0 && (
           <details className="license-accordion">
-            <summary><div className="license-section-head"><h2>세부항목별 정답률</h2><p>과목별로 묶어 정답률이 낮은 항목부터 정렬했습니다.</p></div><ChevronDown /></summary>
+            <summary><div className="license-section-head"><h2>세부항목별 정답률</h2></div><ChevronDown /></summary>
             <div className="accordion-body">
               {stats.sectionStats.map((section) => {
                 const items = stats.tagStats.filter((tag) => tag.sectionCode === section.code);
@@ -105,7 +105,7 @@ export default async function LicenseDetailPage({ params }: { params: Promise<{ 
 
         {stats.hardestQuestions.length > 0 && (
           <details className="license-accordion">
-            <summary><div className="license-section-head"><h2>가장 많이 틀린 문항</h2><p>과목별로 묶어 응시 5회 이상 문항 중 정답률이 낮은 순입니다.</p></div><ChevronDown /></summary>
+            <summary><div className="license-section-head"><h2>가장 많이 틀린 문항</h2></div><ChevronDown /></summary>
             <div className="accordion-body">
               {stats.sectionStats.map((section) => {
                 const items = stats.hardestQuestions.filter((question) => question.sectionCode === section.code);
