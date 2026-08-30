@@ -424,6 +424,10 @@ a { text-decoration: none; color: inherit; }
   gap: 16px;
   margin-top: 52px;
 }
+.feature-grid.single {
+  grid-template-columns: minmax(0, 460px);
+  justify-content: center;
+}
 .feature-card {
   border: 1px solid var(--line);
   border-radius: 16px;
