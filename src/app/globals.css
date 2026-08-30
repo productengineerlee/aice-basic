@@ -186,7 +186,7 @@ a { text-decoration: none; color: inherit; }
   grid-template-columns: 1fr 500px;
   gap: 48px;
   align-items: center;
-  padding: 56px max(24px, calc((100vw - 1200px) / 2)) 64px;
+  padding: 80px max(24px, calc((100vw - 1200px) / 2)) 64px;
 }
 .eyebrow {
   display: inline-flex;

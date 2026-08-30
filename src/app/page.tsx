@@ -56,7 +56,7 @@ export default async function Home() {
         </div>
         <div className="score-card">
           <div className="score-head">
-            <div><span>영역별 학습진단 예시</span><b>모의고사 결과 리포트</b></div>
+            <div><b>모의고사 결과 리포트</b></div>
             <span className="pass">안정적인 합격권</span>
           </div>
           <div className="score-body">
