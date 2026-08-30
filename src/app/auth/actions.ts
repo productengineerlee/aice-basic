@@ -36,7 +36,7 @@ export async function signUp(_: AuthState, formData: FormData): Promise<AuthStat
   const terms   = formData.get("terms")   === "on";
   const privacy = formData.get("privacy") === "on";
 
-  if (!name || !email)               return { error: "이름과 이메일을 입력해 주세요." };
+  if (!email)                        return { error: "이메일을 입력해 주세요." };
   if (password.length < 8)           return { error: "비밀번호는 8자 이상이어야 합니다." };
   if (password !== confirmPassword)  return { error: "비밀번호가 일치하지 않습니다." };
   if (!terms || !privacy)            return { error: "필수 약관에 동의해 주세요." };
@@ -50,7 +50,7 @@ export async function signUp(_: AuthState, formData: FormData): Promise<AuthStat
       options: {
         emailRedirectTo: `${siteUrl()}/auth/callback`,
         data: {
-          full_name:       name,
+          full_name:       name || undefined,
           terms_version:   "2026-07-12",
           privacy_version: "2026-07-12",
         },

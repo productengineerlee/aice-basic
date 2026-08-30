@@ -36,10 +36,10 @@ export function AuthForm({ mode, action, next }: Props) {
       </div>
       <form action={formAction} className="auth-form">
         {next && <input type="hidden" name="next" value={next} />}
-        {/* 이름 — 회원가입 전용 */}
+        {/* 이름 — 회원가입 전용, 선택 입력 */}
         {mode === "signup" && (
           <label>
-            이름
+            이름 (선택)
             <input
               name="name"
               type="text"
@@ -47,7 +47,6 @@ export function AuthForm({ mode, action, next }: Props) {
               placeholder="홍길동"
               value={nameVal}
               onChange={e => setNameVal(e.target.value)}
-              required
             />
           </label>
         )}

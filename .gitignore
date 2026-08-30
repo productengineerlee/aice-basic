@@ -7,5 +7,6 @@ out/
 .vercel/
 tmp/docx_render/
 supabase/.temp/
+license_all/
 
 .vercel
