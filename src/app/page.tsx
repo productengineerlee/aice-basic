@@ -59,19 +59,20 @@ export default async function Home() {
             <div><span>영역별 학습진단 예시</span><b>모의고사 결과 리포트</b></div>
             <span className="pass">안정적인 합격권</span>
           </div>
-          <div className="score-main">
-            <div className="ring"><span><b>86</b><small>/ 100</small></span></div>
-            <div className="score-summary">
-              <span>합격 기준 80점</span>
-              <strong>안정적인 합격권이에요!</strong>
-              <p>모델 성능평가 영역을 조금 더 보강하면 고득점을 기대할 수 있어요.</p>
+          <div className="score-body">
+            <div className="score-main">
+              <div className="ring"><span><b>86</b><small>/ 100</small></span></div>
+              <div className="score-summary">
+                <span>합격 기준 80점</span>
+                <strong>안정적인 합격권이에요!</strong>
+              </div>
             </div>
-          </div>
-          <div className="bars">
-            <div className="bar-row"><span>탐색적 데이터 분석</span><div><i style={{ width: "90%" }} /></div><b>27<small>/30</small></b></div>
-            <div className="bar-row"><span>데이터 전처리</span><div><i style={{ width: "87%" }} /></div><b>26<small>/30</small></b></div>
-            <div className="bar-row"><span>AI 모델링</span><div><i style={{ width: "100%" }} /></div><b>16<small>/16</small></b></div>
-            <div className="bar-row"><span>모델 성능평가</span><div><i style={{ width: "71%" }} /></div><b>17<small>/24</small></b></div>
+            <div className="bars">
+              <div className="bar-row"><span>탐색적 데이터 분석</span><div><i style={{ width: "90%" }} /></div><b>27<small>/30</small></b></div>
+              <div className="bar-row"><span>데이터 전처리</span><div><i style={{ width: "87%" }} /></div><b>26<small>/30</small></b></div>
+              <div className="bar-row"><span>AI 모델링</span><div><i style={{ width: "100%" }} /></div><b>16<small>/16</small></b></div>
+              <div className="bar-row"><span>모델 성능평가</span><div><i style={{ width: "71%" }} /></div><b>17<small>/24</small></b></div>
+            </div>
           </div>
         </div>
       </section>

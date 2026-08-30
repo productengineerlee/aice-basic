@@ -183,10 +183,10 @@ a { text-decoration: none; color: inherit; }
    ============================================================ */
 .hero {
   display: grid;
-  grid-template-columns: 1fr 280px;
-  gap: 60px;
+  grid-template-columns: 1fr 500px;
+  gap: 48px;
   align-items: center;
-  padding: 80px max(24px, calc((100vw - 1200px) / 2)) 96px;
+  padding: 56px max(24px, calc((100vw - 1200px) / 2)) 64px;
 }
 .eyebrow {
   display: inline-flex;
@@ -261,7 +261,7 @@ a { text-decoration: none; color: inherit; }
   background: #fff;
   border: 1px solid var(--line);
   border-radius: 18px;
-  padding: 24px;
+  padding: 20px 22px;
   box-shadow: 0 4px 6px -1px rgba(0,0,0,0.04), 0 20px 48px -8px rgba(15,23,42,0.1);
 }
 
@@ -270,8 +270,8 @@ a { text-decoration: none; color: inherit; }
   justify-content: space-between;
   align-items: flex-start;
   border-bottom: 1px solid var(--line);
-  padding-bottom: 16px;
-  margin-bottom: 20px;
+  padding-bottom: 12px;
+  margin-bottom: 14px;
 }
 .score-head > div { display: flex; flex-direction: column; gap: 4px; }
 .score-head > div > span { font-size: 11px; color: var(--muted); }
@@ -286,16 +286,22 @@ a { text-decoration: none; color: inherit; }
   white-space: nowrap;
 }
 
-.score-main {
+.score-body {
   display: flex;
   gap: 20px;
   align-items: center;
-  margin-bottom: 20px;
+}
+
+.score-main {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  flex-shrink: 0;
 }
 
 .ring {
-  width: 108px;
-  height: 108px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   display: grid;
   place-items: center;
@@ -306,8 +312,8 @@ a { text-decoration: none; color: inherit; }
 .ring::before {
   content: "";
   position: absolute;
-  width: 80px;
-  height: 80px;
+  width: 58px;
+  height: 58px;
   border-radius: 50%;
   background: white;
 }
@@ -316,29 +322,30 @@ a { text-decoration: none; color: inherit; }
   text-align: center;
   z-index: 1;
 }
-.ring b { font-size: 26px; font-weight: 800; color: var(--navy); display: block; line-height: 1; }
-.ring small { display: block; color: var(--muted); font-size: 11px; font-weight: 400; margin-top: 2px; }
+.ring b { font-size: 19px; font-weight: 800; color: var(--navy); display: block; line-height: 1; }
+.ring small { display: block; color: var(--muted); font-size: 9px; font-weight: 400; margin-top: 2px; }
 
-.score-summary > span { font-size: 11px; color: var(--muted); }
+.score-summary { max-width: 130px; }
+.score-summary > span { font-size: 10px; color: var(--muted); }
 .score-summary strong {
   display: block;
-  font-size: 13px;
+  font-size: 12px;
   color: var(--navy);
-  margin: 6px 0 5px;
+  margin: 4px 0 0;
   font-weight: 700;
+  line-height: 1.4;
 }
-.score-summary p { font-size: 11px; line-height: 1.65; color: var(--muted); margin: 0; }
 
-.bars { display: grid; gap: 10px; }
+.bars { flex: 1; display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px 18px; min-width: 0; }
 .bar-row {
   display: grid;
-  grid-template-columns: 108px 1fr 46px;
-  align-items: center;
-  gap: 10px;
-  font-size: 11px;
+  grid-template-columns: 1fr auto;
+  column-gap: 8px;
+  row-gap: 4px;
+  font-size: 10px;
 }
-.bar-row > span { color: var(--muted); }
-.bar-row > div { height: 6px; border-radius: 10px; background: var(--line); overflow: hidden; }
+.bar-row > span { grid-column: 1 / -1; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bar-row > div { height: 5px; border-radius: 10px; background: var(--line); overflow: hidden; }
 .bar-row i { display: block; height: 100%; background: linear-gradient(90deg, var(--blue), #60A5FA); border-radius: 10px; }
 .bar-row b { text-align: right; color: var(--navy); }
 .bar-row small { font-weight: 400; color: var(--subtle); }
@@ -352,7 +359,7 @@ a { text-decoration: none; color: inherit; }
   align-items: stretch;
   justify-content: center;
   max-width: 680px;
-  margin: 64px auto;
+  margin: 32px auto;
 }
 .exam-facts > div {
   flex: 1;
@@ -553,6 +560,8 @@ footer { border-top: 1px solid var(--line); }
   .hero-actions { flex-direction: column; }
   .hero-actions .primary, .hero-actions .secondary { width: 100%; justify-content: center; }
   .trust { flex-direction: column; gap: 10px; }
+  .score-body { flex-direction: column; align-items: stretch; }
+  .bars { grid-template-columns: 1fr; }
   .exam-grid { grid-template-columns: 1fr; }
   .exam-facts { margin: 40px auto; }
   .section { padding: 64px 20px; }
