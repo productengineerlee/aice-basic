@@ -212,9 +212,9 @@ a { text-decoration: none; color: inherit; }
 }
 
 .hero h1 {
-  font-size: 46px;
-  line-height: 1.17;
-  letter-spacing: -2px;
+  font-size: 40px;
+  line-height: 1.2;
+  letter-spacing: -1.5px;
   color: var(--navy);
   margin: 18px 0 16px;
 }
@@ -549,7 +549,7 @@ footer { border-top: 1px solid var(--line); }
 @media (max-width: 960px) {
   .site-header nav { display: none; }
   .hero { grid-template-columns: 1fr; padding-top: 56px; padding-bottom: 64px; gap: 40px; }
-  .hero h1 { font-size: 38px; }
+  .hero h1 { font-size: 34px; }
   .exam-facts { display: grid; grid-template-columns: repeat(2, 1fr); max-width: 380px; margin: 48px auto; row-gap: 32px; column-gap: 8px; }
   .exam-facts > div::after { display: none; }
   .exam-grid { grid-template-columns: repeat(2, 1fr); }
