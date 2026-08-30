@@ -8,5 +8,6 @@ out/
 tmp/docx_render/
 supabase/.temp/
 license_all/
+data/mgmt-viz/
 
 .vercel

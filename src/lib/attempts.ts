@@ -401,6 +401,7 @@ export async function loadAttemptResult(context: Context, userId: string, attemp
       title: section.title,
       earnedScore: Number(stored?.earned_score ?? 0),
       maxScore: Number(stored?.max_score ?? section.max_score),
+      minScore: section.min_score === null ? null : Number(section.min_score),
       correctCount: stored?.correct_count ?? 0,
       questionCount: stored?.question_count ?? context.questions.filter((question) => question.section_id === section.id).length,
       percentage: Number(stored?.percentage ?? 0),

@@ -26,6 +26,7 @@ export default async function Home() {
           <a href="/theory">핵심이론</a>
           <a href="#exams">샘플문제</a>
           <a href="#" className="nav-disabled">모의문제<span className="nav-soon">준비중</span></a>
+          <Link href="/license">자격증</Link>
           <a href="#">AIDU설치</a>
         </nav>
         <div className="header-actions">

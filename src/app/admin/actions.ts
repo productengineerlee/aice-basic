@@ -296,6 +296,65 @@ export async function deleteTheoryContentAction(formData: FormData) {
   redirectMessage(returnTo, "saved", "핵심이론을 삭제했습니다.");
 }
 
+type ScheduleInput = { certificationId: string; roundName: string; examDate: string | null; applyStart: string | null; applyEnd: string | null; notes: string | null; sortOrder: number };
+
+function scheduleInput(formData: FormData): ScheduleInput {
+  const certificationId = text(formData, "certificationId");
+  const roundName = text(formData, "roundName");
+  const sortOrder = numberValue(formData, "sortOrder");
+  if (!certificationId || !roundName) throw new Error("자격증과 회차명을 입력해 주세요.");
+  return {
+    certificationId, roundName,
+    examDate: nullable(formData, "examDate"), applyStart: nullable(formData, "applyStart"), applyEnd: nullable(formData, "applyEnd"),
+    notes: nullable(formData, "notes"), sortOrder: Math.round(sortOrder),
+  };
+}
+
+function revalidateLicenseSchedules(code: string) {
+  revalidatePath("/admin/license-schedules");
+  revalidatePath(`/license/${code}`);
+}
+
+export async function createLicenseScheduleAction(formData: FormData) {
+  await assertAdminAction();
+  const returnTo = resolveReturnTo(formData, "/admin/license-schedules");
+  const input = parseOrRedirect(returnTo, () => scheduleInput(formData));
+  const admin = createAdminClient();
+  const { error } = await admin.from("certification_schedules").insert({
+    certification_id: input.certificationId, round_name: input.roundName, exam_date: input.examDate,
+    apply_start: input.applyStart, apply_end: input.applyEnd, notes: input.notes, sort_order: input.sortOrder,
+  });
+  if (error) redirectMessage(returnTo, "error", `일정 추가 실패: ${error.message}`);
+  revalidateLicenseSchedules(text(formData, "certificationCode"));
+  redirectMessage(returnTo, "saved", "새 시험 일정을 추가했습니다.");
+}
+
+export async function updateLicenseScheduleAction(formData: FormData) {
+  await assertAdminAction();
+  const id = text(formData, "id");
+  const returnTo = resolveReturnTo(formData, "/admin/license-schedules");
+  const input = parseOrRedirect(returnTo, () => scheduleInput(formData));
+  const admin = createAdminClient();
+  const { error } = await admin.from("certification_schedules").update({
+    round_name: input.roundName, exam_date: input.examDate, apply_start: input.applyStart,
+    apply_end: input.applyEnd, notes: input.notes, sort_order: input.sortOrder,
+  }).eq("id", id);
+  if (error) redirectMessage(returnTo, "error", `일정 저장 실패: ${error.message}`);
+  revalidateLicenseSchedules(text(formData, "certificationCode"));
+  redirectMessage(returnTo, "saved", "시험 일정을 저장했습니다.");
+}
+
+export async function deleteLicenseScheduleAction(formData: FormData) {
+  await assertAdminAction();
+  const admin = createAdminClient();
+  const id = text(formData, "id");
+  const returnTo = resolveReturnTo(formData, "/admin/license-schedules");
+  const { error } = await admin.from("certification_schedules").delete().eq("id", id);
+  if (error) redirectMessage(returnTo, "error", `일정 삭제 실패: ${error.message}`);
+  revalidateLicenseSchedules(text(formData, "certificationCode"));
+  redirectMessage(returnTo, "saved", "시험 일정을 삭제했습니다.");
+}
+
 const THEORY_IMAGE_TYPES: Record<string, string> = { "image/png": "png", "image/jpeg": "jpg", "image/webp": "webp", "image/gif": "gif" };
 const THEORY_IMAGE_MAX_BYTES = 5 * 1024 * 1024;
 

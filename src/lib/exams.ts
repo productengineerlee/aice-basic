@@ -1,11 +1,12 @@
 import "server-only";
 
 import { createAdminClient } from "@/lib/supabase/admin";
+import type { ExamKind } from "@/types/database";
 
 export type ExamSummary = {
   slug: string;
   title: string;
-  kind: "classification" | "regression" | "mixed";
+  kind: ExamKind;
   durationMinutes: number;
   passingScore: number;
   questionCount: number;
@@ -30,6 +31,7 @@ export async function listExams(): Promise<ExamSummary[]> {
     .from("exams")
     .select("id,slug,title,kind,duration_minutes,passing_score,published_at")
     .eq("status", "published")
+    .is("certification_id", null)
     .order("published_at", { ascending: true });
   if (examError) throw new Error("Supabase에서 시험 목록을 불러오지 못했습니다.");
   if (!exams?.length) return [];

@@ -7,7 +7,7 @@ import type { Database } from "@/types/database";
 type AnswerKey = Database["public"]["Tables"]["answer_keys"]["Row"];
 export type SubmittedAnswers = Record<string, string>;
 export type QuestionResult = { number: number; section: string; tags: string[]; prompt: string; userAnswer: string; userAnswerDisplay: string; correctAnswer: string; isCorrect: boolean; awardedScore: number; maxScore: number; explanation: string };
-export type SectionResult = { code: string; title: string; earnedScore: number; maxScore: number; correctCount: number; questionCount: number; percentage: number };
+export type SectionResult = { code: string; title: string; earnedScore: number; maxScore: number; minScore: number | null; correctCount: number; questionCount: number; percentage: number };
 export type GradingResult = { id: string; examSlug: string; examTitle: string; submittedAt: string; totalScore: number; maxScore: number; passingScore: number; passed: boolean; correctCount: number; answeredCount: number; questionCount: number; sections: SectionResult[]; questions: QuestionResult[]; diagnostics: DiagnosticSummary };
 
 const normalize = (value: string, caseSensitive = false) => {
@@ -94,6 +94,7 @@ export async function gradeExam(context: Context, submitted: SubmittedAnswers): 
       title: section.title,
       earnedScore: Number(earnedScore.toFixed(2)),
       maxScore,
+      minScore: section.min_score === null ? null : Number(section.min_score),
       correctCount: sectionQuestions.filter((question) => question.isCorrect).length,
       questionCount: sectionQuestions.length,
       percentage: maxScore ? Number((earnedScore / maxScore * 100).toFixed(1)) : 0,
@@ -103,6 +104,9 @@ export async function gradeExam(context: Context, submitted: SubmittedAnswers): 
   const totalScore = Number(questionResults.reduce((sum, question) => sum + question.awardedScore, 0).toFixed(2));
   const maxScore = Number(exam.total_score);
   const passingScore = Number(exam.passing_score);
+  // 경영정보시각화능력처럼 "과목당 최소 점수"가 있는 시험은 총점 기준을 넘겨도
+  // 한 과목이라도 최소 점수 미달이면 불합격 처리한다. min_score가 없는 과목(AICE)은 그대로 통과.
+  const meetsSectionMinimums = sectionResults.every((section) => section.minScore === null || section.earnedScore >= section.minScore);
   const diagnostics = await generateDiagnostics(sectionResults, questionResults);
   return {
     id: crypto.randomUUID(),
@@ -112,7 +116,7 @@ export async function gradeExam(context: Context, submitted: SubmittedAnswers): 
     totalScore,
     maxScore,
     passingScore,
-    passed: totalScore >= passingScore,
+    passed: totalScore >= passingScore && meetsSectionMinimums,
     correctCount: questionResults.filter((question) => question.isCorrect).length,
     answeredCount: questionResults.filter((question) => question.userAnswer).length,
     questionCount: questionResults.length,

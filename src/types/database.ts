@@ -1,6 +1,6 @@
 export type UserRole = "student" | "admin";
 export type ExamStatus = "draft" | "published" | "archived";
-export type ExamKind = "classification" | "regression" | "mixed";
+export type ExamKind = "classification" | "regression" | "mixed" | "quiz";
 export type QuestionType = "single_choice" | "integer" | "decimal" | "percentage" | "unit_value" | "text";
 export type GradingType = "exact" | "rounded" | "absolute_tolerance" | "relative_tolerance" | "multiple_answers";
 export type AttemptStatus = "in_progress" | "submitted" | "expired" | "graded";
@@ -12,8 +12,8 @@ export interface Database {
     Tables: {
       profiles: Table<{ id: string; birth_date: string; role: UserRole; display_name: string | null; created_at: string; updated_at: string }>;
       user_consents: Table<{ id: number; user_id: string; consent_type: string; version: string; accepted: boolean; accepted_at: string }>;
-      exams: Table<{ id: string; slug: string; title: string; description: string | null; kind: ExamKind; status: ExamStatus; duration_minutes: number; passing_score: number; total_score: number; fixed_order: boolean; published_at: string | null; created_by: string | null; created_at: string; updated_at: string }>;
-      exam_sections: Table<{ id: string; exam_id: string; code: string; title: string; description: string | null; max_score: number; sort_order: number }>;
+      exams: Table<{ id: string; slug: string; title: string; description: string | null; kind: ExamKind; status: ExamStatus; duration_minutes: number; passing_score: number; total_score: number; fixed_order: boolean; certification_id: string | null; published_at: string | null; created_by: string | null; created_at: string; updated_at: string }>;
+      exam_sections: Table<{ id: string; exam_id: string; code: string; title: string; description: string | null; max_score: number; min_score: number | null; sort_order: number }>;
       questions: Table<{ id: string; exam_id: string; section_id: string; number: number; type: QuestionType; prompt: string; instructions: string | null; score: number; difficulty: number; competency_tags: string[]; prerequisite_question_id: string | null; answer_format_hint: string | null; explanation: string | null; is_active: boolean; created_at: string; updated_at: string }>;
       question_choices: Table<{ id: string; question_id: string; label: string; content: string; sort_order: number }>;
       answer_keys: Table<{ question_id: string; grading_type: GradingType; correct_choice_id: string | null; correct_value: string | null; accepted_values: string[]; decimal_places: number | null; tolerance: number | null; case_sensitive: boolean; explanation: string | null; updated_at: string }>;
@@ -23,6 +23,9 @@ export interface Database {
       section_results: Table<{ id: string; attempt_id: string; section_id: string; earned_score: number; max_score: number; correct_count: number; question_count: number; percentage: number }>;
       diagnostic_rules: Table<{ id: string; section_code: string | null; competency_tag: string | null; min_percentage: number; max_percentage: number; level: string; comment: string; recommendation: string | null; priority: number; is_active: boolean }>;
       theory_content: Table<{ id: string; section_code: string; competency_tag: string | null; title: string; body: string; sort_order: number; is_active: boolean; created_at: string; updated_at: string }>;
+      certifications: Table<{ id: string; code: string; name: string; description: string | null; is_active: boolean; sort_order: number; created_at: string }>;
+      certification_schedules: Table<{ id: string; certification_id: string; round_name: string; exam_date: string | null; apply_start: string | null; apply_end: string | null; notes: string | null; sort_order: number; created_at: string }>;
+      question_stat_seed: Table<{ question_id: string; attempt_count: number; correct_count: number }>;
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;
