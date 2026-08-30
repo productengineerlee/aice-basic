@@ -384,6 +384,7 @@ export async function loadAttemptResult(context: Context, userId: string, attemp
       section: section?.code ?? "",
       tags: question.competency_tags,
       prompt: question.prompt,
+      imageUrl: question.image_url,
       userAnswer,
       userAnswerDisplay: userChoice ? `${userChoice.label}. ${userChoice.content}` : userAnswer || "미응답",
       correctAnswer: correctChoice ? `${correctChoice.label}. ${correctChoice.content}` : key?.correct_value ?? "",

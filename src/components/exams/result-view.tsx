@@ -3,7 +3,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, BarChart3, CheckCircle2, ChevronDown, RotateCcw, XCircle } from "lucide-react";
+import { ArrowLeft, BarChart3, CheckCircle2, ChevronDown, Home, RotateCcw, XCircle } from "lucide-react";
 import type { GradingResult } from "@/lib/grading";
 import { levelLabel } from "@/lib/diagnostic-level";
 
@@ -43,6 +43,7 @@ export function ResultView({ slug }: { slug: string }) {
   const [result, setResult] = useState<GradingResult | null>(null);
   const [open, setOpen] = useState<number[]>([]);
   const [competencyOpen, setCompetencyOpen] = useState(false);
+  const [reviewOpen, setReviewOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
   useEffect(() => {
@@ -74,7 +75,7 @@ export function ResultView({ slug }: { slug: string }) {
   if (!result) return <main className="result-empty"><BarChart3 /><h1>{loading ? "채점 결과를 불러오는 중입니다" : loadError ? "결과를 불러오지 못했습니다" : "채점 결과가 없습니다"}</h1><p>{loading ? "잠시만 기다려 주세요." : loadError ? "네트워크 상태를 확인하고 새로고침해 주세요." : "모의고사를 제출하면 결과가 이곳에 표시됩니다."}</p><Link href={`/exams/${slug}`}>시험 안내로 돌아가기</Link></main>;
 
   return <main className="result-page">
-    <header className={result.passed ? "pass" : "fail"}><div className="result-head-inner"><Link href="/exams"><ArrowLeft />모의고사 목록</Link><div className="result-status">{result.passed ? <CheckCircle2 /> : <XCircle />}<span>{result.passed ? "모의 합격" : "모의 불합격"}</span></div><h1>{result.examTitle}</h1><p>제출 즉시 자동채점한 결과입니다.</p><div className="total-score"><b>{result.totalScore}</b><span>/ {result.maxScore}점</span></div><div className="score-meta"><span>합격 기준 {result.passingScore}점</span><span>정답 {result.correctCount}/{result.questionCount}</span><span>응답 {result.answeredCount}/{result.questionCount}</span></div></div></header>
+    <header className={result.passed ? "pass" : "fail"}><div className="result-head-inner"><div className="result-head-links"><Link href="/exams"><ArrowLeft />모의고사 목록</Link><Link href="/"><Home />홈가기</Link></div><div className="result-status">{result.passed ? <CheckCircle2 /> : <XCircle />}<span>{result.passed ? "모의 합격" : "모의 불합격"}</span></div><h1>{result.examTitle}</h1><p>제출 즉시 자동채점한 결과입니다.</p><div className="total-score"><b>{result.totalScore}</b><span>/ {result.maxScore}점</span></div><div className="score-meta"><span>합격 기준 {result.passingScore}점</span><span>정답 {result.correctCount}/{result.questionCount}</span><span>응답 {result.answeredCount}/{result.questionCount}</span></div></div></header>
     <section className="result-container">
       <div className="result-grid">
         <article className="result-card"><h2>영역별 점수</h2><div className="section-bars">{result.sections.map(section => <div key={section.code}><b>{section.earnedScore}<small>/{section.maxScore}</small></b><div className="bar-track"><i style={section.percentage > 0 ? { height: `${Math.max(section.percentage, 4)}%` } : { height: 0 }} /></div><span>{section.title}</span></div>)}</div></article>
@@ -87,8 +88,8 @@ export function ResultView({ slug }: { slug: string }) {
 
       {!!result.diagnostics?.competencies?.length && <section className="competency-section"><div className="diagnostic-heading"><div><h2>세부 역량 진단</h2><p>문항에 연결된 역량 태그별 정답과 배점을 기준으로 분석했습니다.</p></div><button className="diagnostic-toggle" onClick={() => setCompetencyOpen(v => !v)}>{competencyOpen ? "접기" : "자세히 보기"}<ChevronDown className={competencyOpen ? "rotate" : ""} /></button></div>{competencyOpen && <div className="competency-grid">{result.diagnostics.competencies.map(item => <article className={`competency-card level-${item.level}`} key={item.code}><div className="competency-top"><div><span>{levelLabel[item.level]}</span><h3>{item.title}</h3></div><b>{item.percentage}<small>%</small></b></div><div className="competency-meter"><i style={{ width: `${item.percentage}%` }} /></div><small className="competency-count">정답 {item.correctCount}/{item.questionCount} · {item.earnedScore}/{item.maxScore}점</small><p>{item.comment}</p><p className="action-line"><b>보강 방법</b>{item.recommendation}</p></article>)}</div>}</section>}
 
-      <div className="review-heading"><div><h2>문항별 결과와 해설</h2></div><Link href={`/exams/${slug}/take`}><RotateCcw />다시 풀기</Link></div>
-      <div className="review-list">{result.questions.map(question => <article className={question.isCorrect ? "correct" : "wrong"} key={question.number}><button onClick={() => setOpen(current => current.includes(question.number) ? current.filter(number => number !== question.number) : [...current, question.number])}><span className="result-icon">{question.isCorrect ? <CheckCircle2 /> : <XCircle />}</span><span className="review-title"><b>문제 {question.number}</b><small>{question.prompt}</small></span><span className="review-score">{question.awardedScore} / {question.maxScore}점</span><ChevronDown className={open.includes(question.number) ? "rotate" : ""} /></button>{open.includes(question.number) && <div className="review-detail"><div><span>내 답안</span><p>{question.userAnswerDisplay}</p></div><div><span>정답</span><p>{question.correctAnswer}</p></div><div className="explanation"><span>해설</span><p>{question.explanation}</p></div></div>}</article>)}</div>
+      <div className="review-heading"><div><h2>문항별 결과와 해설</h2></div><div className="review-heading-actions"><button className="diagnostic-toggle" onClick={() => setReviewOpen(v => !v)}>{reviewOpen ? "접기" : "자세히 보기"}<ChevronDown className={reviewOpen ? "rotate" : ""} /></button><Link href={`/exams/${slug}/take`}><RotateCcw />다시 풀기</Link></div></div>
+      {reviewOpen && <div className="review-list">{result.questions.map(question => <article className={question.isCorrect ? "correct" : "wrong"} key={question.number}><button onClick={() => setOpen(current => current.includes(question.number) ? current.filter(number => number !== question.number) : [...current, question.number])}><span className="result-icon">{question.isCorrect ? <CheckCircle2 /> : <XCircle />}</span><span className="review-title"><b>문제 {question.number}</b><small>{question.prompt}</small></span><span className="review-score">{question.awardedScore} / {question.maxScore}점</span><ChevronDown className={open.includes(question.number) ? "rotate" : ""} /></button>{open.includes(question.number) && <div className="review-detail">{question.imageUrl && <div className="explanation"><img className="review-image" src={question.imageUrl} alt={`문제 ${question.number} 참고 이미지`}/></div>}<div><span>내 답안</span><p>{question.userAnswerDisplay}</p></div><div><span>정답</span><p>{question.correctAnswer}</p></div><div className="explanation"><span>해설</span><p>{question.explanation}</p></div></div>}</article>)}</div>}
     </section>
   </main>;
 }

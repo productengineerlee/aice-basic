@@ -19,6 +19,7 @@ export type PublicQuestion = {
   section: string;
   competencyTags: string[];
   prompt: string;
+  imageUrl: string | null;
   choices: { id: string; label: string; content: string }[];
   score: number;
   answerFormatHint?: string | null;
@@ -80,7 +81,7 @@ export async function getExam(slug: string): Promise<PublicExam | null> {
 
   const [{ data: sections, error: sectionError }, { data: questions, error: questionError }, { data: assets, error: assetError }] = await Promise.all([
     admin.from("exam_sections").select("id,code,title,max_score,sort_order").eq("exam_id", exam.id).order("sort_order"),
-    admin.from("questions").select("id,section_id,number,type,prompt,score,difficulty,competency_tags,answer_format_hint").eq("exam_id", exam.id).eq("is_active", true).order("number"),
+    admin.from("questions").select("id,section_id,number,type,prompt,image_url,score,difficulty,competency_tags,answer_format_hint").eq("exam_id", exam.id).eq("is_active", true).order("number"),
     admin.from("exam_assets").select("title,object_path,sort_order").eq("exam_id", exam.id).eq("asset_type", "dataset").order("sort_order").limit(1),
   ]);
   if (sectionError || questionError || assetError || !sections || !questions) throw new Error("문항 구성을 불러오지 못했습니다.");
@@ -100,6 +101,7 @@ export async function getExam(slug: string): Promise<PublicExam | null> {
     section: sectionById.get(question.section_id)?.code ?? "",
     competencyTags: question.competency_tags,
     prompt: question.prompt,
+    imageUrl: question.image_url,
     choices: choices.filter((choice) => choice.question_id === question.id).map((choice) => ({
       id: `${question.number}:${choice.label}`,
       label: choice.label,

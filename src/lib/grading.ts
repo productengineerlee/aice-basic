@@ -6,7 +6,7 @@ import type { Database } from "@/types/database";
 
 type AnswerKey = Database["public"]["Tables"]["answer_keys"]["Row"];
 export type SubmittedAnswers = Record<string, string>;
-export type QuestionResult = { number: number; section: string; tags: string[]; prompt: string; userAnswer: string; userAnswerDisplay: string; correctAnswer: string; isCorrect: boolean; awardedScore: number; maxScore: number; explanation: string };
+export type QuestionResult = { number: number; section: string; tags: string[]; prompt: string; imageUrl: string | null; userAnswer: string; userAnswerDisplay: string; correctAnswer: string; isCorrect: boolean; awardedScore: number; maxScore: number; explanation: string };
 export type SectionResult = { code: string; title: string; earnedScore: number; maxScore: number; minScore: number | null; correctCount: number; questionCount: number; percentage: number };
 export type GradingResult = { id: string; examSlug: string; examTitle: string; submittedAt: string; totalScore: number; maxScore: number; passingScore: number; passed: boolean; correctCount: number; answeredCount: number; questionCount: number; sections: SectionResult[]; questions: QuestionResult[]; diagnostics: DiagnosticSummary };
 
@@ -75,6 +75,7 @@ export async function gradeExam(context: Context, submitted: SubmittedAnswers): 
       section: section?.code ?? "",
       tags: question.competency_tags,
       prompt: question.prompt,
+      imageUrl: question.image_url,
       userAnswer,
       userAnswerDisplay: userChoice ? `${userChoice.label}. ${userChoice.content}` : userAnswer || "미응답",
       correctAnswer: correctChoice ? `${correctChoice.label}. ${correctChoice.content}` : key.correct_value ?? "",
