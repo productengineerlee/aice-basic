@@ -31,15 +31,6 @@ const SECTION_META = {
   "시대통합": { code: "integrated", sort: 9 },
 };
 
-const IMAGE_BUCKET = "question-images";
-const IMAGE_SOURCE_DIR = path.join(
-  root,
-  "license_all",
-  "한국사능력검정시험",
-  "output-한국사능력검정시험-chatgpt 분류작업결과",
-  "questions",
-);
-
 async function main() {
   const { data: cert, error: certErr } = await admin
     .from("certifications")
@@ -102,24 +93,10 @@ async function main() {
     }),
   );
 
-  let uploadedImages = 0;
   for (let n = 1; n <= 50; n++) {
     const q = questions[String(n)];
     const sectionId = sectionIdByTitle[q.section];
     if (!sectionId) throw new Error(`${slug} q${n}: unknown section ${q.section}`);
-
-    let imageUrl = null;
-    if (q.imageOnly) {
-      const qDir = `q${String(n).padStart(3, "0")}`;
-      const localPath = path.join(IMAGE_SOURCE_DIR, qDir, "full.webp");
-      const fileBuffer = fs.readFileSync(localPath);
-      const objectPath = `korean-history-76-simhwa/q${n}.webp`;
-      const { error: uploadError } = await admin.storage.from(IMAGE_BUCKET).upload(objectPath, fileBuffer, { contentType: "image/webp", upsert: true });
-      if (uploadError) throw new Error(`${slug} q${n} image upload failed: ` + uploadError.message);
-      const { data: urlData } = admin.storage.from(IMAGE_BUCKET).getPublicUrl(objectPath);
-      imageUrl = urlData.publicUrl;
-      uploadedImages++;
-    }
 
     const { data: inserted, error: qErr } = await admin
       .from("questions")
@@ -132,7 +109,6 @@ async function main() {
         score: q.score,
         difficulty: 2,
         competency_tags: [q.tag],
-        image_url: imageUrl,
         is_active: true,
       })
       .select("id")
@@ -158,7 +134,7 @@ async function main() {
     if (keyErr) throw new Error(`${slug} q${n} answer_key insert failed: ` + keyErr.message);
   }
 
-  console.log(`${slug}: seeded 50 questions (exam id ${exam.id}), uploaded ${uploadedImages} question images`);
+  console.log(`${slug}: seeded 50 questions (exam id ${exam.id}). Run update_korean_history_images.mjs separately to attach question images.`);
 }
 
 main().then(() => console.log("SEED DONE")).catch((err) => {
