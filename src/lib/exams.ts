@@ -33,7 +33,7 @@ export async function listExams(): Promise<ExamSummary[]> {
     .eq("status", "published")
     .is("certification_id", null)
     .order("published_at", { ascending: true });
-  if (examError) throw new Error("Supabase에서 시험 목록을 불러오지 못했습니다.");
+  if (examError) throw new Error("시험 목록을 불러오지 못했습니다.");
   if (!exams?.length) return [];
 
   const examIds = exams.map((exam) => exam.id);
@@ -42,7 +42,7 @@ export async function listExams(): Promise<ExamSummary[]> {
     admin.from("questions").select("id,exam_id,section_id").in("exam_id", examIds).eq("is_active", true),
     admin.from("exam_assets").select("exam_id,title,object_path,sort_order").in("exam_id", examIds).eq("asset_type", "dataset").order("sort_order"),
   ]);
-  if (sectionError || questionError || assetError) throw new Error("Supabase에서 시험 구성을 불러오지 못했습니다.");
+  if (sectionError || questionError || assetError) throw new Error("시험 구성을 불러오지 못했습니다.");
 
   return exams.map((exam) => {
     const examQuestions = (questions ?? []).filter((question) => question.exam_id === exam.id);
@@ -75,7 +75,7 @@ export async function getExam(slug: string): Promise<PublicExam | null> {
     .eq("slug", slug)
     .eq("status", "published")
     .maybeSingle();
-  if (examError) throw new Error("Supabase에서 시험을 불러오지 못했습니다.");
+  if (examError) throw new Error("시험을 불러오지 못했습니다.");
   if (!exam) return null;
 
   const [{ data: sections, error: sectionError }, { data: questions, error: questionError }, { data: assets, error: assetError }] = await Promise.all([
@@ -83,13 +83,13 @@ export async function getExam(slug: string): Promise<PublicExam | null> {
     admin.from("questions").select("id,section_id,number,type,prompt,score,difficulty,competency_tags,answer_format_hint").eq("exam_id", exam.id).eq("is_active", true).order("number"),
     admin.from("exam_assets").select("title,object_path,sort_order").eq("exam_id", exam.id).eq("asset_type", "dataset").order("sort_order").limit(1),
   ]);
-  if (sectionError || questionError || assetError || !sections || !questions) throw new Error("Supabase에서 문항 구성을 불러오지 못했습니다.");
+  if (sectionError || questionError || assetError || !sections || !questions) throw new Error("문항 구성을 불러오지 못했습니다.");
 
   const questionIds = questions.map((question) => question.id);
   const { data: choices, error: choiceError } = questionIds.length
     ? await admin.from("question_choices").select("id,question_id,label,content,sort_order").in("question_id", questionIds).order("sort_order")
     : { data: [], error: null };
-  if (choiceError || !choices) throw new Error("Supabase에서 문항 보기를 불러오지 못했습니다.");
+  if (choiceError || !choices) throw new Error("문항 보기를 불러오지 못했습니다.");
 
   const sectionById = new Map(sections.map((section) => [section.id, section]));
   const asset = assets?.[0];

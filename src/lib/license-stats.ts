@@ -36,7 +36,7 @@ const HARDEST_LIMIT = 10;
 export async function getCertificationStats(certificationId: string): Promise<CertificationStats> {
   const admin = createAdminClient();
   const { data: exams, error: examError } = await admin.from("exams").select("id,slug,title").eq("certification_id", certificationId);
-  if (examError) throw new Error("Supabase에서 자격증 시험 목록을 불러오지 못했습니다.");
+  if (examError) throw new Error("자격증 시험 목록을 불러오지 못했습니다.");
   const examIds = (exams ?? []).map((exam) => exam.id);
   if (!examIds.length) return { questionCount: 0, attemptCount: 0, sectionStats: [], tagStats: [], hardestQuestions: [] };
   const examById = new Map((exams ?? []).map((exam) => [exam.id, exam]));
@@ -45,7 +45,7 @@ export async function getCertificationStats(certificationId: string): Promise<Ce
     admin.from("exam_sections").select("id,exam_id,code,title").in("exam_id", examIds).order("sort_order"),
     admin.from("questions").select("id,exam_id,section_id,number,prompt,competency_tags").in("exam_id", examIds).eq("is_active", true),
   ]);
-  if (sectionError || questionError || !sections || !questions) throw new Error("Supabase에서 자격증 문항 구성을 불러오지 못했습니다.");
+  if (sectionError || questionError || !sections || !questions) throw new Error("자격증 문항 구성을 불러오지 못했습니다.");
   const sectionById = new Map(sections.map((section) => [section.id, section]));
 
   const questionIds = questions.map((question) => question.id);
@@ -53,7 +53,7 @@ export async function getCertificationStats(certificationId: string): Promise<Ce
     admin.from("question_stat_seed").select("question_id,attempt_count,correct_count").in("question_id", questionIds),
     admin.from("attempt_answers").select("question_id,is_correct").in("question_id", questionIds).not("is_correct", "is", null),
   ]);
-  if (seedError || liveError) throw new Error("Supabase에서 자격증 통계를 불러오지 못했습니다.");
+  if (seedError || liveError) throw new Error("자격증 통계를 불러오지 못했습니다.");
 
   const countsByQuestion = new Map<string, { attempt: number; correct: number }>();
   for (const row of seedRows ?? []) countsByQuestion.set(row.question_id, { attempt: row.attempt_count, correct: row.correct_count });
@@ -128,7 +128,7 @@ export type WrongAnswerItem = {
 export async function getWrongAnswerNotebook(userId: string, certificationId: string): Promise<WrongAnswerItem[]> {
   const admin = createAdminClient();
   const { data: exams, error: examError } = await admin.from("exams").select("id,slug,title").eq("certification_id", certificationId);
-  if (examError) throw new Error("Supabase에서 자격증 시험 목록을 불러오지 못했습니다.");
+  if (examError) throw new Error("자격증 시험 목록을 불러오지 못했습니다.");
   const examIds = (exams ?? []).map((exam) => exam.id);
   if (!examIds.length) return [];
   const examById = new Map((exams ?? []).map((exam) => [exam.id, exam]));
@@ -136,7 +136,7 @@ export async function getWrongAnswerNotebook(userId: string, certificationId: st
   const { data: attempts, error: attemptError } = await admin
     .from("attempts").select("id,exam_id,submitted_at")
     .eq("user_id", userId).in("exam_id", examIds).in("status", ["submitted", "graded"]);
-  if (attemptError) throw new Error("Supabase에서 응시 기록을 불러오지 못했습니다.");
+  if (attemptError) throw new Error("응시 기록을 불러오지 못했습니다.");
   const attemptIds = (attempts ?? []).map((attempt) => attempt.id);
   if (!attemptIds.length) return [];
   const attemptById = new Map((attempts ?? []).map((attempt) => [attempt.id, attempt]));
@@ -144,7 +144,7 @@ export async function getWrongAnswerNotebook(userId: string, certificationId: st
   const { data: wrongAnswers, error: wrongError } = await admin
     .from("attempt_answers").select("attempt_id,question_id,selected_choice_id")
     .eq("is_correct", false).in("attempt_id", attemptIds);
-  if (wrongError) throw new Error("Supabase에서 오답을 불러오지 못했습니다.");
+  if (wrongError) throw new Error("오답을 불러오지 못했습니다.");
   if (!wrongAnswers?.length) return [];
   const questionIds = [...new Set(wrongAnswers.map((answer) => answer.question_id))];
 
@@ -153,7 +153,7 @@ export async function getWrongAnswerNotebook(userId: string, certificationId: st
     admin.from("question_choices").select("id,question_id,label,content").in("question_id", questionIds).order("sort_order"),
     admin.from("answer_keys").select("question_id,correct_choice_id,explanation").in("question_id", questionIds),
   ]);
-  if (questionError || choiceError || keyError || !questions || !choices || !answerKeys) throw new Error("Supabase에서 오답노트 문항 정보를 불러오지 못했습니다.");
+  if (questionError || choiceError || keyError || !questions || !choices || !answerKeys) throw new Error("오답노트 문항 정보를 불러오지 못했습니다.");
   const questionById = new Map(questions.map((question) => [question.id, question]));
   const keyByQuestion = new Map(answerKeys.map((key) => [key.question_id, key]));
   const choiceById = new Map(choices.map((choice) => [choice.id, choice]));

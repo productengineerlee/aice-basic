@@ -73,7 +73,7 @@ const fetchDiagnosticRules = unstable_cache(
   async (): Promise<Rule[]> => {
     const admin = createAdminClient();
     const { data, error } = await admin.from("diagnostic_rules").select("*").eq("is_active", true).order("priority", { ascending: false });
-    if (error || !data) throw new Error("Supabase 진단 규칙을 불러오지 못했습니다.");
+    if (error || !data) throw new Error("진단 규칙을 불러오지 못했습니다.");
     return data as Rule[];
   },
   ["diagnostic_rules_active"],

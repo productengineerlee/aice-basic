@@ -74,7 +74,7 @@ export async function getExamContext(slug: string): Promise<Context> {
       ])
     : [{ data: [] as ChoiceRow[], error: null }, { data: [] as AnswerKeyRow[], error: null }];
   if (choiceError || keyError || !choices || !answerKeys) fail("문항 보기·정답을 불러오지 못했습니다.");
-  if (answerKeys.length !== questions.length) fail("Supabase 정답 데이터가 완전하지 않습니다.");
+  if (answerKeys.length !== questions.length) fail("정답 데이터가 완전하지 않습니다.");
 
   return {
     exam,

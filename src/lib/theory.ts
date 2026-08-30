@@ -17,7 +17,7 @@ export const listTheoryContent = unstable_cache(
       admin.from("exam_sections").select("code,title,sort_order").order("sort_order"),
       admin.from("theory_content").select("id,section_code,competency_tag,title,body").eq("is_active", true).order("sort_order"),
     ]);
-    if (sectionError || contentError) throw new Error("Supabase에서 핵심이론을 불러오지 못했습니다.");
+    if (sectionError || contentError) throw new Error("핵심이론을 불러오지 못했습니다.");
 
     const uniqueSections = [...new Map((sections ?? []).map((section) => [section.code, section])).values(), ...EXTRA_THEORY_SECTIONS]
       .sort((a, b) => a.sort_order - b.sort_order);
