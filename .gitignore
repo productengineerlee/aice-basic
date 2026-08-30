@@ -9,5 +9,6 @@ tmp/docx_render/
 supabase/.temp/
 license_all/
 data/mgmt-viz/
+data/gongin/
 
 .vercel
