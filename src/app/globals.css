@@ -188,6 +188,7 @@ a { text-decoration: none; color: inherit; }
   align-items: center;
   padding: 80px max(24px, calc((100vw - 1200px) / 2)) 64px;
   background: var(--blue-lt);
+  border-bottom: 1px solid var(--blue-mid);
 }
 .eyebrow {
   display: inline-flex;
@@ -241,6 +242,7 @@ a { text-decoration: none; color: inherit; }
   color: var(--muted);
   font-size: 12px;
   flex-wrap: wrap;
+  margin-top: 18px;
 }
 .trust span { display: flex; align-items: center; gap: 5px; }
 .trust svg { color: var(--green); }

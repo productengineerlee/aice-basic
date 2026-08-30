@@ -1,4 +1,4 @@
-import { ArrowRight, Clock3, ShieldCheck } from "lucide-react";
+import { ArrowRight, CheckCircle2, Clock3, ShieldCheck } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
@@ -53,10 +53,15 @@ export default async function Home() {
               {user ? "모의고사 선택하기" : "샘플문항 시작하기"} <ArrowRight size={18} />
             </a>
           </div>
+          <div className="trust">
+            <span><CheckCircle2 size={14} />자동저장</span>
+            <span><CheckCircle2 size={14} />무료 시작</span>
+            <span><CheckCircle2 size={14} />실시간 채점</span>
+          </div>
         </div>
         <div className="score-card">
           <div className="score-head">
-            <div><b>모의고사 결과 리포트</b></div>
+            <div><b>모의고사 결과 리포트</b><span>예시 데이터입니다</span></div>
             <span className="pass">안정적인 합격권</span>
           </div>
           <div className="score-body">
