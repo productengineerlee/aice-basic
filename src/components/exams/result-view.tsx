@@ -72,7 +72,7 @@ export function ResultView({ slug }: { slug: string }) {
   const weakestSection = useMemo(() => result?.diagnostics?.sections ? [...result.diagnostics.sections].sort((a, b) => a.percentage - b.percentage)[0] : null, [result]);
   const weakestCompetency = result?.diagnostics?.competencies?.[0] ?? null;
 
-  if (!result) return <main className="result-empty"><BarChart3 /><h1>{loading ? "채점 결과를 불러오는 중입니다" : loadError ? "결과를 불러오지 못했습니다" : "채점 결과가 없습니다"}</h1><p>{loading ? "잠시만 기다려 주세요." : loadError ? "네트워크 상태를 확인하고 새로고침해 주세요." : "모의고사를 제출하면 결과가 이곳에 표시됩니다."}</p><Link href={`/exams/${slug}`}>시험 안내로 돌아가기</Link></main>;
+  if (!result) return <main className="result-empty"><BarChart3 /><h1>{loading ? "채점 결과를 불러오는 중입니다" : loadError ? "결과를 불러오지 못했습니다" : "채점 결과가 없습니다"}</h1><p>{loading ? "서버가 버지니아에 있어 불러오는데 조금 시간이 걸려요. 잠시만 기다려 주세요." : loadError ? "네트워크 상태를 확인하고 새로고침해 주세요." : "모의고사를 제출하면 결과가 이곳에 표시됩니다."}</p><Link href={`/exams/${slug}`}>시험 안내로 돌아가기</Link></main>;
 
   return <main className="result-page">
     <header className={result.passed ? "pass" : "fail"}><div className="result-head-inner"><div className="result-head-links"><Link href="/exams"><ArrowLeft />모의고사 목록</Link><Link href="/"><Home />홈가기</Link></div><div className="result-status">{result.passed ? <CheckCircle2 /> : <XCircle />}<span>{result.passed ? "모의 합격" : "모의 불합격"}</span></div><h1>{result.examTitle}</h1><p>제출 즉시 자동채점한 결과입니다.</p><div className="total-score"><b>{result.totalScore}</b><span>/ {result.maxScore}점</span></div><div className="score-meta"><span>합격 기준 {result.passingScore}점</span><span>정답 {result.correctCount}/{result.questionCount}</span><span>응답 {result.answeredCount}/{result.questionCount}</span></div></div></header>

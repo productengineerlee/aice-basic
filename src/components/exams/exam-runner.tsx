@@ -215,7 +215,7 @@ const finish = useCallback(async () => {
   }, [attemptId, finish, ready, remaining]);
 
   if (startError) return <div className="runner-loading"><AlertTriangle/><p>{startError}</p><button onClick={() => window.location.reload()}>다시 시도</button><Link href="/exams">모의고사 목록으로 돌아가기</Link></div>;
-  if (!ready) return <div className="runner-loading">시험 준비 중입니다. 잠시만 기다려 주세요.</div>;
+  if (!ready) return <div className="runner-loading">서버가 버지니아에 있어 불러오는데 조금 시간이 걸려요. 잠시만 기다려 주세요.</div>;
 
   const saveCopy = saveState === "saving"
     ? "서버에 저장 중"
