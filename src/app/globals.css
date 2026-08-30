@@ -187,7 +187,7 @@ a { text-decoration: none; color: inherit; }
   gap: 48px;
   align-items: center;
   padding: 80px max(24px, calc((100vw - 1200px) / 2)) 64px;
-  background: var(--bg);
+  background: var(--blue-lt);
 }
 .eyebrow {
   display: inline-flex;
@@ -197,7 +197,7 @@ a { text-decoration: none; color: inherit; }
   font-weight: 800;
   color: var(--blue);
   letter-spacing: 0.4px;
-  background: var(--blue-lt);
+  background: #fff;
   border-radius: 100px;
   padding: 6px 14px;
   width: fit-content;
