@@ -23,11 +23,11 @@ export default async function Home() {
           <span>AICE <b>LAB</b></span>
         </Link>
         <nav>
-          <a href="/theory">핵심이론</a>
           <a href="#exams">샘플문제</a>
           <a href="#" className="nav-disabled">모의문제<span className="nav-soon">준비중</span></a>
-          <Link href="/license">자격증</Link>
+          <a href="/theory">핵심이론</a>
           <a href="https://aice.study/info/aice/basic" target="_blank" rel="noopener noreferrer">AIDU설치</a>
+          <Link href="/license">자격증</Link>
         </nav>
         <div className="header-actions">
           {user ? (
