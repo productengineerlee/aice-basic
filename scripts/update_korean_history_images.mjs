@@ -21,7 +21,7 @@ const admin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.SUP
 
 const SLUG = "korean-history-76-simhwa";
 const BUCKET = "question-images";
-const CROPS_DIR = "C:/Users/이태원/AppData/Local/Temp/claude/E--Projects-aice-basic/03dc72ac-e588-4d5d-902a-8a1f1cd51a1b/scratchpad/qcrops";
+const CROPS_DIR = "C:/Users/이태원/AppData/Local/Temp/claude/E--Projects-aice-basic/03dc72ac-e588-4d5d-902a-8a1f1cd51a1b/scratchpad/qcrops2";
 
 async function main() {
   const exam = await admin.from("exams").select("id").eq("slug", SLUG).maybeSingle();
