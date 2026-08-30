@@ -79,15 +79,26 @@ export default async function LicenseDetailPage({ params }: { params: Promise<{ 
 
         {stats.tagStats.length > 0 && (
           <details className="license-accordion">
-            <summary><div className="license-section-head"><h2>세부항목별 정답률</h2><p>정답률이 낮은 항목부터 정렬했습니다.</p></div><ChevronDown /></summary>
-            <div className="accordion-body tag-stat-list">
-              {stats.tagStats.map((tag) => (
-                <div className="tag-stat-row" key={tag.tag}>
-                  <span>{tag.tag}</span>
-                  <div className="stat-meter"><i style={{ width: `${tag.accuracy}%` }} /></div>
-                  <b>{tag.accuracy}%</b>
-                </div>
-              ))}
+            <summary><div className="license-section-head"><h2>세부항목별 정답률</h2><p>과목별로 묶어 정답률이 낮은 항목부터 정렬했습니다.</p></div><ChevronDown /></summary>
+            <div className="accordion-body">
+              {stats.sectionStats.map((section) => {
+                const items = stats.tagStats.filter((tag) => tag.sectionCode === section.code);
+                if (!items.length) return null;
+                return (
+                  <div className="tag-group" key={section.code}>
+                    <h3>{section.title}</h3>
+                    <div className="tag-stat-list">
+                      {items.map((tag) => (
+                        <div className="tag-stat-row" key={tag.tag}>
+                          <span>{tag.tag}</span>
+                          <div className="stat-meter"><i style={{ width: `${tag.accuracy}%` }} /></div>
+                          <b>{tag.accuracy}%</b>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </details>
         )}

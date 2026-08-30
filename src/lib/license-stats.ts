@@ -15,7 +15,7 @@ export type QuestionStat = {
   accuracy: number;
 };
 
-export type TagStat = { tag: string; attemptCount: number; correctCount: number; accuracy: number; questionCount: number };
+export type TagStat = { tag: string; sectionCode: string; attemptCount: number; correctCount: number; accuracy: number; questionCount: number };
 export type SectionStat = { code: string; title: string; attemptCount: number; correctCount: number; accuracy: number; questionCount: number };
 
 export type CertificationStats = {
@@ -42,7 +42,7 @@ export async function getCertificationStats(certificationId: string): Promise<Ce
   const examById = new Map((exams ?? []).map((exam) => [exam.id, exam]));
 
   const [{ data: sections, error: sectionError }, { data: questions, error: questionError }] = await Promise.all([
-    admin.from("exam_sections").select("id,exam_id,code,title").in("exam_id", examIds),
+    admin.from("exam_sections").select("id,exam_id,code,title").in("exam_id", examIds).order("sort_order"),
     admin.from("questions").select("id,exam_id,section_id,number,prompt,competency_tags").in("exam_id", examIds).eq("is_active", true),
   ]);
   if (sectionError || questionError || !sections || !questions) throw new Error("Supabase에서 자격증 문항 구성을 불러오지 못했습니다.");
@@ -81,30 +81,27 @@ export async function getCertificationStats(certificationId: string): Promise<Ce
     };
   });
 
-  const sectionAgg = new Map<string, { title: string; attempt: number; correct: number; questionCount: number }>();
-  for (const stat of questionStats) {
-    const section = sections.find((item) => item.code === stat.sectionCode);
-    const current = sectionAgg.get(stat.sectionCode) ?? { title: section?.title ?? stat.sectionCode, attempt: 0, correct: 0, questionCount: 0 };
-    current.attempt += stat.attemptCount;
-    current.correct += stat.correctCount;
-    current.questionCount += 1;
-    sectionAgg.set(stat.sectionCode, current);
-  }
-  const sectionStats: SectionStat[] = [...sectionAgg.entries()].map(([code, agg]) => ({
-    code, title: agg.title, attemptCount: agg.attempt, correctCount: agg.correct, accuracy: accuracyOf(agg.attempt, agg.correct), questionCount: agg.questionCount,
-  }));
+  // exam_sections는 sort_order로 정렬해 가져왔으므로, 코드별 첫 등장 순서가 곧 출제 과목 순서다.
+  const orderedSectionCodes = [...new Map(sections.map((section) => [section.code, section.title])).entries()];
+  const sectionOrder = new Map(orderedSectionCodes.map(([code], index) => [code, index]));
+  const sectionStats: SectionStat[] = orderedSectionCodes.map(([code, title]) => {
+    const matching = questionStats.filter((stat) => stat.sectionCode === code);
+    const attempt = matching.reduce((sum, stat) => sum + stat.attemptCount, 0);
+    const correct = matching.reduce((sum, stat) => sum + stat.correctCount, 0);
+    return { code, title, attemptCount: attempt, correctCount: correct, accuracy: accuracyOf(attempt, correct), questionCount: matching.length };
+  });
 
-  const tagAgg = new Map<string, { attempt: number; correct: number; questionCount: number }>();
+  const tagAgg = new Map<string, { sectionCode: string; attempt: number; correct: number; questionCount: number }>();
   for (const stat of questionStats) for (const tag of stat.tags) {
-    const current = tagAgg.get(tag) ?? { attempt: 0, correct: 0, questionCount: 0 };
+    const current = tagAgg.get(tag) ?? { sectionCode: stat.sectionCode, attempt: 0, correct: 0, questionCount: 0 };
     current.attempt += stat.attemptCount;
     current.correct += stat.correctCount;
     current.questionCount += 1;
     tagAgg.set(tag, current);
   }
   const tagStats: TagStat[] = [...tagAgg.entries()]
-    .map(([tag, agg]) => ({ tag, attemptCount: agg.attempt, correctCount: agg.correct, accuracy: accuracyOf(agg.attempt, agg.correct), questionCount: agg.questionCount }))
-    .sort((a, b) => a.accuracy - b.accuracy || a.tag.localeCompare(b.tag, "ko"));
+    .map(([tag, agg]) => ({ tag, sectionCode: agg.sectionCode, attemptCount: agg.attempt, correctCount: agg.correct, accuracy: accuracyOf(agg.attempt, agg.correct), questionCount: agg.questionCount }))
+    .sort((a, b) => (sectionOrder.get(a.sectionCode) ?? 0) - (sectionOrder.get(b.sectionCode) ?? 0) || a.accuracy - b.accuracy || a.tag.localeCompare(b.tag, "ko"));
 
   const hardestQuestions = questionStats
     .filter((stat) => stat.attemptCount >= HARDEST_MIN_ATTEMPTS)
