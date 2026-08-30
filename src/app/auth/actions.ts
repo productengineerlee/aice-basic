@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { safeNext } from "@/lib/safe-redirect";
 
-export type AuthState = { error?: string; success?: string; name?: string; email?: string };
+export type AuthState = { error?: string; success?: string; email?: string };
 
 const message = (error: unknown) => error instanceof Error ? error.message : "요청을 처리하지 못했습니다.";
 
@@ -29,17 +29,15 @@ const authMessage = (value: string | undefined | null) => {
 };
 
 export async function signUp(_: AuthState, formData: FormData): Promise<AuthState> {
-  const name  = String(formData.get("name")  ?? "").trim();
   const email = String(formData.get("email") ?? "").trim().toLowerCase();
   const password        = String(formData.get("password")        ?? "");
   const confirmPassword = String(formData.get("confirmPassword") ?? "");
-  const terms   = formData.get("terms")   === "on";
-  const privacy = formData.get("privacy") === "on";
+  const agree = formData.get("agree") === "on";
 
   if (!email)                        return { error: "이메일을 입력해 주세요." };
   if (password.length < 8)           return { error: "비밀번호는 8자 이상이어야 합니다." };
   if (password !== confirmPassword)  return { error: "비밀번호가 일치하지 않습니다." };
-  if (!terms || !privacy)            return { error: "필수 약관에 동의해 주세요." };
+  if (!agree)                        return { error: "이용약관 및 개인정보 처리방침에 동의해 주세요." };
 
   let sessionCreated = false;
   try {
@@ -50,7 +48,6 @@ export async function signUp(_: AuthState, formData: FormData): Promise<AuthStat
       options: {
         emailRedirectTo: `${siteUrl()}/auth/callback`,
         data: {
-          full_name:       name || undefined,
           terms_version:   "2026-07-12",
           privacy_version: "2026-07-12",
         },
@@ -65,7 +62,7 @@ export async function signUp(_: AuthState, formData: FormData): Promise<AuthStat
   } catch (error) { return { error: message(error) }; }
 
   if (sessionCreated) redirect("/dashboard");
-  return { success: "인증 메일을 보냈습니다. 이메일의 인증 링크를 확인해 주세요.", name, email };
+  return { success: "인증 메일을 보냈습니다. 이메일의 인증 링크를 확인해 주세요.", email };
 }
 
 export async function signIn(_: AuthState, formData: FormData): Promise<AuthState> {

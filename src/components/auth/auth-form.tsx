@@ -16,14 +16,12 @@ const copy = {
 
 export function AuthForm({ mode, action, next }: Props) {
   const [state, formAction, pending] = useActionState(action, {});
-  const [nameVal,  setNameVal]  = useState("");
   const [emailVal, setEmailVal] = useState("");
 
-  // 서버 액션이 name/email을 돌려줄 때 입력칸에 복원
+  // 서버 액션이 email을 돌려줄 때 입력칸에 복원
   useEffect(() => {
-    if (state.name  !== undefined) setNameVal(state.name);
     if (state.email !== undefined) setEmailVal(state.email);
-  }, [state.name, state.email]);
+  }, [state.email]);
 
   const passwordNeeded = mode === "login" || mode === "signup" || mode === "update";
   const emailNeeded    = mode !== "update";
@@ -36,20 +34,6 @@ export function AuthForm({ mode, action, next }: Props) {
       </div>
       <form action={formAction} className="auth-form">
         {next && <input type="hidden" name="next" value={next} />}
-        {/* 이름 — 회원가입 전용, 선택 입력 */}
-        {mode === "signup" && (
-          <label>
-            이름 (선택)
-            <input
-              name="name"
-              type="text"
-              autoComplete="name"
-              placeholder="홍길동"
-              value={nameVal}
-              onChange={e => setNameVal(e.target.value)}
-            />
-          </label>
-        )}
 
         {/* 이메일 */}
         {emailNeeded && (
@@ -101,12 +85,11 @@ export function AuthForm({ mode, action, next }: Props) {
         {mode === "signup" && (
           <div className="agreements">
             <label>
-              <input name="terms" type="checkbox" required />
-              <span><b>[필수]</b> 이용약관에 동의합니다.</span>
-            </label>
-            <label>
-              <input name="privacy" type="checkbox" required />
-              <span><b>[필수]</b> 개인정보 수집·이용에 동의합니다.</span>
+              <input name="agree" type="checkbox" required />
+              <span>
+                <b>[필수]</b> <Link href="/terms" target="_blank">이용약관</Link> 및{" "}
+                <Link href="/privacy" target="_blank">개인정보 처리방침</Link>에 동의합니다.
+              </span>
             </label>
           </div>
         )}
