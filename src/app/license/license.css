@@ -16,6 +16,7 @@
 .license-section-head{display:flex;align-items:baseline;gap:10px;margin-bottom:16px;flex-wrap:wrap}
 .license-section-head h2{font-size:19px;color:#122b45;margin:0}
 .license-section-head p{font-size:12px;color:#8a97a4;margin:0}
+.respondent-count{color:#1976d2;font-weight:800;font-size:13px}
 
 .schedule-table{border:1px solid #e6ebef;border-radius:12px;overflow:hidden}
 .schedule-row{display:grid;grid-template-columns:1.2fr 1fr 1fr 1.4fr;gap:10px;padding:13px 16px;font-size:13px;color:#3a4a58}

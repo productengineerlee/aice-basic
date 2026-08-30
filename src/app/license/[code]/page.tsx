@@ -64,7 +64,7 @@ export default async function LicenseDetailPage({ params }: { params: Promise<{ 
 
         {stats.sectionStats.length > 0 && (
           <section className="license-section">
-            <div className="license-section-head"><h2>출제범위별 전체 통계</h2><p>지금까지 총 {stats.respondentCount.toLocaleString()}명 응시자들의 정답률 통계데이터입니다.</p></div>
+            <div className="license-section-head"><h2>출제범위별 전체 통계</h2><p>지금까지 총 <b className="respondent-count">{stats.respondentCount.toLocaleString()}명</b> 응시자들의 정답률 통계데이터입니다.</p></div>
             <div className="section-bars">
               {stats.sectionStats.map((section) => (
                 <div key={section.code}>
