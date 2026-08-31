@@ -48,7 +48,10 @@ async function main() {
     uploaded++;
 
     const { data: urlData } = admin.storage.from(BUCKET).getPublicUrl(objectPath);
-    const { error: updateError } = await admin.from("questions").update({ image_url: urlData.publicUrl }).eq("id", questionId);
+    // Cache-busting query param: upsert overwrites the same object path, so without this
+    // the browser/CDN keeps serving the previous image for the cache-control max-age.
+    const versionedUrl = `${urlData.publicUrl}?v=${Date.now()}`;
+    const { error: updateError } = await admin.from("questions").update({ image_url: versionedUrl }).eq("id", questionId);
     if (updateError) throw new Error(`${SLUG} q${qnum} image_url update failed: ` + updateError.message);
     updated++;
   }
