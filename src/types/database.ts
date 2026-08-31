@@ -26,6 +26,8 @@ export interface Database {
       certifications: Table<{ id: string; code: string; name: string; description: string | null; is_active: boolean; sort_order: number; created_at: string }>;
       certification_schedules: Table<{ id: string; certification_id: string; round_name: string; exam_date: string | null; apply_start: string | null; apply_end: string | null; notes: string | null; sort_order: number; created_at: string }>;
       question_stat_seed: Table<{ question_id: string; attempt_count: number; correct_count: number }>;
+      qna_posts: Table<{ id: string; user_id: string; certification_id: string | null; title: string; content: string; is_active: boolean; created_at: string; updated_at: string }>;
+      qna_comments: Table<{ id: string; post_id: string; user_id: string; content: string; is_active: boolean; created_at: string; updated_at: string }>;
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;

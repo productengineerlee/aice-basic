@@ -28,6 +28,7 @@ export default async function Home() {
           <a href="/theory">핵심이론</a>
           <a href="https://aice.study/info/aice/basic" target="_blank" rel="noopener noreferrer">AIDU설치</a>
           <Link href="/license">자격증</Link>
+          <Link href="/qna">QnA</Link>
         </nav>
         <div className="header-actions">
           {user ? (
