@@ -27,7 +27,6 @@ export default async function Home() {
         <nav>
           <a href="#exams">샘플문제</a>
           <a href="#" className="nav-disabled">모의문제<span className="nav-soon">준비중</span></a>
-          <a href="/theory">핵심이론</a>
           <a href="https://aice.study/info/aice/basic" target="_blank" rel="noopener noreferrer">AIDU설치</a>
           <Link href="/license">자격증</Link>
           <Link href="/qna">QnA</Link>
@@ -35,7 +34,6 @@ export default async function Home() {
         <div className="header-actions">
           {user ? (
             <>
-              <a className="text-button" href="/mypage">학습 분석</a>
               <a className="primary small" href="/dashboard">내 대시보드</a>
               <form action={signOut}><button type="submit" className="text-button">로그아웃</button></form>
             </>
