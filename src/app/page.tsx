@@ -112,7 +112,7 @@ export default async function Home() {
                 <span><Clock3 size={13} />{exam.durationMinutes}분</span>
                 <span><ShieldCheck size={13} />{exam.questionCount}문항</span>
               </div>
-              <a className="exam-card-btn" href={user ? "/exams" : "/auth/signup"}>시험 정보 보기 <ArrowRight size={14} /></a>
+              <a className="exam-card-btn" href={user ? "/exams" : "/auth/signup"}>자세히 보기 <ArrowRight size={14} /></a>
             </article>
           ))}
         </div>
