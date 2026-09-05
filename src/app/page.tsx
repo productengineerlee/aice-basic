@@ -2,7 +2,7 @@ import { ArrowRight, CheckCircle2, Clock3, ShieldCheck } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { listExams } from "@/lib/exams";
+import { getSiteStats, listExams } from "@/lib/exams";
 import { signOut } from "@/app/auth/actions";
 
 const kindLabel: Record<string, string> = { classification: "분류", regression: "회귀", mixed: "복합" };
@@ -10,9 +10,10 @@ const kindColor: Record<string, string> = { classification: "blue", regression: 
 
 export default async function Home() {
   const supabase = await createClient();
-  const [{ data: { user } }, exams] = await Promise.all([
+  const [{ data: { user } }, exams, siteStats] = await Promise.all([
     supabase.auth.getUser(),
     listExams(),
+    getSiteStats(),
   ]);
 
   return (
@@ -89,6 +90,8 @@ export default async function Home() {
         <div><b>60</b><span>분</span></div>
         <div><b>80</b><span>점 이상 합격</span></div>
         <div><b>100%</b><span>노코딩 실기</span></div>
+        <div><b>{siteStats.attemptCount.toLocaleString("ko-KR")}</b><span>누적 응시 횟수</span></div>
+        <div><b>{siteStats.answeredCount.toLocaleString("ko-KR")}</b><span>누적 문제 풀이</span></div>
       </section>
 
       {/* ── EXAMS ── */}

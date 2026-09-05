@@ -128,3 +128,19 @@ export async function getExam(slug: string): Promise<PublicExam | null> {
     questions: publicQuestions,
   };
 }
+
+export type SiteStats = { attemptCount: number; answeredCount: number };
+
+/** Site-wide usage counters for the landing page stat strip. Counts every attempt row
+ * regardless of status (in_progress/expired/graded) — a fresh start counts immediately,
+ * matching what a visitor would intuitively call "누적 응시 횟수". */
+export async function getSiteStats(): Promise<SiteStats> {
+  const admin = createAdminClient();
+  const { data, error } = await admin.from("attempts").select("answered_count");
+  if (error) throw new Error("이용 현황을 불러오지 못했습니다.");
+  const rows = data ?? [];
+  return {
+    attemptCount: rows.length,
+    answeredCount: rows.reduce((sum, row) => sum + (row.answered_count ?? 0), 0),
+  };
+}

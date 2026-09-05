@@ -361,7 +361,7 @@ a { text-decoration: none; color: inherit; }
   display: flex;
   align-items: stretch;
   justify-content: center;
-  max-width: 680px;
+  max-width: 900px;
   margin: 32px auto;
 }
 .exam-facts > div {
