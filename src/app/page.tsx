@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { listExams } from "@/lib/exams";
+import { signOut } from "@/app/auth/actions";
 
 const kindLabel: Record<string, string> = { classification: "분류", regression: "회귀", mixed: "복합" };
 const kindColor: Record<string, string> = { classification: "blue", regression: "violet", mixed: "blue" };
@@ -35,6 +36,7 @@ export default async function Home() {
             <>
               <a className="text-button" href="/mypage">학습 분석</a>
               <a className="primary small" href="/dashboard">내 대시보드</a>
+              <form action={signOut}><button type="submit" className="text-button">로그아웃</button></form>
             </>
           ) : (
             <a className="text-button" href="/auth/login">로그인</a>
