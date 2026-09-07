@@ -94,15 +94,17 @@ export default async function AdminAttemptsPage({ searchParams }: { searchParams
       </div>
 
       <div className="admin-panel-head"><div><span>ATTEMPTS</span><h2>응시 목록</h2></div><small>{filtered.length}건</small></div>
-      <div className="admin-question-list">
-        {filtered.length ? filtered.map((row) => <article key={row.id}>
-          <div className="question-summary">
-            <div><span>{row.certName}</span><small>{new Date(row.startedAt).toLocaleString("ko-KR")}</small><b className={`admin-status status-${row.status}`}>{statusLabel[row.status]}</b></div>
-            <h3>{row.examTitle}</h3>
-            <p>{row.email}{row.totalScore !== null ? ` · ${row.totalScore}점` : ""}</p>
-          </div>
-        </article>) : <p>조건에 맞는 응시 기록이 없습니다.</p>}
-      </div>
+      {filtered.length ? <div className="admin-table-wrap"><table className="admin-table">
+        <thead><tr><th>자격증</th><th>시험명</th><th>이메일</th><th>상태</th><th>점수</th><th>시작일시</th></tr></thead>
+        <tbody>{filtered.map((row) => <tr key={row.id}>
+          <td>{row.certName}</td>
+          <td>{row.examTitle}</td>
+          <td>{row.email}</td>
+          <td><b className={`admin-status status-${row.status}`}>{statusLabel[row.status]}</b></td>
+          <td>{row.totalScore !== null ? `${row.totalScore}점` : "-"}</td>
+          <td>{new Date(row.startedAt).toLocaleString("ko-KR")}</td>
+        </tr>)}</tbody>
+      </table></div> : <p>조건에 맞는 응시 기록이 없습니다.</p>}
     </section>
   </main>;
 }
