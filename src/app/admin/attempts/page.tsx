@@ -1,0 +1,108 @@
+import Link from "next/link";
+import { ClipboardList } from "lucide-react";
+import { createAdminClient } from "@/lib/supabase/admin";
+import type { AttemptStatus } from "@/types/database";
+
+const AICE_LABEL = "AICE (자격증 아님)";
+const statusLabel: Record<AttemptStatus, string> = {
+  in_progress: "진행중",
+  expired: "시간종료",
+  submitted: "제출완료",
+  graded: "채점완료",
+};
+
+async function loadAttempts() {
+  const admin = createAdminClient();
+  const [{ data: attempts, error: attemptError }, { data: exams, error: examError }, { data: certifications, error: certError }] = await Promise.all([
+    admin.from("attempts").select("id,user_id,exam_id,status,total_score,started_at").order("started_at", { ascending: false }),
+    admin.from("exams").select("id,title,certification_id"),
+    admin.from("certifications").select("id,name"),
+  ]);
+  if (attemptError || examError || certError || !attempts || !exams || !certifications) throw new Error("응시 현황을 불러오지 못했습니다.");
+
+  const users: { id: string; email: string | null }[] = [];
+  for (let page = 1; ; page++) {
+    const { data, error } = await admin.auth.admin.listUsers({ page, perPage: 1000 });
+    if (error) throw new Error("회원 정보를 불러오지 못했습니다.");
+    users.push(...data.users.map((user) => ({ id: user.id, email: user.email ?? null })));
+    if (data.users.length < 1000) break;
+  }
+
+  const examById = new Map(exams.map((exam) => [exam.id, exam]));
+  const certNameById = new Map(certifications.map((cert) => [cert.id, cert.name]));
+  const emailByUserId = new Map(users.map((user) => [user.id, user.email]));
+
+  return attempts.map((attempt) => {
+    const exam = examById.get(attempt.exam_id);
+    const certName = exam?.certification_id ? (certNameById.get(exam.certification_id) ?? "알 수 없음") : AICE_LABEL;
+    return {
+      id: attempt.id,
+      email: emailByUserId.get(attempt.user_id) ?? "탈퇴한 회원",
+      examTitle: exam?.title ?? "삭제된 시험",
+      certName,
+      status: attempt.status,
+      totalScore: attempt.total_score,
+      startedAt: attempt.started_at,
+    };
+  });
+}
+
+export default async function AdminAttemptsPage({ searchParams }: { searchParams: Promise<{ cert?: string; status?: string }> }) {
+  const query = await searchParams;
+  const rows = await loadAttempts();
+
+  const certNames = [...new Set(rows.map((row) => row.certName))].sort((a, b) => a.localeCompare(b, "ko"));
+  const filtered = rows.filter((row) => (!query.cert || row.certName === query.cert) && (!query.status || row.status === query.status));
+
+  const buildHref = (next: { cert?: string; status?: string }) => {
+    const params = new URLSearchParams();
+    const cert = next.cert !== undefined ? next.cert : query.cert;
+    const status = next.status !== undefined ? next.status : query.status;
+    if (cert) params.set("cert", cert);
+    if (status) params.set("status", status);
+    const search = params.toString();
+    return `/admin/attempts${search ? `?${search}` : ""}`;
+  };
+
+  const stats = {
+    total: filtered.length,
+    inProgress: filtered.filter((row) => row.status === "in_progress").length,
+    graded: filtered.filter((row) => row.status === "graded" || row.status === "submitted").length,
+    expired: filtered.filter((row) => row.status === "expired").length,
+  };
+
+  return <main className="admin-content">
+    <header className="admin-page-head compact">
+      <div><span>MEMBER ACTIVITY</span><h1>전체 응시 현황</h1><p>회원이 응시한 AICE·자격증 시험 기록을 한 곳에서 확인합니다.</p></div>
+    </header>
+
+    <section className="admin-stats">
+      <article><ClipboardList /><div><span>전체 응시</span><strong>{stats.total}</strong></div></article>
+      <article><ClipboardList /><div><span>진행중</span><strong>{stats.inProgress}</strong></div></article>
+      <article><ClipboardList /><div><span>채점·제출 완료</span><strong>{stats.graded}</strong></div></article>
+      <article><ClipboardList /><div><span>시간종료</span><strong>{stats.expired}</strong></div></article>
+    </section>
+
+    <section className="admin-panel">
+      <div className="tag-filter">
+        <Link className={!query.cert ? "active" : ""} href={buildHref({ cert: undefined })}>전체</Link>
+        {certNames.map((name) => <Link key={name} className={query.cert === name ? "active" : ""} href={buildHref({ cert: name })}>{name}</Link>)}
+      </div>
+      <div className="tag-filter">
+        <Link className={!query.status ? "active" : ""} href={buildHref({ status: undefined })}>전체 상태</Link>
+        {(Object.keys(statusLabel) as AttemptStatus[]).map((status) => <Link key={status} className={query.status === status ? "active" : ""} href={buildHref({ status })}>{statusLabel[status]}</Link>)}
+      </div>
+
+      <div className="admin-panel-head"><div><span>ATTEMPTS</span><h2>응시 목록</h2></div><small>{filtered.length}건</small></div>
+      <div className="admin-question-list">
+        {filtered.length ? filtered.map((row) => <article key={row.id}>
+          <div className="question-summary">
+            <div><span>{row.certName}</span><small>{new Date(row.startedAt).toLocaleString("ko-KR")}</small><b className={`admin-status status-${row.status}`}>{statusLabel[row.status]}</b></div>
+            <h3>{row.examTitle}</h3>
+            <p>{row.email}{row.totalScore !== null ? ` · ${row.totalScore}점` : ""}</p>
+          </div>
+        </article>) : <p>조건에 맞는 응시 기록이 없습니다.</p>}
+      </div>
+    </section>
+  </main>;
+}
