@@ -5,7 +5,7 @@ import "../exams/exams.css";
 import "./theory.css";
 
 export default async function TheoryPage() {
-  const sections = await listTheoryContent();
+  const sections = await listTheoryContent(null);
   return <main className="exam-app">
     <ExamHeader />
     <section className="exam-container theory-container">
