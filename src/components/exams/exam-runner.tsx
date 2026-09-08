@@ -33,10 +33,10 @@ function formatPrompt(prompt: string) {
   const bulletPattern = /(\S)\s+([oOㅇ○])\s+/g;
   if (bulletPattern.test(prompt)) {
     let isFirstItem = true;
-    return prompt.replace(bulletPattern, (_, prev: string, marker: string) => {
+    return prompt.replace(bulletPattern, (_, prev: string) => {
       const separator = isFirstItem ? "\n\n" : "\n";
       isFirstItem = false;
-      return `${prev}${separator}${marker} `;
+      return `${prev}${separator}ㅇ `;
     });
   }
   // Some prompts use "-" as the bullet marker instead of o/O/ㅇ/○.
@@ -44,7 +44,7 @@ function formatPrompt(prompt: string) {
   return prompt.replace(/(\S)\s+-\s*(?=\S)/g, (_, prev: string) => {
     const separator = isFirstDash ? "\n\n" : "\n";
     isFirstDash = false;
-    return `${prev}${separator}- `;
+    return `${prev}${separator}ㅇ `;
   });
 }
 
