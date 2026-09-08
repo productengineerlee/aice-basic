@@ -193,20 +193,22 @@ a { text-decoration: none; color: inherit; }
 .eyebrow {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   font-size: 12px;
   font-weight: 800;
-  color: var(--blue);
+  color: #EAF2FF;
   letter-spacing: 0.4px;
-  background: #fff;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.35);
   border-radius: 100px;
-  padding: 6px 14px;
-  width: fit-content;
+  padding: 5px 14px;
+  width: 210px;
 }
 .eyebrow span {
   width: 18px;
   height: 2px;
-  background: var(--blue);
+  background: currentColor;
   border-radius: 2px;
   flex-shrink: 0;
   display: inline-block;
@@ -239,6 +241,7 @@ a { text-decoration: none; color: inherit; }
   background: #fff;
   color: var(--blue-h);
   box-shadow: 0 4px 14px rgba(15,23,42,0.18);
+  width: 210px;
 }
 .hero-actions .primary:hover { background: var(--blue-lt); box-shadow: 0 6px 18px rgba(15,23,42,0.22); }
 

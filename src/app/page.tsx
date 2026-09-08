@@ -46,7 +46,7 @@ export default async function Home() {
       {/* ── HERO ── */}
       <section className="hero">
         <div>
-          <div className="eyebrow">AICE BASIC 합격을 위한 실전 연습</div>
+          <div className="eyebrow">AICE BASIC 실전 연습</div>
           <h1>AIDU로 직접 풀고,<br /><em>실력은 데이터로 확인하세요.</em></h1>
           <div className="hero-actions">
             <a className="primary btn-lg" href={user ? "/exams" : "/auth/signup"}>
