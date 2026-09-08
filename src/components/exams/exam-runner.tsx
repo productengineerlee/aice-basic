@@ -30,11 +30,21 @@ function formatTime(seconds: number) {
 }
 
 function formatPrompt(prompt: string) {
-  let isFirstItem = true;
-  return prompt.replace(/(\S)\s+([oOㅇ○])\s+/g, (_, prev: string, marker: string) => {
-    const separator = isFirstItem ? "\n\n" : "\n";
-    isFirstItem = false;
-    return `${prev}${separator}${marker} `;
+  const bulletPattern = /(\S)\s+([oOㅇ○])\s+/g;
+  if (bulletPattern.test(prompt)) {
+    let isFirstItem = true;
+    return prompt.replace(bulletPattern, (_, prev: string, marker: string) => {
+      const separator = isFirstItem ? "\n\n" : "\n";
+      isFirstItem = false;
+      return `${prev}${separator}${marker} `;
+    });
+  }
+  // Some prompts use "-" as the bullet marker instead of o/O/ㅇ/○.
+  let isFirstDash = true;
+  return prompt.replace(/(\S)\s+-\s*(?=\S)/g, (_, prev: string) => {
+    const separator = isFirstDash ? "\n\n" : "\n";
+    isFirstDash = false;
+    return `${prev}${separator}- `;
   });
 }
 
