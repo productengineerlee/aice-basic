@@ -30,7 +30,7 @@ function formatTime(seconds: number) {
 }
 
 function formatPrompt(prompt: string) {
-  return prompt.replace(/(\S)\s+o\s+/g, (_, prev: string) => `${prev}\n\no `);
+  return prompt.replace(/(\S)\s+([oㅇ])\s+/g, (_, prev: string, marker: string) => `${prev}\n\n${marker} `);
 }
 
 export function ExamRunner({ exam }: { exam: PublicExam }) {
