@@ -1623,7 +1623,7 @@
       "slug": "sample-regression-2",
       "title": "[서비스/세일즈] 통신 이용요금 예측",
       "kind": "regression",
-      "source_pdf": "AICE 시험_샘플문항_Basic_회귀2\\AICE Basic 회귀1_해설지.pdf",
+      "source_pdf": "sample test\\AICE 시험_샘플문항_Basic_회귀2\\AICE Basic 회귀 #2_해설지_F.pdf",
       "dataset": "amount_edit_0722.csv",
       "duration_minutes": 60,
       "passing_score": 80,
@@ -1635,7 +1635,7 @@
           "competency_tags": [
             "문제 유형 판단"
           ],
-          "prompt": "본 과제 해결에 알맞은 알고리즘의 유형을 고르시오.",
+          "prompt": "본 과제 해결에 알맞은 알고리즘의 유형을 고르시오. (1) 회귀모형 (2) 분류모형 (3) 군집모형 (4) 시계열모형",
           "choices": [
             {
               "label": "1",
@@ -1673,7 +1673,104 @@
           "competency_tags": [
             "기초통계"
           ],
-          "prompt": "다음의 수치형 변수 기술통계량을 확인하고, 제3 사분위수(Q3)의 크기가 가장 작은 변수를 고르시 오.",
+          "prompt": "본 과제의 종속변수의 기술통계량을 확인하고, 최빈값 개수보다 작은 값을 가지는 것을 고르시오. (1) 0의 개수 (2) 최대값 (3) 데이터 개수 (4) 표준편차",
+          "choices": [
+            {
+              "label": "1",
+              "content": "0의 개수"
+            },
+            {
+              "label": "2",
+              "content": "최대값"
+            },
+            {
+              "label": "3",
+              "content": "데이터 개수"
+            },
+            {
+              "label": "4",
+              "content": "표준편차"
+            }
+          ],
+          "answer": {
+            "raw": "(1) 0의 개수",
+            "choice_label": "1",
+            "value": null,
+            "grading_type": "exact",
+            "decimal_places": null,
+            "tolerance": null
+          },
+          "explanation": "데이터 범위를 우측 끝까지 드래그하여 전체 데이터를 선택한 후 본 과제의 종속변수인 ‘납부 예정금액 (label_fee)’의 최빈값 개수는 1,259이며 0의 개수는 92, 최대값은 118182.00 데이터 개수는 9,000개, 표 준편차는 23873.05로 최빈값 개수보다 작은 값은 (1) 0의 개수입니다 .",
+          "score": 3.75,
+          "difficulty": 2
+        },
+        {
+          "number": 3,
+          "type": "single_choice",
+          "section": "eda",
+          "competency_tags": [
+            "데이터 유형"
+          ],
+          "prompt": "다음의 변수 중 변수의 유형(data type)이 다른 것을 고르시오. (1) 잔여약정개월수(agreement_month (2) 부가정보1(extra_info1) (3) 고객 관리수준(customer_level) (4) 이전 달 납부금액(prev_fee)",
+          "choices": [
+            {
+              "label": "1",
+              "content": "잔여약정개월수(agreement_month)"
+            },
+            {
+              "label": "2",
+              "content": "부가정보1(extra_info1)"
+            },
+            {
+              "label": "3",
+              "content": "고객 관리수준(customer_level)"
+            },
+            {
+              "label": "4",
+              "content": "이전 달 납부금액(prev_fee)"
+            }
+          ],
+          "answer": {
+            "raw": "(3) 고객 관리수준(customer_level)",
+            "choice_label": "3",
+            "value": null,
+            "grading_type": "exact",
+            "decimal_places": null,
+            "tolerance": null
+          },
+          "explanation": "수치형 변수와 범주형 변수를 구분하는 문제로 4가지 컬럼만 선택하고 보았을 때 수치형 3개, 범주형 1개인 것을 확인할 수 있다. 4개의 선택지 중 ‘고객 관리수준(customer_level)’이 A, B로 나뉘어지고 분위수가 나 와있지 않아 범주형 변수임을 확인할 수 있습니다.",
+          "score": 3.75,
+          "difficulty": 2
+        },
+        {
+          "number": 4,
+          "type": "percentage",
+          "section": "eda",
+          "competency_tags": [
+            "결측치 탐색"
+          ],
+          "prompt": "다음 중 결측치가 가장 많은 변수의 결측치 비율을 작성하시오.",
+          "choices": [],
+          "answer": {
+            "raw": "3.33",
+            "choice_label": null,
+            "value": "3.33",
+            "grading_type": "rounded",
+            "decimal_places": 2,
+            "tolerance": 0.01
+          },
+          "explanation": "컬럼 전체 선택 및 데이터 범위를 최대로 드래그한 후 기초 정보 분석 결과를 확인해보면 결측치가(missing) 있는 컬럼은 ‘잔여약정개월수(agreement_month)’, ‘할부여부(installment_yn)’, ‘고객등 급(customer_class)’, ‘이전 달 납부금액(prev_fee)’입니다. 그 중 결측치가 가장 많은 컬럼은 ‘이전 달 납부 금액(prev_fee)’으로 결측치 비율(missing(%))을 확인해보면 3.33임을 확인할 수 있습니다.",
+          "score": 3.75,
+          "difficulty": 2
+        },
+        {
+          "number": 5,
+          "type": "single_choice",
+          "section": "eda",
+          "competency_tags": [
+            "상관관계"
+          ],
+          "prompt": "'납부 예정금액(label_fee)' 변수와 가장 높은 양의 상관관계를 가지는 변수를 고르시오. (1) 잔여약정개월수(agreement_month (2) 부가정보1(extra_info1) (3) 부가정보2(extra_info2) (4) 이전 달 납부금액(prev_fee)",
           "choices": [
             {
               "label": "1",
@@ -1693,137 +1790,125 @@
             }
           ],
           "answer": {
-            "raw": "(2) 부가정보1(extra_info1)",
-            "choice_label": "2",
+            "raw": "이전 달 납부금액(prev_fee)",
+            "choice_label": "4",
             "value": null,
             "grading_type": "exact",
             "decimal_places": null,
             "tolerance": null
           },
-          "explanation": "데이터 분석-기초정보분석 메뉴에서 “데이터 범위”를 우측 끝까지 드래그 하여 전체 데이터를 선택해주시는 것이 가장 중요합니다. 기본 설정으로 분석을 하게 되면 전체 데이터가 아닌 일부 데이터에 대한 통계가 나오 기 때문에 잘못된 분석이 될 수 있습니다. 우리의 데이터는 데이터 범위를 끝까지 선택해보면 9,000개의 데이터라는 것을 알 수 있습니다. 이 기준으 로 선택지의 4가지 변수를 차례로 분석해보겠습니다. 각 변수의 “분위수” 항목에서 “Q3”를 비교해보시면 됩 니다. 선택지 순서대로 확인해보면 19.00, 4.00, 9.00, 68022.50이고 가장 작은 값을 가지는 변수는 ‘부가정 보1(extra_info1)’ [4.00] 입니다.",
-          "score": 7.5,
+          "explanation": "수치형 변수들 간의 상관관계를 분석하려면 데이터 분석 – 시각화 선택 메뉴의 히트맵을 선택한 후 각 수치 형 변수들 간의 상관관계를 확인하면 됩니다. 컬럼 선택에서 모든 변수가 선택된 상태에서 데이터 범위를 최 대치인 9,000으로 드래그 한 후 조회합니다. 나타난 우측 그래프에서 ‘납부 예정금액(label_fee)’과 다른 수치형 변수들에 마우스를 올리게 되면 ‘납부 예 정금액(label_fee)’ 변수와 가지는 상관관계 계수를 확인할 수 있습니다. 그 중 가장 높은 양의 상관관계 계 수를 가지는 변수를 확인할 수 있습니다.",
+          "score": 3.75,
           "difficulty": 2
         },
         {
-          "number": 3,
+          "number": 6,
+          "type": "unit_value",
+          "section": "eda",
+          "competency_tags": [
+            "이상치",
+            "분포차트"
+          ],
+          "prompt": "'고객등급(customer_class)'별 납부 '예정금액(label_fee)'의 분포를 확인하고 가장 큰 IQR 값을 작성하시오. - 소수 셋째자리에서 반올림하여 소수 둘째자리까지 작성 - 00.00k 형태로 작성",
+          "choices": [],
+          "answer": {
+            "raw": "41.55k",
+            "choice_label": null,
+            "value": "41.55k",
+            "grading_type": "exact",
+            "decimal_places": null,
+            "tolerance": null
+          },
+          "explanation": "범주형 변수 별로 수치형 변수의 분포를 확인하려면 데이터 분석 – 시각화 선택 메뉴의 박스차트를 통해 확 인하면 됩니다. 박스차트에서 X컬럼에는 주어진 범주형 변수인 ‘고객등급(customer_class)’, Y컬럼에는 주 어진 수치형 변수인 ‘납부 예정금액(label_fee)’을 선택 후 데이터 범위를 최대치인 9,000으로 드래그 한 후 조회합니다. 나타난 우측 그래프에서 각 ‘고객등급(customer_class)’의 값들과 ‘납부 예정금액(label_fee)’ 변수의 박스 차트를 확인하고, 그 중 IQR(1사분위수 값 - 3사분위수 값)이 가장 큰 ‘고객등급(customer_class)’을 찾고, 그 등급의 IQR 값을 확인하면 됩니다.",
+          "score": 3.75,
+          "difficulty": 2
+        },
+        {
+          "number": 7,
           "type": "integer",
           "section": "eda",
           "competency_tags": [
             "데이터 이해"
           ],
-          "prompt": "'고객등급(customer_class)'이 'VVIP'인 고객의 수를 작성하시오.",
+          "prompt": "'이전 달 납부금액(prev_fee)'이 28k~29.999k 사이의 값을 가지는 데이터 중 '고객등급 (customer_class)'이 'White'인 데이터와 'Silver'인 데이터의 수 차이를 작성하시오. - 정수로 작성하시오",
           "choices": [],
           "answer": {
-            "raw": "719",
+            "raw": "99",
             "choice_label": null,
-            "value": "719",
+            "value": "99",
             "grading_type": "exact",
             "decimal_places": null,
             "tolerance": null
           },
-          "explanation": "데이터 분석-기초정보분석 결과값 중에 '고객등급(customer_class)'의 최빈값 항목을 살펴보면 범주형 변 수의 항목 별 갯수를 확인할 수 있습니다. Value가 ‘VVIP’인 것을 찾아보면 고객의 수가 719인 것을 알 수 있습니다.",
-          "score": 7.5,
+          "explanation": "데이터분석-시각화 분석 메뉴의 ‘분포차트’를 통해 분석할 수 있는 문제입니다. 이전 달 납부금액인 ‘이전 달 납부금액(prev_fee)’을 ‘고객등급(customer_class)’별로 확인하기 위하여 X 컬럼에는 ‘이전 달 납부금액(prev_fee)’을, Hue컬럼에는 ‘고객등급(customer_class)’을 선택한 후 데이터 범위를 최대인 9,000으로 드래그한 후 조회해보면 우측 그래프의 등급 범례를 통해 white와 silver 색깔을 확인한 후 28K-29.999K 위치에 마우스를 가져다 대면 White의 데이터 수는 219, Silver의 데이터 수는 120임을 확인 할 수 있습니다. 따라서 두 데이터 수 차이는 219-120으로 99입니다.",
+          "score": 3.75,
           "difficulty": 2
         },
         {
-          "number": 4,
-          "type": "single_choice",
+          "number": 8,
+          "type": "text",
+          "section": "eda",
+          "competency_tags": [
+            "데이터 이해"
+          ],
+          "prompt": "'잔여약정개월수(agreement_month)'가 0의 값을 가지는 데이터 중 가장 데이터가 많은 '고객등급 (customer_class)'을 작성하시오.",
+          "choices": [],
+          "answer": {
+            "raw": "VIP",
+            "choice_label": null,
+            "value": "VIP",
+            "grading_type": "exact",
+            "decimal_places": null,
+            "tolerance": null
+          },
+          "explanation": "데이터의 비율 확인을 위하여 데이터 분석 – 시각화 분석 메뉴의 분포차트를 선택한 후 수치형 변수인 ‘잔여 약정개월수(agreement_month)’를 범주형 변수인 ‘고객등급(customer_class)’ 별로 확인하기 위하여 X 컬럼에는 ‘잔여약정개월수(agreement_month)’를 선택하고, Hue 컬럼에는 ‘고객등급(customer_class)’을 선택한 후 데이터 범위를 최대치인 9,000으로 드래그한 후 조회합니다. 우측 그래프에서 0부분의 데이터 분포를 확인해보면 가장 많은 비율을 차지하는 고객의 등급이 무엇인지 색 깔을 우측 범례에서 확인할 수 있습니다.",
+          "score": 3.75,
+          "difficulty": 2
+        },
+        {
+          "number": 9,
+          "type": "unit_value",
           "section": "eda",
           "competency_tags": [
             "기초통계"
           ],
-          "prompt": "다음의 범주형 변수 기술통계량을 확인하고, 특정 범주에 90%이상의 데이터가 몰려 있는 변수를 고르시오.",
-          "choices": [
-            {
-              "label": "1",
-              "content": "고객등급(customer_class)"
-            },
-            {
-              "label": "2",
-              "content": "고객 관리수준(customer_level)"
-            },
-            {
-              "label": "3",
-              "content": "서비스 구분(service_category)"
-            },
-            {
-              "label": "4",
-              "content": "이전 달 납부금액(prev_fee)"
-            }
-          ],
+          "prompt": "'고객 관리수준(customer_level)'이 ‘B’인 사람 중 '할부여부(installment_yn)’가 Y인 사람의 '납부 예정금액(label_fee)'의 중앙값을 작성하시오. - 00k 형태로 작성하시오.",
+          "choices": [],
           "answer": {
-            "raw": "(3) 서비스 구분(service_category)",
-            "choice_label": "3",
-            "value": null,
+            "raw": "50k",
+            "choice_label": null,
+            "value": "50k",
             "grading_type": "exact",
             "decimal_places": null,
             "tolerance": null
           },
-          "explanation": "데이터 분석-기초정보분석 결과값 중에 선택지의 3가지 변수의 최빈값 항목을 살펴보면 각 항목 별 개수뿐 만 아니라 전체 데이터 중에 차지하는 비율(Count(%))도 확인할 수 있습니다. 최빈값 항목의 첫 번째 값이 최빈값을 의미하는데 3가지 변수의 최빈값의 비율은 각각 42.54%, 64.88%, 99.98% 입니다. 따라서 특정 범주에 90%이상의 데이터가 몰려 있는 변수는 ‘서비스 구분(service_category)’ 입니다.",
-          "score": 7.5,
+          "explanation": "범주형 변수 별로 수치형 변수의 분포를 확인하려면 데이터 분석 – 시각화 선택 메뉴의 박스차트를 통해 확 인하면 됩니다. 박스차트에서 X컬럼에는 주어진 범주형 변수인 ‘고객등급(customer_class)’, Y컬럼에는 주 어진 수치형 변수인 ‘납부 예정금액(label_fee)’을 선택, 또 다른 범주형 변수인 ‘할부여부(installment_yn)’ 를 hue 컬럼으로 선택한 후 데이터 범위를 최대치인 9,000으로 드래그 한 후 조회합니다. 나타난 우측 그래프에서 마우스를 올려, 문제에서 요구한 ‘고객 관리수준(customer_level)’이 ‘B’이면서, ‘할 부여부(installment_yn)’가 ‘Y’인 데이터의 ‘납부 예정금액(label_fee)’ 변수의 중앙값을 확인하면 됩니다.",
+          "score": 3.75,
           "difficulty": 2
         },
         {
-          "number": 5,
-          "type": "single_choice",
-          "section": "eda",
-          "competency_tags": [
-            "시각화"
-          ],
-          "prompt": "각 '고객등급(customer_class)' 별 '납부 예정금액(label_fee)'을 시각화하고, 제1사분위수(Q1)가 가장 낮은 '고객등급(customer_class)'을 고르시오.",
-          "choices": [
-            {
-              "label": "1",
-              "content": "일반"
-            },
-            {
-              "label": "2",
-              "content": "Gold"
-            },
-            {
-              "label": "3",
-              "content": "Silver"
-            },
-            {
-              "label": "4",
-              "content": "White"
-            }
-          ],
-          "answer": {
-            "raw": "(1) 일반",
-            "choice_label": "1",
-            "value": null,
-            "grading_type": "exact",
-            "decimal_places": null,
-            "tolerance": null
-          },
-          "explanation": "데이터 분석-시각화 분석 메뉴에서 사분위수 분석을 할 수 있는 시각화 도구는 ‘박스차트’입니다. 시각화 선 택에서 ‘박스차트’를 선택해주세요. Y컬럼에 분석 대상인 수치형 변수를 선택하고 Hue에는 세분화시켜 볼 범 주형 변수를 선택해주면 됩니다. 이 문항에서는 ‘납부 예정금액(label_fee)’이라는 수치형 변수를 ‘고객등급 (customer_class)’이라는 범주형 변수 별로 세분화시켜야 합니다. 따라서 Y 컬럼 선택에서는 ‘납부 예정금 액(label_fee)’을 고르시고 Hue 컬럼 선택에서는 ‘고객등급(customer_class)’을 고르시면 됩니다. 이때, 기 초정보분석 때와 마찬가지로 ‘데이터 범위’를 우측 끝까지 드래그 하셔서 전체 데이터(9,000개)가 선택되도 록 해주십시오. 여기까지 설정하셨으면 ‘조회하기’ 버튼을 클릭하여 박스차트 결과를 우측에서 확인할 수 있습 니다. 박스차트에서 박스의 상단은 제3사분위수(Q3), 박스의 하단은 제1사분위수(Q1) 값을 의미합니다. 각 등급 별 박스의 하단 값을 비교하면 제1사분위수(Q1)가 가장 낮은 ‘고객등급(customer_class)’이 ‘일반’임을 확인할 수 있습니다. 이때, 각 박스가 어떤 ‘고객등급(customer_class)’을 의미하는지는 우측의 색상 범례를 통해 확인할 수 있습니다.",
-          "score": 7.5,
-          "difficulty": 2
-        },
-        {
-          "number": 6,
-          "type": "integer",
+          "number": 10,
+          "type": "percentage",
           "section": "preprocessing",
           "competency_tags": [
             "결측치 처리"
           ],
-          "prompt": "종속변수를 제외한 모든 변수에 대해 결측치가 있는 경우, 수치형 변수는 중앙값, 범주형 변 수는 최빈값으로 결측치를 대체하시오. 데이터 가공 후, 변화된 '할부여부(installment_yn)'의 최빈 값의 개수를 작성하시오. O 수치형 변수 : \"label_fee\", \"agreement_month\", \"extra_info1\", \"extra_info2\", \"prev_fee\" O 범주형 변수 : \"installment_yn\", \"customer_class\", \"customer_level\", \"service_category\" O 수행 후 [가공 데이터 저장]을 클릭하여 가공된 데이터를 저장하시오.",
+          "prompt": "종속변수를 제외한 모든 변수에 대해 결측치가 있는 경우, 수치형 변수는 평균값, 범주형 변수는 최 빈값으로 결측치를 대체하시오. 데이터 가공 후, 변화된 ‘고객등급(customer_class)’의 최빈값의 비율(%)을 작성하시요. - 수치형 변수: ‘납부 예정금액(label_fee)’, ‘잔여약정개월수(agreement_month)’, ‘부가정보1(extra_info1)’, ‘부가정보2(extra_info2)’, ‘이전 달 납부금액(prev_fee)’ - 범주형 변수: ‘할부여부(installment_yn)’, ‘고객등급(customer_class)’, ‘고객 관리수준(customer_level)’ - 수행 후 [가공 데이터 저장]을 클릭하여 가공된 데이터를 저장하시오. - 00.00 형식으로 작성하시오. 예시) 12.34",
           "choices": [],
           "answer": {
-            "raw": "4611",
+            "raw": "44.77",
             "choice_label": null,
-            "value": "4611",
-            "grading_type": "exact",
-            "decimal_places": null,
-            "tolerance": null
+            "value": "44.77",
+            "grading_type": "rounded",
+            "decimal_places": 2,
+            "tolerance": 0.01
           },
-          "explanation": "데이터 가공은 ‘데이터 가공’ 메뉴에서 진행합니다. 가공에 앞서 결측치가 있는 변수를 찾아야 하는데 요. 앞에서 다룬 기초정보분석 메뉴로 다시 돌아가서 확인하는 방법도 있지만 데이터 가공하기 메뉴 에서 각 변수를 클릭해보면 우측에 기초정보분석에서 본것과 동일한 분석결과를 확인할 수 있습니다. 결측치 개수는 ‘missing’ 값을 확인하면 되는데, 각 변수에서 ‘missing’이 0이 아닌 변수를 찾아주 시면 됩니다. 종속변수(label_fee)를 제외한 나머지 변수를 차례대로 확인해보겠습니다. 1. ‘잔여약정개월수(agreement_month)’: 수치형 변수, 결측치 100개 -> 중앙값(median)으 로 결측치 대체 2. '할부여부(installment_yn)': 범주형 변수, 결측치 100개 -> 최빈값(most_frequent)으로 결측치 대체 3. ‘고객등급(customer_class)’: 범주형 변수, 결측치 200개 -> 최빈값(most_frequent)으 로 결측치 대체 4. ‘이전 달 납부금액(prev_fee)’: 수치형 변수, 결측치 300개 -> 중앙값(median)으로 결측 치 대체 예를 들어 ‘할부여부(installment_yn)’의 결측치를 대체해보도록 하겠습니다. ‘할부여부 (installment_yn)’를 선택하고 ‘데이터 가공 실행’의 ‘결측값 처리’ 기능을 사용해보겠습니다. 결측값 을 처리할 수 있는 방식은 목록을 클릭해보면 most_frequent(최빈값), constant(상수값)이 있는데, 문제에서 지정해준 most_frequent(최빈값)를 선택해주면 됩니다. 결측치 처리 방식을 선택한 뒤에 는 ‘보기’ 버튼을 눌러 우측에서 결과를 확인한 뒤에 ‘적용’ 버튼을 눌러 변수에 적용까지 해주셔야 합 니다. ‘ 적용’ 버튼까지 잘 누르셨다면 좌측 변수 목록의 하단에 ‘변수명_IM’이라는 결측치가 처리된 변 수가 새로 생성된 것을 볼 수 있습니다. 이 새로운 변수를 클릭해보면 ‘missing’값이 0으로 변한 것 을 확인할 수 있습니다. 변화된 ‘installment_yn’의 최빈값의 개수는 새로 생성된 ‘installment_yn_IM’ 변수의 최빈값을 확인해주시면 되고 최빈값은 ‘N’이고 그 개수는 4611개입니 다. 마지막으로 데이터 가공과 결과값 확인이 끝났다면 하단의 ‘가공 데이터 저장’ 버튼을 클릭하여 결과 값을 저장해주시면 됩니다.",
+          "explanation": "데이터 가공은 ‘데이터 가공’ 메뉴에서 진행합니다. 가공에 앞서 결측치가 있는 변수를 찾아야 하는데 요. 앞에서 다룬 기초정보분석 메뉴로 다시 돌아가서 확인하는 방법도 있지만 데이터 가공하기 메뉴 에서 각 변수를 클릭해보면 우측에 기초정보분석에서 본것과 동일한 분석결과를 확인할 수 있습니다. 결측치 개수는 ‘missing’ 값을 확인하면 되는데, 각 변수에서 ‘missing’이 0이 아닌 변수를 찾아주 시면 됩니다. 종속변수인 ‘납부 예정금액(label_fee)’을 제외한 나머지 변수를 차례대로 확인해보겠습 니다. 1. ‘잔여약정개월수(agreement_month)’ : 수치형 변수, 결측치 100개 -> 평균값(mean)으 로 결측치 대체 2. '할부여부(installment_yn)' : 범주형 변수, 결측치 100개 -> 최빈값(most_frequent)으로 결측치를 대체 3. ‘고객등급(customer_class)’ : 범주형 변수, 결측치 200개 -> 최빈값(most_frequent)으 로 결측치를 대체 4. ‘이전 달 납부금액(prev_fee)’ : 수치형 변수, 결측치 300개 -> 평균값(mean)으로 결측치 대체 예를 들어 ‘고객등급(customer_class)’의 결측치를 대체해보도록 하겠습니다. ‘고객등급 (customer_class)’을 선택하고 ‘데이터 가공 실행’의 ‘결측값 처리’ 기능을 사용해보겠습니다. 결측 값을 처리할 수 있는 방식은 목록을 클릭해보면 most_frequent(최빈값), constant(상수값)이 있는 데, 문제에서 지정해준 most_frequent(최빈값)를 선택해주면 됩니다. 결측치 처리 방식을 선택한 뒤에는 ‘보기’ 버튼을 눌러 우측에서 결과를 확인한 뒤에 ‘적용’ 버튼을 눌러 변수에 적용까지 해주셔 야 합니다. ‘적용’ 버튼까지 잘 누르셨다면 좌측 변수 목록의 하단에 ‘고객등급(customer_class_IM)’ 이라는 결측치가 처리된 변수가 새로 생성된 것을 볼 수 있습니다. 이 새로운 변수를 클릭해보면 ‘missing’값이 0으로 변한 것을 확인할 수 있습니다. 변화된 ‘고객등급(customer_class)’의 최빈값 의 개수는 새로 생성된 ‘고객등급(customer_class_IM)’ 변수의 최빈값을 확인해주시면 되고 최빈값 은 ‘VIP’이고 그 비율은 44.77%입니다. 마지막으로 데이터 가공과 결과값 확인이 끝났다면 하단의 ‘가공 데이터 저장’ 버튼을 클릭하여 결과 값을 저장해주시면 됩니다.",
           "score": 30,
           "difficulty": 2
         },
         {
-          "number": 7,
+          "number": 11,
           "type": "single_choice",
           "section": "evaluation",
           "competency_tags": [
@@ -1831,7 +1916,7 @@
             "머신러닝",
             "모델 평가 지표"
           ],
-          "prompt": "3 개의 머신러닝 모델을 다음과 같은 설정으로 학습하고, 이 중 설명력(R2)이 평균적으로 가 장 높은 모델을 선택하시오. O 작업 데이터 선택 - 문항 6번의 데이터 가공을 통해 신규로 저장된 데이터 사용, 별도의 스케일링 처리 불필요. O 학습 유형 - 본 과제 해결에 알맞은 알고리즘의 유형을 고려하여 선택 O ML 모델 선택 - Linear Regression, Decision Tree Regressor, Random Forest Regressor O Output 컬럼 - \"종속 변수\"를 output 컬럼으로 지정 O Input 컬럼 - 문항 4번의 정답 컬럼은 제외 컬럼으로 지정 - 문항 6번의 결측치 처리에 사용된 '변환하기 전의 변수'는 제외 컬럼으로 지정 O Data Parameter 설정 - 종속변수의 데이터 유형은 모델 유형에 맞게 설정하고, 나머지는 초기 설정값 사용 O 모델 Parameter 설정 - 초기 설정값 사용 (1) Linear Regression (2) Decision Tree Regressor (3) Random Forest Regressor",
+          "prompt": "3개의 머신러닝 모델을 다음과 같은 설정으로 학습하고, 이 중 MAE 평균이 최종적으로 가장 작은 모델을 고르시오 ㅇ 작업데이터 선택 - 문항 10번의 데이터 가공을 통해 신규로 저장된 데이터 사용, 별도의 스케일링 처리 불필요 ㅇ 학습유형 - 본 과제 해결에 알맞은 알고리즘의 유형을 고려하여 선택 ㅇ ML 모델 선택 - Linear Regression, Decision Tree Regressor, Random Forest Regressor ㅇ Input 컬럼 - 문항 10번의 결측치 처리에 사용된 ‘변환하기 전의 변수’는 제외 컬럼으로 지정 ㅇ Output 컬럼 - “종속 변수”를 output 컬럼으로 지정 ㅇ Data Parameter 설정 - 데이터 유형은 모델 유형에 맞게 설정하고, 나머지는 초기 설정값 사용 ㅇ 모델 Parameter 설정 - 초기 설정값 사용 (1) Linear Regression (2) Decision Tree Regressor (3) Random Forest Regressor",
           "choices": [
             {
               "label": "1",
@@ -1854,78 +1939,78 @@
             "decimal_places": null,
             "tolerance": null
           },
-          "explanation": "AI모델학습-머신러닝 메뉴로 이동합니다. 문제에서 주어진 가이드에 따라 문항6번에서 가공하고 저장한 데 이터(‘amount_processed’)를 ‘작업 데이터 선택’에서 선택합니다. 다음으로 ‘학습 유형’은 문항1번에서 확인 했듯이 Regression(회귀)를 선택합니다. 학습에 사용할 3가지 모델(Linear Regression, Decision Tree Regressor, Random Forest Regressor)을 ‘ML 모델 선택’에서 선택합니다. 종속 변수인 ‘label_fee’를 Input 컬럼 목록에서 선택하여 위쪽 방향 화살표를 클릭하여 Output 컬럼으로 옮겨줍니다. 문항 4번의 정 답(특정 범주에 90%이상의 데이터가 몰려 있는 변수)인 ‘서비스 구분(service_category)’ 변수와 문항 6 번의 결측치 처리에 사용된 ‘변환하기 전의 변수’인 ‘잔여약정개월수(agreement_month)’, ' 할부여부 (installment_yn)', ‘고객등급(customer_clas s)’, ‘ 이전 달 납부금액(prev_fee)’을 각각 선택 후 아래쪽 방향 화살표를 클릭하여 제외 컬럼으로 옮겨줍 니다. 나머지 파라미터(parameter)는 기본값으로 놔두고 ‘학습 시작’ 버튼을 눌러줍니다. 조금 기다리면 우 측에 학습 결과가 나타나는데요. 여러 성능 평가 지표 중에 문항에서 제시한 설명력(R2)이 평균적으로 가장 높은 모델은 R2가 가장 높은 Random Forest Regressor입니다.",
+          "explanation": "AI모델학습-머신러닝 메뉴로 이동합니다. 문제에서 주어진 가이드에 따라 문항10번에서 가공하고 저장한 데 이터를 ‘작업 데이터 선택’에서 선택합니다. 다음으로 ‘학습 유형’은 문항1번에서 확인했듯이 Regression(회 귀)를 선택합니다. 학습에 사용할 3가지 모델(Linear Regression, Decision Tree Regressor, Random Forest Regressor)을 ‘ML 모델 선택’에서 선택합니다. 종속 변수인 ‘납부 예정금액(label_fee)’을 Input 컬 럼 목록에서 선택하여 위쪽 방향 화살표를 클릭하여 Output 컬럼으로 옮겨줍니다. 문항 10번의 결측치 처리 에 사용된 ‘변환하기 전의 변수’인 ‘잔여약정개월수(agreement_month)’, ‘할부여부(installment_yn)’, ‘고객 등급(customer_class)’, ‘이전 달 납부금액(prev_fee)’을 각각 선택 후 아래쪽 방향 화살표를 클릭하여 제외 컬럼으로 옮겨줍니다. 나머지 파라미터(parameter)는 기본값으로 놔두고 ‘학습 시작’ 버튼을 눌러줍니다. 조 금 기다리면 우측에 학습 결과가 나타나는데요. 여러 성능 평가 지표 중에 문항에서 제시한 MAE이 평균적으 로 가장 낮은 모델은 Random Forest Regressor입니다.",
           "score": 4.8,
           "difficulty": 2
         },
         {
-          "number": 8,
+          "number": 12,
           "type": "decimal",
           "section": "evaluation",
           "competency_tags": [
             "딥러닝",
             "모델 평가 지표"
           ],
-          "prompt": "딥러닝 모델을 다음과 같은 설정으로 학습하고, 학습된 모델의 MSE를 작성하시오. O 작업 데이터 선택 - 문항 6번의 데이터 가공을 통해 신규로 저장된 데이터 사용, 별도의 스케일링 처리 불필요 O Output 컬럼 - \"종속 변수\"를 output 컬럼으로 지정 O Input 컬럼 - 문항 4번의 정답 컬럼은 제외 컬럼으로 지정 - 문항 6번의 결측치 처리에 사용된 '변환하기 전의 변수'는 제외 컬럼으로 지정 - 범주형 변수는 데이터 인코더를 sparse로 변경 O 컬럼 Parameter 설정 - 종속변수의 데이터 유형은 모델 유형에 맞게 설정 - 활성함수: relu, FC레이어수: 1, FC레이어크기: 128, 드롭아웃: 0, O 학습 Parameter 설정 - Epochs: 10, Batch Size: 256, 그 외 초기 설정값 사용 O 답안 작성 - 모델 학습 후 오른쪽 상단의 [모델 저장] 기능을 통해 모델을 저장하시오. - 정답은 반올림하여 소수점 네 번째 자리까지 작성하시오.",
+          "prompt": "딥러닝 모델을 다음과 같은 설정으로 학습하고, 학습된 모델의 MSE를 작성하시오. ㅇ 작업 데이터 선택 - 문항 10 번의 데이터 가공을 통해 신규로 저장된 데이터 사용, 별도의 스케일링 처리 불필요 ㅇ Output 컬럼 - \"종속 변수\"를 output 컬럼으로 지정 ㅇ Input 컬럼 - 문항 10 번의 결측치 처리에 사용된 '변환하기 전의 변수'는 제외 컬럼으로 지정 - 범주형 변수는 데이터 인코더를 sparse 로 변경 ㅇ 컬럼 Parameter 설정 - 종속변수의 데이터 유형은 모델 유형에 맞게 설정 - 활성함수: relu, FC 레이어수: 1, FC 레이어크기:128, 드롭아웃: 0, ㅇ 학습 Parameter 설정 - Epochs: 10, Batch Size: 64, 그 외 초기 설정값 사용 ㅇ 답안 작성 - 모델 학습 후 오른쪽 상단의 [모델 저장] 기능을 통해 모델을 저장하시오. - 정답은 반올림하여 소수점 네 번째 자리까지 작성하시오.",
           "choices": [],
           "answer": {
-            "raw": "0.4820",
+            "raw": "0.4778",
             "choice_label": null,
-            "value": "0.4820",
+            "value": "0.4778",
             "grading_type": "absolute_tolerance",
             "decimal_places": 4,
             "tolerance": 0.0005
           },
-          "explanation": "AI모델학습-딥러닝 메뉴로 이동합니다. 문제에서 주어진 가이드에 따라 문항6번에서 가공하고 저장한 데이 터(‘amount_processed’)를 ‘작업 데이터 선택’에서 선택합니다. 다음으로 종속 변수인 ‘label_fee’를 Input 컬럼 목록에서 선택하여 위쪽 방향 화살표를 클릭하여 Output 컬럼으로 옮겨줍니다. 문항 4번의 정답(특정 범주에 90%이상의 데이터가 몰려 있는 변수)인 ‘서비스 구분(service_category)’ 변수와 문항 6번의 결측 치 처리에 사용된 ‘변환하기 전의 변수’ 인 ‘잔여약정개월수(agreement_month)’, ' 할부여부 (installment_yn)', ‘고객등급(customer_class)’, ‘이전 달 납부금액(prev_fee)’을 각각 선택 후 아 래쪽 방향 화살표를 클릭하여 제외 컬럼으로 옮겨줍니다. 다음으로 범주형 변수 3가지(customer_level, installment_yn_IM, customer_class_IM)는 문항 가이드에 따라서 데이터 인코더를 sparse로 설정해야 합니다. 각 범주형 변수를 클릭하고 ‘컬럼 Parameter 설정’에서 ‘데이터 인코더’를 sparse로 변경해줍니다. 이번에는 모델 종류를 확인해보겠습니다. ‘label_fee’를 선택하여 회귀모델로 설정이 되어 있는지 확인을 해 야 합니다. ‘컬럼 Parameter 설정’에서 ‘모델 유형’이 regressor인지 확인하고 문항에서 가이드한대로 ‘활성 함수’가 relu인지도 확인을 해주셔야 합니다. 그리고 문항에서 가이드한대로 FC레이어수: 1, FC레이어크기: 128, 드롭아웃: 0으로 컬럼 Parameter를 설정하고 ‘학습 Parameter 설정’에서 Epochs: 10, Batch Size: 256로 설정합니다. 나머지 파라미터(parameter)는 기본값으로 놔두고 ‘학습 시작’ 버튼을 눌러줍니다. 조금 기다리면 우측에 학습 결과가 나타납니다. 학습 로그의 가장 마지막에서 모델 성능을 확인할 수 있습니다. 여 러 성능 평가 지표 중에 문항에서 제시한 MSE는 0.4820입니다. 마지막으로 오른쪽 상단의 [모델 저장] 기능을 통해 모델을 저장해주시면 됩니다.",
+          "explanation": "AI모델학습-딥러닝 메뉴로 이동합니다. 문제에서 주어진 가이드에 따라 문항10번에서 가공하고 저장한 데이 터를 ‘작업 데이터 선택’에서 선택합니다. 다음으로 종속 변수인 ‘납부 예정금액(label_fee)’을 Input 컬럼 목 록에서 선택하여 위쪽 방향 화살표를 클릭하여 Output 컬럼으로 옮겨줍니다. 문항 10번의 결측치 처리에 사 용된 ‘변환하기 전의 변수’인 ‘잔여약정개월수(agreement_month)’, '할부여부(installment_yn)', ‘고 객등급(customer_class)’, ‘이전 달 납부금액(prev_fee)’을 각각 선택 후 아래쪽 방향 화살표를 클릭하 여 제외 컬럼으로 옮겨줍니다. 다음으로 범주형 변수 4가지 ‘고객 관리수준(customer_level)’, ‘서비스 구분 (service_category)’, ‘할부여부(installment_yn_IM)’, ‘고객등급(customer_class_IM)’은 문항 가이드에 따라서 데이터 인코더를 sparse로 설정해야 합니다. 각 범주형 변수를 클릭하고 ‘컬럼 Parameter 설정’에 서 ‘데이터 인코더’를 sparse로 변경해줍니다. 이번에는 모델 종류를 확인해보겠습니다. ‘납부 예정금액 (label_fee)’을 선택하여 회귀모델로 설정이 되어 있는지 확인을 해야 합니다. ‘컬럼 Parameter 설정’에서 ‘모델 유형’이 regressor인지 확인하고 문항에서 가이드한대로 ‘활성 함수’가 relu인지도 확인을 해주셔야 합 니다. 그리고 문항에서 가이드한대로 FC레이어수: 1, FC레이어크기: 128, 드롭아웃: 0으로 컬럼 Parameter를 설정하고 ‘학습 Parameter 설정’에서 Epochs: 10, Batch Size: 64로 설정합니다. 나머지 파라미터 (parameter)는 기본값으로 놔두고 ‘학습 시작’ 버튼을 눌러줍니다. 조금 기다리면 우측에 학습 결과가 나타 납니다. MSE는 0.4778임을 알 수 있습니다. 마지막으로 오른쪽 상단의 [모델 저장] 기능을 통해 모델을 저장해주시면 됩니다.",
           "score": 4.8,
           "difficulty": 2
         },
         {
-          "number": 9,
+          "number": 13,
           "type": "single_choice",
           "section": "evaluation",
           "competency_tags": [
             "변수 영향도"
           ],
-          "prompt": "문항 8번에서 학습한 딥러닝 모델 분석 결과, ' 납부 예정금액(label_fee)' 예측에 가장 큰 영향을 주는 변수를 고르시오.",
+          "prompt": "문항 12 번에서 학습한 딥러닝 모델 분석 결과,‘납부 예정금액(label_fee)' 예측에 영향을 주는 상위 5 개의 변수에 해당하지 않는 것을 고르시오. (1) 부가정보 1(extra_info1) (2) 부가정보 2(extra_info2) (3) 이전 달 납부금액(prev_fee_IM) (4) 잔여약정개월수(agreement_month)",
           "choices": [
             {
               "label": "1",
-              "content": "이전 달 납부금액(prev_fee_IM)"
+              "content": "부가정보1(extra_info1)"
             },
             {
               "label": "2",
-              "content": "고객등급(customer_class_IM)"
+              "content": "부가정보2(extra_info2)"
             },
             {
               "label": "3",
-              "content": "잔여약정개월수(agreement_month_IM)"
+              "content": "이전 달 납부금액(prev_fee_IM)"
             },
             {
               "label": "4",
-              "content": "할부여부(installment_yn_IM)"
+              "content": "잔여약정개월수(agreement_month)"
             }
           ],
           "answer": {
-            "raw": "(1) 이전 달 납부금액(prev_fee_IM)",
-            "choice_label": "1",
+            "raw": "(2) 부가정보 2(extra_info2)",
+            "choice_label": "2",
             "value": null,
             "grading_type": "exact",
             "decimal_places": null,
             "tolerance": null
           },
-          "explanation": "AI모델활용 메뉴로 이동합니다. ‘작업 데이터 선택’에서 모델 학습에 사용한 데이터(amount_processed)를 선택하고 아래 ‘학습 모델 목록’에서는 문항 8번에서 학습하고 저장한 모델을 선택합니다. 예측에 영향을 주 는 상위 5개 변수를 확인하기 위해서는 ‘변수 영향도 확인’ 기능을 사용해야 합니다. ‘변수 영향도 확인’ 버튼 을 클릭하면 우측에서 그래프 형태로 ‘label_fee’ 변수의 상위 5개 변수의 영향도를 확인할 수 있습니다. ‘prev_fee_IM’가 가장 큰 영향을 주는변수임을 알 수 있습니다.",
+          "explanation": "AI모델활용 메뉴로 이동합니다. ‘작업 데이터 선택’에서 모델 학습에 사용한 데이터를 선택하고 아래 ‘학습 모 델 목록’에서는 문항 12번에서 학습하고 저장한 모델을 선택합니다. 예측에 영향을 주는 상위 5개 변수를 확 인하기 위해서는 ‘변수 영향도 확인’ 기능을 사용해야 합니다. ‘변수 영향도 확인’ 버튼을 클릭하면 우측에서 그 래프 형태로 ‘납부 예정금액(label_fee)’ 변수의 상위 5개 변수의 영향도를 확인할 수 있습니다. 부가정보 2(extra_info2)가 상위 5개 변수에 해당되지 않음을 알 수 있습니다.",
           "score": 4.8,
           "difficulty": 2
         },
         {
-          "number": 10,
+          "number": 14,
           "type": "integer",
           "section": "evaluation",
           "competency_tags": [
             "예측 시뮬레이션"
           ],
-          "prompt": "문항 8번에서 학습한 딥러닝 모델을 활용하여 다음과 같은 조건일 때의 '납부 예정금액 (label_fee)'을 예측하시오. O 입력값 - agreement_month: 18 - customer_class: Gold - customer_level: A - extra_info1: 0 - extra_info1: 0 - installment_yn_IM: Y - prev_fee: 48500 O 정답은 반올림하여 정수로 작성하시오.",
+          "prompt": "문항 12 번에서 학습한 딥러닝 모델을 활용하여 다음과 같은 조건일 때의 '납부 예정금액(label_fee)'을 예측하시오(정답은 반올림하여 정수로 작성하시오.) ㅇ 입력값 - agreement_month_IM : 0 - customer_class_IM : 일반 - customer_level : A - extra_info1 : 0 - extra_info2 : 13 - installment_yn_IM: Y - prev_fee_IM : 50000 - service_category : 상품 B",
           "choices": [],
           "answer": {
             "raw": "51668",
@@ -1935,28 +2020,28 @@
             "decimal_places": null,
             "tolerance": null
           },
-          "explanation": "AI모델활용 메뉴로 이동합니다. ‘작업 데이터 선택’에서 모델 학습에 사용한 데이터(amount_processed)를 선택하고 아래 ‘학습 모델 목록’에서는 문항8번에서 학습하고 저장한 모델을 선택합니다. 특정 입력값에 대해 결과값을 예측하기 위해서는 ‘시뮬레이션’ 기능을 사용해야 합니다. ‘시뮬레이션’ 버튼을 클릭하면 우측에서 입 력값을 기입하고 예측 결과를 확인할 수 있습니다. 문제에서 제시한 입력값을 기재하면 '납부 예정금액 (label_fee)'의 예측값 51668을 확인할 수 있습니다.",
+          "explanation": "AI모델활용 메뉴로 이동합니다. ‘작업 데이터 선택’에서 모델 학습에 사용한 데이터를 선택하고 아래 ‘학습 모 델 목록’에서는 문항12번에서 학습하고 저장한 모델을 선택합니다. 특정 입력값에 대해 결과값을 예측하기 위 해서는 ‘시뮬레이션’ 기능을 사용해야 합니다. ‘시뮬레이션’ 버튼을 클릭하면 우측에서 입력값을 기입하고 예측 결과를 확인할 수 있습니다. 문제에서 제시한 입력값을 기재하면 ‘납부 예정금액(label_fee)'의 예측값 51668를 확인할 수 있습니다.",
           "score": 4.8,
           "difficulty": 2
         },
         {
-          "number": 11,
+          "number": 15,
           "type": "decimal",
           "section": "evaluation",
           "competency_tags": [
             "성능 개선"
           ],
-          "prompt": "문항 8번에서 학습한 딥러닝 모델을 고도화하여 MSE를 개선하고, 그 값을 작성하시오. O 변수변환, 변수선택, 파라미터 수정 등 자율적으로 수행하시오. O 정답은 반올림하여 소수점 네 번째 자리까지 작성하시오.",
+          "prompt": "문항 12 번에서 학습한 딥러닝 모델을 고도화할 예정입니다. 문항 12 번의 딥러닝 파라미터 중 \"전체 데이터를 학습하는 횟수\"에 해당하는 파라미터만 30 으로 설정하고, \"모델의 과적합을 방지하기 위한 파라미터\"인 드롭아웃을 0.5 로 설정한 후 학습 한 결과의 MSE 를 작성하시오. ㅇ 변경한 파라미터 이외의 학습 변수 및 파라미터(학습/컬럼 parameter)는 모두 12 번 모델 학습의 설정과 동일합니다. ㅇ 정답은 반올림하여 소수점 네 번째 자리까지 작성하시오.",
           "choices": [],
           "answer": {
-            "raw": "0.4787",
+            "raw": "0.4772",
             "choice_label": null,
-            "value": "0.4787",
+            "value": "0.4772",
             "grading_type": "absolute_tolerance",
             "decimal_places": 4,
             "tolerance": 0.0005
           },
-          "explanation": "성능 개선의 경우 여러 가지 경우의 향상 방법이 존재합니다. 본 해설에서는 대표적인 성능 향상 방법 중 하 나인 모델의 파라미터 변경을 사용하여 진행해보려고 합니다. AI모델학습-딥러닝 메뉴로 이동합니다. \"전체 데 이터의 학습 횟수를 의미하는 파라미터\"는 ‘Epochs’이고 이 값을 30으로 지정하고 나머지 설정은 문항 8번 과 동일하게 지정해줍니다. 이제 ‘학습 시작’ 버튼을 눌러줍니다. 조금 기다리면 우측에 학습 결과가 나타납니 다. 학습 로그의 가장 마지막에서 모델 성능을 확인할 수 있습니다. 여러 성능 평가 지표 중에 문항에서 제시 한 MSE는 0.4787입니다. MSE는 오차이기 때문에 값이 작으면 작을수록 성능이 좋은 모델이고 앞선 문항 8번의 결과보다 성능이 개선된 모델임을 알 수 있습니다.",
+          "explanation": "성능 개선의 경우 여러 가지 경우의 향상 방법이 존재합니다. 본 해설에서는 대표적인 성능 향상 방법 중 하 나인 모델의 파라미터 변경을 사용하여 진행해보려고 합니다. AI모델학습-딥러닝 메뉴로 이동합니다. \"전체 데 이터의 학습 횟수를 의미하는 파라미터\"는 ‘Epochs’이고 이 값을 30으로 지정하고 \"모델의 과적합을 방지하 기 위한 파라미터\"인 드롭아웃을 0.5, 나머지 설정은 문항 10번과 동일하게 지정해줍니다. 이제 ‘학습 시작’ 버튼을 눌러줍니다. 조금 기다리면 우측에 학습 결과가 나타납니다. 학습 로그의 가장 마지막에서 모델 성능 을 확인할 수 있습니다. 여러 성능 평가 지표중에 문항에서 제시한 MSE는 0.4772입니다.",
           "score": 4.8,
           "difficulty": 2
         }
