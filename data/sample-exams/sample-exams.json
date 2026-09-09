@@ -234,7 +234,7 @@
             "머신러닝",
             "모델 평가 지표"
           ],
-          "prompt": "3개의 머신러닝 모델을 다음과 같은 설정으로 학습하고, 이 중 Accuracy 기준 성능이 평균적으로 가장 좋은 것을 고르시오. ㅇ 작업 데이터 선택 - 문항 7번의 데이터 가공을 통해 신규로 저장된 데이터 사용, 별도의 스케일링 처리 불필요. ㅇ 학습 유형 - 본 과제 해결에 알맞은 알고리즘의 유형을 고려하여 선택 ㅇ ML 모델 선택 - KNN, Decision Tree, Random Forest ㅇ Input 컬럼 - 문항 7번의 결측치 처리에 사용된 '변환하기 전의 변수'는 제외 컬럼으로 지정 ㅇ Output 컬럼 - \"종속 변수\"를 output 컬럼으로 지정 ㅇ Data Parameter 설정 - 데이터 유형은 모델 유형에 맞게 설정하고, 나머지는 초기 설정값 사용 ㅇ 모델 Parameter 설정 - 초기 설정값 사용 (1) KNN (2) Decision Tree (3) Random Forest",
+          "prompt": "3개의 머신러닝 모델을 다음과 같은 설정으로 학습하고, 이 중 Accuracy 기준 성능이 평균적으로 가장 좋은 것을 고르시오. ㅇ 작업 데이터 선택 - 문항 7번의 데이터 가공을 통해 신규로 저장된 데이터 사용, 별도의 스케일링 처리 불필요. ㅇ 학습 유형 - 본 과제 해결에 알맞은 알고리즘의 유형을 고려하여 선택 ㅇ ML 모델 선택 - KNN, Decision Tree, Random Forest ㅇ Input 컬럼 - 문항 7번의 결측치 처리에 사용된 '변환하기 전의 변수'는 제외 컬럼으로 지정 ㅇ Output 컬럼 - \"종속 변수\"를 output 컬럼으로 지정 ㅇ Data Parameter 설정 - 데이터 유형은 모델 유형에 맞게 설정하고, 나머지는 초기 설정값 사용 ㅇ 모델 Parameter 설정 - 초기 설정값 사용",
           "choices": [
             {
               "label": "1",
@@ -328,7 +328,7 @@
           "competency_tags": [
             "예측 시뮬레이션"
           ],
-          "prompt": "문항 9번에서 학습한 딥러닝 모델을 활용하여 다음과 같은 조건일 때의 '호러장르 선호여부 (label_horror)'를 예측하시오. ㅇ action_amount: 2500 ㅇ age_group_IM: A07 ㅇ comedy_amount: 0 ㅇ customer_type: 개인 ㅇ drama_amount: 2500 ㅇ horror_amount: 3000 ㅇ romc_amount: 0 ㅇ sex: M ㅇ total_amount: 8000 ㅇ total_buy_ol: 3 (1) Y(선호함) (2) N(선호하지 않음)",
+          "prompt": "문항 9번에서 학습한 딥러닝 모델을 활용하여 다음과 같은 조건일 때의 '호러장르 선호여부 (label_horror)'를 예측하시오. ㅇ action_amount: 2500 ㅇ age_group_IM: A07 ㅇ comedy_amount: 0 ㅇ customer_type: 개인 ㅇ drama_amount: 2500 ㅇ horror_amount: 3000 ㅇ romc_amount: 0 ㅇ sex: M ㅇ total_amount: 8000 ㅇ total_buy_ol: 3",
           "choices": [
             {
               "label": "1",
@@ -1179,7 +1179,7 @@
           "competency_tags": [
             "예측 시뮬레이션"
           ],
-          "prompt": "문항 11번에서 학습한 딥러닝 모델을 활용하여 다음과 같은 조건일 때의 '호러장르 선호여부 (label_horror)'를 예측하시오. ㅇ action_amount: 2500 ㅇ age_group_IM: A07 ㅇ comedy_amount: 0 ㅇ customer_type: 개인 ㅇ drama_amount: 2500 ㅇ horror_amount: 3000 ㅇ romc_amount: 0 ㅇ sex: M ㅇ total_amount: 8000 ㅇ total_buy_ol: 3 (1) Y(선호함) (2) N(선호하지 않음)",
+          "prompt": "문항 11번에서 학습한 딥러닝 모델을 활용하여 다음과 같은 조건일 때의 '호러장르 선호여부 (label_horror)'를 예측하시오. ㅇ action_amount: 2500 ㅇ age_group_IM: A07 ㅇ comedy_amount: 0 ㅇ customer_type: 개인 ㅇ drama_amount: 2500 ㅇ horror_amount: 3000 ㅇ romc_amount: 0 ㅇ sex: M ㅇ total_amount: 8000 ㅇ total_buy_ol: 3",
           "choices": [
             {
               "label": "1",
@@ -1211,7 +1211,7 @@
             "머신러닝",
             "모델 평가 지표"
           ],
-          "prompt": "3개의 머신러닝 모델을 다음과 같은 설정으로 학습하고, 이 중 Precision 기준 성능이 평균적으로 가장 좋은 것을 고르시오. ㅇ 작업 데이터 선택 : 문항 10번의 데이터 가공을 통해 신규로 저장된 데이터 사용, 별도의 스케일링 처 리 불필요. ㅇ 학습 유형 : 본 과제 해결에 알맞은 알고리즘의 유형을 고려하여 선택 ㅇ ML 모델 선택 : L ogistic Regression, KNN, Random Forest ㅇ Input 컬럼 : 문항 10번의 결측치 처리에 사용된 '변환하기 전의 변수'는 제외 컬럼으로 지정 ㅇ Output 컬럼 : \"종속 변수\"를 output 컬럼으로 지정 ㅇ Data Parameter 설정 : 데이터 유형은 모델 유형에 맞게 설정하고, 나머지는 초기 설정값 사용 ㅇ 모델 Parameter 설정 : 초기 설정값 사용 (1) Logistic Regression (2) KNN (3) Random Forest",
+          "prompt": "3개의 머신러닝 모델을 다음과 같은 설정으로 학습하고, 이 중 Precision 기준 성능이 평균적으로 가장 좋은 것을 고르시오. ㅇ 작업 데이터 선택 : 문항 10번의 데이터 가공을 통해 신규로 저장된 데이터 사용, 별도의 스케일링 처 리 불필요. ㅇ 학습 유형 : 본 과제 해결에 알맞은 알고리즘의 유형을 고려하여 선택 ㅇ ML 모델 선택 : L ogistic Regression, KNN, Random Forest ㅇ Input 컬럼 : 문항 10번의 결측치 처리에 사용된 '변환하기 전의 변수'는 제외 컬럼으로 지정 ㅇ Output 컬럼 : \"종속 변수\"를 output 컬럼으로 지정 ㅇ Data Parameter 설정 : 데이터 유형은 모델 유형에 맞게 설정하고, 나머지는 초기 설정값 사용 ㅇ 모델 Parameter 설정 : 초기 설정값 사용",
           "choices": [
             {
               "label": "1",
@@ -1247,7 +1247,7 @@
             "머신러닝",
             "모델 평가 지표"
           ],
-          "prompt": "3개의 머신러닝 모델을 다음과 같은 설정으로 학습하고, 이 중 F1 Score 기준 성능이 평균적으로 가장 좋은 것을 고르시오. ㅇ 작업 데이터 선택 : 문항 10번의 데이터 가공을 통해 신규로 저장된 데이터 사용, 별도의 스케일링 처 리 불필요. ㅇ 학습 유형 : 본 과제 해결에 알맞은 알고리즘의 유형을 고려하여 선택 ㅇ ML 모델 선택 : L ogistic Regression, Decision Tree, Random Forest ㅇ Input 컬럼 : 문항 10번의 결측치 처리에 사용된 '변환하기 전의 변수'는 제외 컬럼으로 지정 ㅇ Output 컬럼 : \"종속 변수\"를 output 컬럼으로 지정 ㅇ Data Parameter 설정 : 데이터 유형은 모델 유형에 맞게 설정하고, 나머지는 초기 설정값 사용 ㅇ 모델 Parameter 설정 : 초기 설정값 사용 (1) Logistic Regression (2) Decision Tree (3) Random Forest",
+          "prompt": "3개의 머신러닝 모델을 다음과 같은 설정으로 학습하고, 이 중 F1 Score 기준 성능이 평균적으로 가장 좋은 것을 고르시오. ㅇ 작업 데이터 선택 : 문항 10번의 데이터 가공을 통해 신규로 저장된 데이터 사용, 별도의 스케일링 처 리 불필요. ㅇ 학습 유형 : 본 과제 해결에 알맞은 알고리즘의 유형을 고려하여 선택 ㅇ ML 모델 선택 : L ogistic Regression, Decision Tree, Random Forest ㅇ Input 컬럼 : 문항 10번의 결측치 처리에 사용된 '변환하기 전의 변수'는 제외 컬럼으로 지정 ㅇ Output 컬럼 : \"종속 변수\"를 output 컬럼으로 지정 ㅇ Data Parameter 설정 : 데이터 유형은 모델 유형에 맞게 설정하고, 나머지는 초기 설정값 사용 ㅇ 모델 Parameter 설정 : 초기 설정값 사용",
           "choices": [
             {
               "label": "1",
@@ -1488,7 +1488,7 @@
             "머신러닝",
             "모델 평가 지표"
           ],
-          "prompt": "3 개의 머신러닝 모델을 다음과 같은 설정으로 학습하고, 이 중 설명력(R2)이 평균적으로 가 장 높은 모델을 선택하시오. O 작업 데이터 선택 - 문항 6번의 데이터 가공을 통해 신규로 저장된 데이터 사용, 별도의 스케일링 처리 불필요. O 학습 유형 - 본 과제 해결에 알맞은 알고리즘의 유형을 고려하여 선택 O ML 모델 선택 - Linear Regression, Decision Tree Regressor, Random Forest Regressor O Output 컬럼 - \"종속 변수\"를 output 컬럼으로 지정 O Input 컬럼 - 문항 4번의 정답 컬럼은 제외 컬럼으로 지정 - 문항 6번의 결측치 처리에 사용된 '변환하기 전의 변수'는 제외 컬럼으로 지정 O Data Parameter 설정 - 종속변수의 데이터 유형은 모델 유형에 맞게 설정하고, 나머지는 초기 설정값 사용 O 모델 Parameter 설정 - 초기 설정값 사용 (1) Linear Regression (2) Decision Tree Regressor (3) Random Forest Regressor",
+          "prompt": "3 개의 머신러닝 모델을 다음과 같은 설정으로 학습하고, 이 중 설명력(R2)이 평균적으로 가 장 높은 모델을 선택하시오. O 작업 데이터 선택 - 문항 6번의 데이터 가공을 통해 신규로 저장된 데이터 사용, 별도의 스케일링 처리 불필요. O 학습 유형 - 본 과제 해결에 알맞은 알고리즘의 유형을 고려하여 선택 O ML 모델 선택 - Linear Regression, Decision Tree Regressor, Random Forest Regressor O Output 컬럼 - \"종속 변수\"를 output 컬럼으로 지정 O Input 컬럼 - 문항 4번의 정답 컬럼은 제외 컬럼으로 지정 - 문항 6번의 결측치 처리에 사용된 '변환하기 전의 변수'는 제외 컬럼으로 지정 O Data Parameter 설정 - 종속변수의 데이터 유형은 모델 유형에 맞게 설정하고, 나머지는 초기 설정값 사용 O 모델 Parameter 설정 - 초기 설정값 사용",
           "choices": [
             {
               "label": "1",
@@ -1635,7 +1635,7 @@
           "competency_tags": [
             "문제 유형 판단"
           ],
-          "prompt": "본 과제 해결에 알맞은 알고리즘의 유형을 고르시오. (1) 회귀모형 (2) 분류모형 (3) 군집모형 (4) 시계열모형",
+          "prompt": "본 과제 해결에 알맞은 알고리즘의 유형을 고르시오.",
           "choices": [
             {
               "label": "1",
@@ -1673,7 +1673,7 @@
           "competency_tags": [
             "기초통계"
           ],
-          "prompt": "본 과제의 종속변수의 기술통계량을 확인하고, 최빈값 개수보다 작은 값을 가지는 것을 고르시오. (1) 0의 개수 (2) 최대값 (3) 데이터 개수 (4) 표준편차",
+          "prompt": "본 과제의 종속변수의 기술통계량을 확인하고, 최빈값 개수보다 작은 값을 가지는 것을 고르시오.",
           "choices": [
             {
               "label": "1",
@@ -1711,7 +1711,7 @@
           "competency_tags": [
             "데이터 유형"
           ],
-          "prompt": "다음의 변수 중 변수의 유형(data type)이 다른 것을 고르시오. (1) 잔여약정개월수(agreement_month (2) 부가정보1(extra_info1) (3) 고객 관리수준(customer_level) (4) 이전 달 납부금액(prev_fee)",
+          "prompt": "다음의 변수 중 변수의 유형(data type)이 다른 것을 고르시오.",
           "choices": [
             {
               "label": "1",
@@ -1770,7 +1770,7 @@
           "competency_tags": [
             "상관관계"
           ],
-          "prompt": "'납부 예정금액(label_fee)' 변수와 가장 높은 양의 상관관계를 가지는 변수를 고르시오. (1) 잔여약정개월수(agreement_month (2) 부가정보1(extra_info1) (3) 부가정보2(extra_info2) (4) 이전 달 납부금액(prev_fee)",
+          "prompt": "'납부 예정금액(label_fee)' 변수와 가장 높은 양의 상관관계를 가지는 변수를 고르시오.",
           "choices": [
             {
               "label": "1",
@@ -1916,7 +1916,7 @@
             "머신러닝",
             "모델 평가 지표"
           ],
-          "prompt": "3개의 머신러닝 모델을 다음과 같은 설정으로 학습하고, 이 중 MAE 평균이 최종적으로 가장 작은 모델을 고르시오 ㅇ 작업데이터 선택 - 문항 10번의 데이터 가공을 통해 신규로 저장된 데이터 사용, 별도의 스케일링 처리 불필요 ㅇ 학습유형 - 본 과제 해결에 알맞은 알고리즘의 유형을 고려하여 선택 ㅇ ML 모델 선택 - Linear Regression, Decision Tree Regressor, Random Forest Regressor ㅇ Input 컬럼 - 문항 10번의 결측치 처리에 사용된 ‘변환하기 전의 변수’는 제외 컬럼으로 지정 ㅇ Output 컬럼 - “종속 변수”를 output 컬럼으로 지정 ㅇ Data Parameter 설정 - 데이터 유형은 모델 유형에 맞게 설정하고, 나머지는 초기 설정값 사용 ㅇ 모델 Parameter 설정 - 초기 설정값 사용 (1) Linear Regression (2) Decision Tree Regressor (3) Random Forest Regressor",
+          "prompt": "3개의 머신러닝 모델을 다음과 같은 설정으로 학습하고, 이 중 MAE 평균이 최종적으로 가장 작은 모델을 고르시오 ㅇ 작업데이터 선택 - 문항 10번의 데이터 가공을 통해 신규로 저장된 데이터 사용, 별도의 스케일링 처리 불필요 ㅇ 학습유형 - 본 과제 해결에 알맞은 알고리즘의 유형을 고려하여 선택 ㅇ ML 모델 선택 - Linear Regression, Decision Tree Regressor, Random Forest Regressor ㅇ Input 컬럼 - 문항 10번의 결측치 처리에 사용된 ‘변환하기 전의 변수’는 제외 컬럼으로 지정 ㅇ Output 컬럼 - “종속 변수”를 output 컬럼으로 지정 ㅇ Data Parameter 설정 - 데이터 유형은 모델 유형에 맞게 설정하고, 나머지는 초기 설정값 사용 ㅇ 모델 Parameter 설정 - 초기 설정값 사용",
           "choices": [
             {
               "label": "1",
@@ -1972,7 +1972,7 @@
           "competency_tags": [
             "변수 영향도"
           ],
-          "prompt": "문항 12 번에서 학습한 딥러닝 모델 분석 결과,‘납부 예정금액(label_fee)' 예측에 영향을 주는 상위 5 개의 변수에 해당하지 않는 것을 고르시오. (1) 부가정보 1(extra_info1) (2) 부가정보 2(extra_info2) (3) 이전 달 납부금액(prev_fee_IM) (4) 잔여약정개월수(agreement_month)",
+          "prompt": "문항 12 번에서 학습한 딥러닝 모델 분석 결과,‘납부 예정금액(label_fee)' 예측에 영향을 주는 상위 5 개의 변수에 해당하지 않는 것을 고르시오.",
           "choices": [
             {
               "label": "1",
@@ -2362,7 +2362,7 @@
             "머신러닝",
             "모델 평가 지표"
           ],
-          "prompt": "3개의 머신러닝 모델을 다음과 같은 설정으로 학습하고, 이 중 MAE를 기준으로 가장 성능 이 높은 모델을 선택하시오. O 작업 데이터 선택 - 문항 10번의 데이터 가공을 통해 신규로 저장된 데이터 사용, 별도의 스케일링 처리 불필 요. O 학습 유형 - 본 과제 해결에 알맞은 알고리즘의 유형을 고려하여 선택 O ML 모델 선택 - Linear Regression, K Neighbors Regressor, Random Forest Regressor O Output 컬럼 - \"종속 변수\"를 output 컬럼으로 지정 O Input 컬럼 - 문항 3번의 정답 컬럼은 제외 컬럼으로 지정 - 문항 10번의 결측치 처리에 사용된 '변환하기 전의 변수'는 제외 컬럼으로 지정 O Data Parameter 설정 - 종속변수의 데이터 유형은 모델 유형에 맞게 설정하고, 나머지는 초기 설정값 사용 O 모델 Parameter 설정 - 초기 설정값 사용 (1) Linear Regression (2) K Neighbors Regressor (3) Random Forest Regressor",
+          "prompt": "3개의 머신러닝 모델을 다음과 같은 설정으로 학습하고, 이 중 MAE를 기준으로 가장 성능 이 높은 모델을 선택하시오. O 작업 데이터 선택 - 문항 10번의 데이터 가공을 통해 신규로 저장된 데이터 사용, 별도의 스케일링 처리 불필 요. O 학습 유형 - 본 과제 해결에 알맞은 알고리즘의 유형을 고려하여 선택 O ML 모델 선택 - Linear Regression, K Neighbors Regressor, Random Forest Regressor O Output 컬럼 - \"종속 변수\"를 output 컬럼으로 지정 O Input 컬럼 - 문항 3번의 정답 컬럼은 제외 컬럼으로 지정 - 문항 10번의 결측치 처리에 사용된 '변환하기 전의 변수'는 제외 컬럼으로 지정 O Data Parameter 설정 - 종속변수의 데이터 유형은 모델 유형에 맞게 설정하고, 나머지는 초기 설정값 사용 O 모델 Parameter 설정 - 초기 설정값 사용",
           "choices": [
             {
               "label": "1",
