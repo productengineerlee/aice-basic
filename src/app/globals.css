@@ -552,7 +552,7 @@ footer { border-top: 1px solid var(--line); }
   font-size: 12px;
   color: var(--muted);
 }
-.footer-inner .brand { font-size: 15px; }
+.footer-inner .brand, .footer-inner .brand b { font-size: 15px; color: var(--blue); }
 .footer-inner p { flex: 1; margin: 0; }
 
 /* ============================================================
