@@ -137,6 +137,7 @@ export default async function Home() {
       <footer>
         <div className="footer-inner">
           <div className="brand">
+            <Image src="/logo-mark.png" alt="AICE LAB" width={24} height={24} className="brand-mark" />
             <span>AICE <b>LAB</b></span>
           </div>
           <p>AIDU 실습과 함께 준비하는 AICE BASIC 모의고사</p>
