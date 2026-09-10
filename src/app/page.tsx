@@ -119,6 +119,7 @@ export default async function Home() {
           <div>
             <b>안내</b>
             <p>본 서비스는 AICE 공식 시험 사이트가 아닌 학습용 모의고사 서비스입니다. 표시되는 합격 여부는 모의고사 기준입니다.</p>
+            <p>샘플문항의 저작권은 KT에 있으며, 배점은 학습 수준 확인을 위한 참고용입니다. <Link href="/exams#notice">자세히 보기</Link></p>
           </div>
         </div>
       </section>
