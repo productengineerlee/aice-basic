@@ -16,6 +16,7 @@ type AnswerKeyRow = Database["public"]["Tables"]["answer_keys"]["Row"];
 type AdminClient = ReturnType<typeof createAdminClient>;
 export type Context = {
   exam: ExamRow;
+  certificationCode: string | null;
   sections: SectionRow[];
   questions: QuestionRow[];
   choices: ChoiceRow[];
@@ -60,6 +61,12 @@ export async function getExamContext(slug: string): Promise<Context> {
   if (examError) fail("시험 정보를 불러오지 못했습니다.");
   if (!exam) fail("시험을 찾을 수 없습니다.", 404);
 
+  let certificationCode: string | null = null;
+  if (exam.certification_id) {
+    const { data: certification } = await admin.from("certifications").select("code").eq("id", exam.certification_id).maybeSingle();
+    certificationCode = certification?.code ?? null;
+  }
+
   const [{ data: sections, error: sectionError }, { data: questions, error: questionError }] = await Promise.all([
     admin.from("exam_sections").select("*").eq("exam_id", exam.id).order("sort_order"),
     admin.from("questions").select("*").eq("exam_id", exam.id).eq("is_active", true).order("number"),
@@ -78,6 +85,7 @@ export async function getExamContext(slug: string): Promise<Context> {
 
   return {
     exam,
+    certificationCode,
     sections,
     questions,
     choices,
@@ -415,6 +423,7 @@ export async function loadAttemptResult(context: Context, userId: string, attemp
     id: attempt.id,
     examSlug: context.exam.slug,
     examTitle: context.exam.title,
+    certificationCode: context.certificationCode,
     submittedAt: attempt.submitted_at ?? attempt.graded_at ?? attempt.updated_at,
     totalScore: Number(attempt.total_score ?? 0),
     maxScore: Number(context.exam.total_score),

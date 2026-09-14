@@ -8,7 +8,7 @@ type AnswerKey = Database["public"]["Tables"]["answer_keys"]["Row"];
 export type SubmittedAnswers = Record<string, string>;
 export type QuestionResult = { number: number; section: string; tags: string[]; prompt: string; imageUrl: string | null; userAnswer: string; userAnswerDisplay: string; correctAnswer: string; isCorrect: boolean; awardedScore: number; maxScore: number; explanation: string };
 export type SectionResult = { code: string; title: string; earnedScore: number; maxScore: number; minScore: number | null; correctCount: number; questionCount: number; percentage: number };
-export type GradingResult = { id: string; examSlug: string; examTitle: string; submittedAt: string; totalScore: number; maxScore: number; passingScore: number; passed: boolean; correctCount: number; answeredCount: number; questionCount: number; sections: SectionResult[]; questions: QuestionResult[]; diagnostics: DiagnosticSummary };
+export type GradingResult = { id: string; examSlug: string; examTitle: string; certificationCode: string | null; submittedAt: string; totalScore: number; maxScore: number; passingScore: number; passed: boolean; correctCount: number; answeredCount: number; questionCount: number; sections: SectionResult[]; questions: QuestionResult[]; diagnostics: DiagnosticSummary };
 
 const normalize = (value: string, caseSensitive = false) => {
   const normalized = value.trim().replace(/,/g, "").replace(/\s+/g, "");
@@ -113,6 +113,7 @@ export async function gradeExam(context: Context, submitted: SubmittedAnswers): 
     id: crypto.randomUUID(),
     examSlug: exam.slug,
     examTitle: exam.title,
+    certificationCode: context.certificationCode,
     submittedAt: new Date().toISOString(),
     totalScore,
     maxScore,
