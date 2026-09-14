@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight, ChevronDown, Clock3, FileQuestion } from "lucide-react";
 import { ExamHeader } from "@/components/exams/exam-header";
+import { RoundQuestionStats } from "@/components/license/round-question-stats";
 import { getCertification } from "@/lib/certifications";
 import { getCertificationStats, getWrongAnswerNotebook } from "@/lib/license-stats";
 import { createClient } from "@/lib/supabase/server";
@@ -26,6 +27,9 @@ export default async function LicenseDetailPage({ params }: { params: Promise<{ 
     getCertificationStats(cert.id),
     user ? getWrongAnswerNotebook(user.id, cert.id) : Promise.resolve([]),
   ]);
+  // cert.exams는 published_at 순으로 정렬되어 있으므로, "문제풀이 시작" 목록과 같은 순서로 탭이 보이게 그 순서를 따른다.
+  const roundStatsBySlug = new Map(stats.roundStats.map((round) => [round.examSlug, round]));
+  const roundStats = cert.exams.map((exam) => roundStatsBySlug.get(exam.slug)).filter((round) => round !== undefined);
 
   return (
     <main className="exam-app">
@@ -73,30 +77,11 @@ export default async function LicenseDetailPage({ params }: { params: Promise<{ 
           </section>
         )}
 
-        {stats.tagStats.length > 0 && (
-          <details className="license-accordion">
-            <summary><div className="license-section-head"><h2>세부항목별 정답률</h2></div><ChevronDown /></summary>
-            <div className="accordion-body">
-              {stats.sectionStats.map((section) => {
-                const items = stats.tagStats.filter((tag) => tag.sectionCode === section.code);
-                if (!items.length) return null;
-                return (
-                  <div className="stat-group" key={section.code}>
-                    <h3>{section.title}</h3>
-                    <div className="tag-stat-list">
-                      {items.map((tag) => (
-                        <div className="tag-stat-row" key={tag.tag}>
-                          <span>{tag.tag}</span>
-                          <div className="stat-meter"><i style={{ width: `${tag.accuracy}%` }} /></div>
-                          <b>{tag.accuracy}%</b>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </details>
+        {roundStats.length > 0 && (
+          <section className="license-section">
+            <div className="license-section-head"><h2>회차별 문항 정답 현황</h2><p>회차를 선택하면 그 회차 50문항의 정답자 수와 비율을 많이 틀린 순으로 보여줍니다.</p></div>
+            <RoundQuestionStats rounds={roundStats} />
+          </section>
         )}
 
         {stats.hardestQuestions.length > 0 && (

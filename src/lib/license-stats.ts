@@ -30,21 +30,21 @@ export type QuestionStat = {
   number: number;
   prompt: string;
   sectionCode: string;
-  tags: string[];
   attemptCount: number;
   correctCount: number;
   accuracy: number;
 };
 
-export type TagStat = { tag: string; sectionCode: string; attemptCount: number; correctCount: number; accuracy: number; questionCount: number };
 export type SectionStat = { code: string; title: string; attemptCount: number; correctCount: number; accuracy: number; questionCount: number };
+export type RoundQuestionStat = { number: number; prompt: string; attemptCount: number; correctCount: number; accuracy: number };
+export type RoundStat = { examSlug: string; examTitle: string; questions: RoundQuestionStat[] };
 
 export type CertificationStats = {
   questionCount: number;
   attemptCount: number;
   respondentCount: number;
   sectionStats: SectionStat[];
-  tagStats: TagStat[];
+  roundStats: RoundStat[];
   hardestQuestions: QuestionStat[];
 };
 
@@ -60,12 +60,12 @@ export async function getCertificationStats(certificationId: string): Promise<Ce
   const { data: exams, error: examError } = await admin.from("exams").select("id,slug,title").eq("certification_id", certificationId);
   if (examError) throw new Error("자격증 시험 목록을 불러오지 못했습니다.");
   const examIds = (exams ?? []).map((exam) => exam.id);
-  if (!examIds.length) return { questionCount: 0, attemptCount: 0, respondentCount: 0, sectionStats: [], tagStats: [], hardestQuestions: [] };
+  if (!examIds.length) return { questionCount: 0, attemptCount: 0, respondentCount: 0, sectionStats: [], roundStats: [], hardestQuestions: [] };
   const examById = new Map((exams ?? []).map((exam) => [exam.id, exam]));
 
   const [{ data: sections, error: sectionError }, { data: questions, error: questionError }] = await Promise.all([
     admin.from("exam_sections").select("id,exam_id,code,title").in("exam_id", examIds).order("sort_order"),
-    admin.from("questions").select("id,exam_id,section_id,number,prompt,competency_tags").in("exam_id", examIds).eq("is_active", true),
+    admin.from("questions").select("id,exam_id,section_id,number,prompt").in("exam_id", examIds).eq("is_active", true),
   ]);
   if (sectionError || questionError || !sections || !questions) throw new Error("자격증 문항 구성을 불러오지 못했습니다.");
   const sectionById = new Map(sections.map((section) => [section.id, section]));
@@ -102,7 +102,6 @@ export async function getCertificationStats(certificationId: string): Promise<Ce
       number: question.number,
       prompt: question.prompt,
       sectionCode: sectionById.get(question.section_id)?.code ?? "",
-      tags: question.competency_tags,
       attemptCount: counts.attempt,
       correctCount: counts.correct,
       accuracy: accuracyOf(counts.attempt, counts.correct),
@@ -111,7 +110,6 @@ export async function getCertificationStats(certificationId: string): Promise<Ce
 
   // exam_sections는 sort_order로 정렬해 가져왔으므로, 코드별 첫 등장 순서가 곧 출제 과목 순서다.
   const orderedSectionCodes = [...new Map(sections.map((section) => [section.code, section.title])).entries()];
-  const sectionOrder = new Map(orderedSectionCodes.map(([code], index) => [code, index]));
   const sectionStats: SectionStat[] = orderedSectionCodes.map(([code, title]) => {
     const matching = questionStats.filter((stat) => stat.sectionCode === code);
     const attempt = matching.reduce((sum, stat) => sum + stat.attemptCount, 0);
@@ -119,17 +117,25 @@ export async function getCertificationStats(certificationId: string): Promise<Ce
     return { code, title, attemptCount: attempt, correctCount: correct, accuracy: accuracyOf(attempt, correct), questionCount: matching.length };
   });
 
-  const tagAgg = new Map<string, { sectionCode: string; attempt: number; correct: number; questionCount: number }>();
-  for (const stat of questionStats) for (const tag of stat.tags) {
-    const current = tagAgg.get(tag) ?? { sectionCode: stat.sectionCode, attempt: 0, correct: 0, questionCount: 0 };
-    current.attempt += stat.attemptCount;
-    current.correct += stat.correctCount;
-    current.questionCount += 1;
-    tagAgg.set(tag, current);
+  // 회차 선택 시 그 회차 문항 전체(번호순이 아니라 정답률 낮은 순 — 많이 틀린 문항이 먼저 보이도록)를
+  // 보여주기 위한 통계. 응시 기록이 없는 문항(0%로 계산됨)은 "많이 틀렸다"는 신호가 아니라 데이터가
+  // 없는 것이므로 정답률로 함께 정렬하지 않고 번호순으로 뒤에 둔다.
+  const questionsByExam = new Map<string, RoundQuestionStat[]>();
+  for (const stat of questionStats) {
+    const list = questionsByExam.get(stat.examSlug) ?? [];
+    list.push({ number: stat.number, prompt: stat.prompt, attemptCount: stat.attemptCount, correctCount: stat.correctCount, accuracy: stat.accuracy });
+    questionsByExam.set(stat.examSlug, list);
   }
-  const tagStats: TagStat[] = [...tagAgg.entries()]
-    .map(([tag, agg]) => ({ tag, sectionCode: agg.sectionCode, attemptCount: agg.attempt, correctCount: agg.correct, accuracy: accuracyOf(agg.attempt, agg.correct), questionCount: agg.questionCount }))
-    .sort((a, b) => (sectionOrder.get(a.sectionCode) ?? 0) - (sectionOrder.get(b.sectionCode) ?? 0) || a.accuracy - b.accuracy || a.tag.localeCompare(b.tag, "ko"));
+  const roundStats: RoundStat[] = [...questionsByExam.entries()].map(([examSlug, list]) => ({
+    examSlug,
+    examTitle: questionStats.find((stat) => stat.examSlug === examSlug)?.examTitle ?? "",
+    questions: list.sort((a, b) => {
+      if (a.attemptCount === 0 && b.attemptCount === 0) return a.number - b.number;
+      if (a.attemptCount === 0) return 1;
+      if (b.attemptCount === 0) return -1;
+      return a.accuracy - b.accuracy || b.attemptCount - a.attemptCount || a.number - b.number;
+    }),
+  }));
 
   const hardestQuestions = questionStats
     .filter((stat) => stat.attemptCount >= HARDEST_MIN_ATTEMPTS)
@@ -147,7 +153,7 @@ export async function getCertificationStats(certificationId: string): Promise<Ce
   }
   const respondentCount = [...respondentByExam.values()].reduce((sum, value) => sum + value, 0);
 
-  return { questionCount: questionStats.length, attemptCount, respondentCount, sectionStats, tagStats, hardestQuestions };
+  return { questionCount: questionStats.length, attemptCount, respondentCount, sectionStats, roundStats, hardestQuestions };
 }
 
 export type WrongAnswerItem = {
