@@ -60,7 +60,7 @@ export async function getCertification(code: string): Promise<CertificationDetai
 
   const [{ data: schedules, error: scheduleError }, { data: exams, error: examError }] = await Promise.all([
     admin.from("certification_schedules").select("id,round_name,exam_date,apply_start,apply_end,notes").eq("certification_id", cert.id).order("sort_order"),
-    admin.from("exams").select("id,slug,title,duration_minutes").eq("certification_id", cert.id).eq("status", "published").order("published_at", { ascending: true }),
+    admin.from("exams").select("id,slug,title,duration_minutes").eq("certification_id", cert.id).eq("status", "published").order("published_at", { ascending: false }),
   ]);
   if (scheduleError || examError || !exams) throw new Error("자격증 상세 정보를 불러오지 못했습니다.");
 
