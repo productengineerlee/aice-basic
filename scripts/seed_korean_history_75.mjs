@@ -77,13 +77,15 @@ async function main() {
   for (const q of Object.values(questions)) {
     sectionMaxScore[q.section] = (sectionMaxScore[q.section] ?? 0) + q.score;
   }
-  const sectionRows = Object.entries(SECTION_META).map(([title, meta]) => ({
-    exam_id: exam.id,
-    code: meta.code,
-    title,
-    max_score: sectionMaxScore[title] ?? 0,
-    sort_order: meta.sort,
-  }));
+  const sectionRows = Object.entries(SECTION_META)
+    .filter(([title]) => (sectionMaxScore[title] ?? 0) > 0)
+    .map(([title, meta]) => ({
+      exam_id: exam.id,
+      code: meta.code,
+      title,
+      max_score: sectionMaxScore[title],
+      sort_order: meta.sort,
+    }));
   const { data: sections, error: sectionErr } = await admin.from("exam_sections").insert(sectionRows).select("id,code");
   if (sectionErr) throw new Error(`${slug} sections insert failed: ` + sectionErr.message);
   const sectionIdByTitle = Object.fromEntries(

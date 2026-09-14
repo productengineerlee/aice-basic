@@ -43,8 +43,8 @@ async function main() {
   if (certErr) throw new Error("certification upsert failed: " + certErr.message);
   console.log("certification id:", cert.id);
 
-  const slug = "korean-history-74-simhwa";
-  const title = "제74회 한국사능력검정시험 심화 기출문제";
+  const slug = "korean-history-73-simhwa";
+  const title = "제73회 한국사능력검정시험 심화 기출문제";
 
   const existing = await admin.from("exams").select("id").eq("slug", slug).maybeSingle();
   if (existing.data) {
@@ -52,14 +52,14 @@ async function main() {
     return;
   }
 
-  const questions = JSON.parse(fs.readFileSync(path.join(root, "data", "korean-history", "74-simhwa.json"), "utf8"));
+  const questions = JSON.parse(fs.readFileSync(path.join(root, "data", "korean-history", "73-simhwa.json"), "utf8"));
 
   const { data: exam, error: examErr } = await admin
     .from("exams")
     .insert({
       slug,
       title,
-      description: "제74회 한국사능력검정시험 심화 등급 기출문제(50문항, 100점)입니다.",
+      description: "제73회 한국사능력검정시험 심화 등급 기출문제(50문항, 100점)입니다.",
       kind: "quiz",
       status: "published",
       duration_minutes: 80,
@@ -136,7 +136,7 @@ async function main() {
     if (keyErr) throw new Error(`${slug} q${n} answer_key insert failed: ` + keyErr.message);
   }
 
-  console.log(`${slug}: seeded 50 questions (exam id ${exam.id}). Run update_korean_history_74_images.mjs separately to attach question images.`);
+  console.log(`${slug}: seeded 50 questions (exam id ${exam.id}). Run update_korean_history_73_images.mjs separately to attach question images.`);
 }
 
 main().then(() => console.log("SEED DONE")).catch((err) => {
