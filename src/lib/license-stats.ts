@@ -2,6 +2,27 @@ import "server-only";
 
 import { createAdminClient } from "@/lib/supabase/admin";
 
+// PostgREST encodes .in() filters in the request URL, which has a ~16KB header limit.
+// A certification with many exams easily accumulates hundreds of question ids (한국사
+// alone crossed 400 once it reached 8 rounds), so any .in("question_id"/"id", ids) query
+// must be chunked rather than sent as one array once id counts grow past a few hundred.
+const IN_CHUNK_SIZE = 150;
+function chunk<T>(items: T[], size: number): T[][] {
+  const chunks: T[][] = [];
+  for (let i = 0; i < items.length; i += size) chunks.push(items.slice(i, i + size));
+  return chunks;
+}
+async function selectInChunks<Row>(
+  run: (idsChunk: string[]) => PromiseLike<{ data: Row[] | null; error: unknown }>,
+  ids: string[],
+): Promise<{ data: Row[]; error: unknown }> {
+  if (!ids.length) return { data: [], error: null };
+  const results = await Promise.all(chunk(ids, IN_CHUNK_SIZE).map(run));
+  const error = results.find((result) => result.error)?.error ?? null;
+  const data = results.flatMap((result) => result.data ?? []);
+  return { data, error };
+}
+
 export type QuestionStat = {
   questionId: string;
   examSlug: string;
@@ -51,8 +72,14 @@ export async function getCertificationStats(certificationId: string): Promise<Ce
 
   const questionIds = questions.map((question) => question.id);
   const [{ data: seedRows, error: seedError }, { data: liveAnswers, error: liveError }] = await Promise.all([
-    admin.from("question_stat_seed").select("question_id,attempt_count,correct_count").in("question_id", questionIds),
-    admin.from("attempt_answers").select("question_id,is_correct").in("question_id", questionIds).not("is_correct", "is", null),
+    selectInChunks(
+      (ids) => admin.from("question_stat_seed").select("question_id,attempt_count,correct_count").in("question_id", ids),
+      questionIds,
+    ),
+    selectInChunks(
+      (ids) => admin.from("attempt_answers").select("question_id,is_correct").in("question_id", ids).not("is_correct", "is", null),
+      questionIds,
+    ),
   ]);
   if (seedError || liveError) throw new Error("자격증 통계를 불러오지 못했습니다.");
 
@@ -161,9 +188,9 @@ export async function getWrongAnswerNotebook(userId: string, certificationId: st
   const questionIds = [...new Set(wrongAnswers.map((answer) => answer.question_id))];
 
   const [{ data: questions, error: questionError }, { data: choices, error: choiceError }, { data: answerKeys, error: keyError }, { data: sections, error: sectionError }] = await Promise.all([
-    admin.from("questions").select("id,exam_id,section_id,number,prompt").in("id", questionIds),
-    admin.from("question_choices").select("id,question_id,label,content").in("question_id", questionIds).order("sort_order"),
-    admin.from("answer_keys").select("question_id,correct_choice_id,explanation").in("question_id", questionIds),
+    selectInChunks((ids) => admin.from("questions").select("id,exam_id,section_id,number,prompt").in("id", ids), questionIds),
+    selectInChunks((ids) => admin.from("question_choices").select("id,question_id,label,content").in("question_id", ids).order("sort_order"), questionIds),
+    selectInChunks((ids) => admin.from("answer_keys").select("question_id,correct_choice_id,explanation").in("question_id", ids), questionIds),
     admin.from("exam_sections").select("id,code").in("exam_id", examIds),
   ]);
   if (questionError || choiceError || keyError || sectionError || !questions || !choices || !answerKeys || !sections) throw new Error("오답노트 문항 정보를 불러오지 못했습니다.");
