@@ -35,6 +35,7 @@ export function RoundQuestionStats({ rounds }: { rounds: RoundStat[] }) {
           return (
             <div className="chart-bar" key={question.number} data-tooltip={tooltip} title={tooltip}>
               <i className={question.attemptCount === 0 ? "no-data" : ""} style={question.attemptCount > 0 ? { height: `${Math.max(question.accuracy, 3)}%` } : undefined} />
+              {question.number % 5 === 0 && <span className="tick-label">{question.number}</span>}
             </div>
           );
         })}
