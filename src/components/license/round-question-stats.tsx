@@ -30,8 +30,8 @@ export function RoundQuestionStats({ rounds }: { rounds: RoundStat[] }) {
       <div className="round-question-chart">
         {active.questions.map((question) => {
           const tooltip = question.attemptCount > 0
-            ? `${question.number}번 · ${question.correctCount}/${question.attemptCount}명 정답 (${question.accuracy}%)\n${question.prompt}`
-            : `${question.number}번 · 응시 기록 없음\n${question.prompt}`;
+            ? `${question.number}번 · ${question.correctCount}/${question.attemptCount}명 정답 (${question.accuracy}%)`
+            : `${question.number}번 · 응시 기록 없음`;
           return (
             <div className="chart-bar" key={question.number} data-tooltip={tooltip} title={tooltip}>
               <i className={question.attemptCount === 0 ? "no-data" : ""} style={question.attemptCount > 0 ? { height: `${Math.max(question.accuracy, 3)}%` } : undefined} />

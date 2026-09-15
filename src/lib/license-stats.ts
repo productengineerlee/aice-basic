@@ -36,7 +36,7 @@ export type QuestionStat = {
 };
 
 export type SectionStat = { code: string; title: string; attemptCount: number; correctCount: number; accuracy: number; questionCount: number };
-export type RoundQuestionStat = { number: number; prompt: string; attemptCount: number; correctCount: number; accuracy: number };
+export type RoundQuestionStat = { number: number; attemptCount: number; correctCount: number; accuracy: number };
 export type RoundStat = { examSlug: string; examTitle: string; questions: RoundQuestionStat[] };
 
 export type CertificationStats = {
@@ -121,7 +121,7 @@ export async function getCertificationStats(certificationId: string): Promise<Ce
   const questionsByExam = new Map<string, RoundQuestionStat[]>();
   for (const stat of questionStats) {
     const list = questionsByExam.get(stat.examSlug) ?? [];
-    list.push({ number: stat.number, prompt: stat.prompt, attemptCount: stat.attemptCount, correctCount: stat.correctCount, accuracy: stat.accuracy });
+    list.push({ number: stat.number, attemptCount: stat.attemptCount, correctCount: stat.correctCount, accuracy: stat.accuracy });
     questionsByExam.set(stat.examSlug, list);
   }
   const roundStats: RoundStat[] = [...questionsByExam.entries()].map(([examSlug, list]) => ({
