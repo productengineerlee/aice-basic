@@ -27,23 +27,19 @@ export function RoundQuestionStats({ rounds }: { rounds: RoundStat[] }) {
           </button>
         ))}
       </div>
-      <div className="round-question-list">
-        {active.questions.map((question) => (
-          <div className="round-question-row" key={question.number}>
-            <span className="q-number">{question.number}번</span>
-            <p className="q-prompt">{question.prompt}</p>
-            {question.attemptCount > 0 ? (
-              <>
-                <div className="stat-meter"><i style={{ width: `${question.accuracy}%` }} /></div>
-                <b>{question.correctCount}/{question.attemptCount}명</b>
-                <span className="q-accuracy">{question.accuracy}%</span>
-              </>
-            ) : (
-              <span className="q-no-data">응시 기록 없음</span>
-            )}
-          </div>
-        ))}
+      <div className="round-question-chart">
+        {active.questions.map((question) => {
+          const tooltip = question.attemptCount > 0
+            ? `${question.number}번 · ${question.correctCount}/${question.attemptCount}명 정답 (${question.accuracy}%)\n${question.prompt}`
+            : `${question.number}번 · 응시 기록 없음\n${question.prompt}`;
+          return (
+            <div className="chart-bar" key={question.number} data-tooltip={tooltip} title={tooltip}>
+              <i className={question.attemptCount === 0 ? "no-data" : ""} style={question.attemptCount > 0 ? { height: `${Math.max(question.accuracy, 3)}%` } : undefined} />
+            </div>
+          );
+        })}
       </div>
+      <div className="chart-legend"><span><i className="legend-dot" />정답률</span><span><i className="legend-dot no-data" />응시 기록 없음</span><small>막대에 마우스를 올리면 문항 번호와 정답자 수를 볼 수 있어요.</small></div>
     </div>
   );
 }

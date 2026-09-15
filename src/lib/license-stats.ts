@@ -117,9 +117,7 @@ export async function getCertificationStats(certificationId: string): Promise<Ce
     return { code, title, attemptCount: attempt, correctCount: correct, accuracy: accuracyOf(attempt, correct), questionCount: matching.length };
   });
 
-  // 회차 선택 시 그 회차 문항 전체(번호순이 아니라 정답률 낮은 순 — 많이 틀린 문항이 먼저 보이도록)를
-  // 보여주기 위한 통계. 응시 기록이 없는 문항(0%로 계산됨)은 "많이 틀렸다"는 신호가 아니라 데이터가
-  // 없는 것이므로 정답률로 함께 정렬하지 않고 번호순으로 뒤에 둔다.
+  // 회차 선택 시 그 회차 문항 전체를 번호순 막대그래프로 보여주기 위한 통계.
   const questionsByExam = new Map<string, RoundQuestionStat[]>();
   for (const stat of questionStats) {
     const list = questionsByExam.get(stat.examSlug) ?? [];
@@ -129,12 +127,7 @@ export async function getCertificationStats(certificationId: string): Promise<Ce
   const roundStats: RoundStat[] = [...questionsByExam.entries()].map(([examSlug, list]) => ({
     examSlug,
     examTitle: questionStats.find((stat) => stat.examSlug === examSlug)?.examTitle ?? "",
-    questions: list.sort((a, b) => {
-      if (a.attemptCount === 0 && b.attemptCount === 0) return a.number - b.number;
-      if (a.attemptCount === 0) return 1;
-      if (b.attemptCount === 0) return -1;
-      return a.accuracy - b.accuracy || b.attemptCount - a.attemptCount || a.number - b.number;
-    }),
+    questions: list.sort((a, b) => a.number - b.number),
   }));
 
   const hardestQuestions = questionStats
