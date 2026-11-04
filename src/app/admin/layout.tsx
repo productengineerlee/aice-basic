@@ -11,7 +11,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const { user, profile } = await requireAdmin();
   return <div className="admin-shell">
     <aside className="admin-sidebar">
-      <Link className="admin-brand" href="/admin"><Image src="/logo-mark.png" alt="" width={32} height={32} className="brand-mark" />AICE <b>LAB</b></Link>
+      <Link className="admin-brand" href="/admin"><Image src="/logo-mark.png" alt="" width={32} height={32} className="brand-mark" />기출<b>뱅크</b></Link>
       <nav>
         <Link href="/admin"><LayoutDashboard />관리자 홈</Link>
         <Link href="/admin/exams"><BookOpenCheck />시험·문항 관리</Link>
@@ -19,7 +19,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         <Link href="/admin/diagnostics"><BarChart3 />진단 규칙 관리</Link>
         <Link href="/admin/theory"><BookOpen />핵심이론 관리</Link>
         <Link href="/admin/license-schedules"><Award />자격증 일정 관리</Link>
-        <Link href="/exams"><ClipboardList />사용자 시험 화면</Link>
+        <Link href="/license"><ClipboardList />사용자 시험 화면</Link>
       </nav>
       <div className="admin-account"><span>ADMIN</span><strong>{profile.display_name || user.email?.split("@")[0]}</strong><small>{user.email}</small><form action={signOut}><button><LogOut />로그아웃</button></form></div>
     </aside>

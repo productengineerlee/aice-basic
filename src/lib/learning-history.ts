@@ -124,7 +124,7 @@ export async function loadLearningHistory(userId: string, requestedPage: number,
     const exact = rules.filter(rule => rule.section_code === null && rule.competency_tag === tag && value >= Number(rule.min_percentage) && value <= Number(rule.max_percentage));
     const fallback = rules.filter(rule => rule.section_code === null && rule.competency_tag === null && value >= Number(rule.min_percentage) && value <= Number(rule.max_percentage));
     const rule = [...exact, ...fallback].sort((a, b) => b.priority - a.priority)[0];
-    return { tag, percentage: value, earnedScore: Number(score.earnedScore.toFixed(2)), maxScore: Number(score.maxScore.toFixed(2)), correctCount: score.correctCount, questionCount: score.questionCount, level: rule?.level ?? "foundation", comment: rule?.comment ?? `${tag} 역량의 반복 연습이 필요합니다.`, recommendation: rule?.recommendation ?? "관련 오답과 AIDU 실행 과정을 다시 확인해 보세요." };
+    return { tag, percentage: value, earnedScore: Number(score.earnedScore.toFixed(2)), maxScore: Number(score.maxScore.toFixed(2)), correctCount: score.correctCount, questionCount: score.questionCount, level: rule?.level ?? "foundation", comment: rule?.comment ?? `${tag} 역량의 반복 연습이 필요합니다.`, recommendation: rule?.recommendation ?? "관련 오답 해설을 확인하고 같은 유형의 기출문제를 다시 풀어 보세요." };
   }).sort((a, b) => a.percentage - b.percentage || b.questionCount - a.questionCount || a.tag.localeCompare(b.tag, "ko"));
 
   return { exams, history, currentPage, totalPages, totalAttempts, selectedExamId, summary: { gradedCount, averagePercentage, bestPercentage, passRate }, trends, competencies, analyticsAttemptCount: analyticsAttempts.length };

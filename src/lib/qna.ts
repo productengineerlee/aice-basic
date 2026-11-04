@@ -7,7 +7,7 @@ export type QnaCategory = { id: string | null; code: string; name: string };
 
 export async function listQnaCategories(): Promise<QnaCategory[]> {
   const certs = await listCertifications();
-  return [{ id: null, code: "aice-basic", name: "AICE BASIC" }, ...certs.map((c) => ({ id: c.id, code: c.code, name: c.name }))];
+  return [{ id: null, code: "general", name: "일반" }, ...certs.map((c) => ({ id: c.id, code: c.code, name: c.name }))];
 }
 
 export type QnaPostSummary = {
@@ -64,7 +64,7 @@ export async function listQnaPosts(params: { categoryId?: string | null; hasCate
       authorId: p.user_id,
       authorName: nameByUser.get(p.user_id) ?? "회원",
       commentCount: commentCountByPost.get(p.id) ?? 0,
-      categoryName: p.certification_id ? (nameByCert.get(p.certification_id) ?? "자격증") : "AICE BASIC",
+      categoryName: p.certification_id ? (nameByCert.get(p.certification_id) ?? "자격증") : "일반",
     })),
     total: count ?? 0,
     pageSize: PAGE_SIZE,
@@ -119,8 +119,8 @@ export async function getQnaPost(id: string): Promise<QnaPostDetail | null> {
     updatedAt: post.updated_at,
     authorId: post.user_id,
     authorName: author?.display_name ?? "회원",
-    categoryCode: cert?.code ?? "aice-basic",
-    categoryName: cert?.name ?? "AICE BASIC",
+    categoryCode: cert?.code ?? "general",
+    categoryName: cert?.name ?? "일반",
     comments: commentRows.map((c) => ({
       id: c.id,
       content: c.content,

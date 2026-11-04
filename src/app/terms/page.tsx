@@ -13,7 +13,7 @@ export default function TermsPage() {
       <div className="guide-body">
         <section className="guide-section">
           <h2>제1조 (목적)</h2>
-          <p>이 약관은 AICE LAB(이하 &ldquo;회사&rdquo;)가 제공하는 모의고사·자격증 문제풀이 학습 서비스(이하 &ldquo;서비스&rdquo;)의 이용과 관련하여 회사와 회원 간의 권리, 의무 및 책임사항, 기타 필요한 사항을 정함을 목적으로 합니다.</p>
+          <p>이 약관은 기출뱅크(이하 &ldquo;회사&rdquo;)가 제공하는 기출문제 풀이 학습 서비스(이하 &ldquo;서비스&rdquo;)의 이용과 관련하여 회사와 회원 간의 권리, 의무 및 책임사항, 기타 필요한 사항을 정함을 목적으로 합니다.</p>
         </section>
 
         <section className="guide-section">

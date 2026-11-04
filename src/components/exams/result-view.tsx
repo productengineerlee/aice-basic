@@ -35,7 +35,7 @@ function legacyComment(p: number) {
   if (p >= 80) return "안정적으로 이해하고 있습니다. 실전 시간 관리와 고난도 문항에 집중하세요.";
   if (p >= 60) return "기본기는 갖추었지만 복합 조건과 결과 해석을 조금 더 연습하세요.";
   if (p >= 40) return "핵심 개념은 일부 이해했습니다. 오답 해설과 같은 유형을 반복해 보세요.";
-  return "기초 개념과 AIDU 메뉴 흐름부터 다시 익히는 것이 좋습니다.";
+  return "기초 개념부터 다시 정리하고 같은 유형의 기출문제를 반복해 보세요.";
 }
 const sectionShortLabel: Record<string, string> = { eda: "데이터 분석", preprocessing: "전처리", modeling: "모델링", evaluation: "성능평가" };
 
@@ -72,15 +72,15 @@ export function ResultView({ slug }: { slug: string }) {
   const weakestSection = useMemo(() => result?.diagnostics?.sections ? [...result.diagnostics.sections].sort((a, b) => a.percentage - b.percentage)[0] : null, [result]);
   const weakestCompetency = result?.diagnostics?.competencies?.[0] ?? null;
 
-  if (!result) return <main className="result-empty"><BarChart3 /><h1>{loading ? "채점 결과를 불러오는 중입니다" : loadError ? "결과를 불러오지 못했습니다" : "채점 결과가 없습니다"}</h1><p>{loading ? "서버가 버지니아에 있어 불러오는데 조금 시간이 걸려요. 잠시만 기다려 주세요." : loadError ? "네트워크 상태를 확인하고 새로고침해 주세요." : "모의고사를 제출하면 결과가 이곳에 표시됩니다."}</p><Link href={`/exams/${slug}`}>시험 안내로 돌아가기</Link></main>;
+  if (!result) return <main className="result-empty"><BarChart3 /><h1>{loading ? "채점 결과를 불러오는 중입니다" : loadError ? "결과를 불러오지 못했습니다" : "채점 결과가 없습니다"}</h1><p>{loading ? "서버가 버지니아에 있어 불러오는데 조금 시간이 걸려요. 잠시만 기다려 주세요." : loadError ? "네트워크 상태를 확인하고 새로고침해 주세요." : "모의고사를 제출하면 결과가 이곳에 표시됩니다."}</p><Link href="/license">기출문제 목록으로 돌아가기</Link></main>;
 
-  const listHref = result.certificationCode ? `/license/${result.certificationCode}` : "/exams";
+  const listHref = result.certificationCode ? `/license/${result.certificationCode}` : "/license";
   const scoreNote = result.certificationCode === "korean-history"
     ? <p className="score-note">※ 배점은 100점만으로 문항별 1점~3점 차등배점을 기준으로 채점하였습니다.</p>
-    : <p className="score-note">※ 배점은 코딩엑스가 학습 수준 확인을 위해 임의로 설정한 참고용 점수이며, 실제 AICE 시험의 공식 배점과는 무관합니다. <Link href="/exams#notice">자세히 보기</Link></p>;
+    : <p className="score-note">※ 표시되는 점수와 합격 여부는 학습 참고용이며, 실제 시험의 공식 결과와 다를 수 있습니다.</p>;
 
   return <main className="result-page">
-    <header className={result.passed ? "pass" : "fail"}><div className="result-head-inner"><div className="result-head-links"><Link href={listHref}><ArrowLeft />모의고사 목록</Link><Link href="/"><Home />홈가기</Link></div><div className="result-status">{result.passed ? <CheckCircle2 /> : <XCircle />}<span>{result.passed ? "모의 합격" : "모의 불합격"}</span></div><h1>{result.examTitle}</h1><p>제출 즉시 자동채점한 결과입니다.</p><div className="total-score"><b>{result.totalScore}</b><span>/ {result.maxScore}점</span></div><div className="score-meta"><span>합격 기준 {result.passingScore}점</span><span>정답 {result.correctCount}/{result.questionCount}</span><span>응답 {result.answeredCount}/{result.questionCount}</span></div>{scoreNote}</div></header>
+    <header className={result.passed ? "pass" : "fail"}><div className="result-head-inner"><div className="result-head-links"><Link href={listHref}><ArrowLeft />회차 목록</Link><Link href="/"><Home />홈가기</Link></div><div className="result-status">{result.passed ? <CheckCircle2 /> : <XCircle />}<span>{result.passed ? "모의 합격" : "모의 불합격"}</span></div><h1>{result.examTitle}</h1><p>제출 즉시 자동채점한 결과입니다.</p><div className="total-score"><b>{result.totalScore}</b><span>/ {result.maxScore}점</span></div><div className="score-meta"><span>합격 기준 {result.passingScore}점</span><span>정답 {result.correctCount}/{result.questionCount}</span><span>응답 {result.answeredCount}/{result.questionCount}</span></div>{scoreNote}</div></header>
     <section className="result-container">
       <div className="result-grid">
         <article className="result-card"><h2>영역별 점수</h2><div className="section-bars">{result.sections.map(section => <div key={section.code}><b>{section.earnedScore}<small>/{section.maxScore}</small></b><div className="bar-track"><i style={section.percentage > 0 ? { height: `${Math.max(section.percentage, 4)}%` } : { height: 0 }} /></div><span>{section.title}</span></div>)}</div></article>

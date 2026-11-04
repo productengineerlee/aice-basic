@@ -9,7 +9,7 @@ type Props = { mode: Mode; action: (state: AuthState, data: FormData) => Promise
 
 const copy = {
   login:  { title: "다시 만나서 반가워요",   sub: "학습을 이어가려면 로그인하세요.",        button: "로그인" },
-  signup: { title: "AICE LAB 시작하기",      sub: "무료 계정을 만들고 모의고사를 시작하세요.", button: "회원가입" },
+  signup: { title: "기출뱅크 시작하기",      sub: "무료 계정을 만들고 기출문제를 풀어보세요.", button: "회원가입" },
   forgot: { title: "비밀번호 찾기",           sub: "가입한 이메일로 재설정 링크를 보내드려요.", button: "재설정 링크 받기" },
   update: { title: "새 비밀번호 설정",        sub: "앞으로 사용할 비밀번호를 입력하세요.",    button: "비밀번호 변경" },
 };

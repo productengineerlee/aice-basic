@@ -26,7 +26,7 @@ export default async function NewQnaPostPage({ searchParams }: { searchParams: P
         <form action={createQnaPostAction} className="qna-form">
           <label>
             자격증 선택
-            <select name="categoryCode" required defaultValue="aice-basic">
+            <select name="categoryCode" required defaultValue="general">
               {categories.map((c) => <option key={c.code} value={c.code}>{c.name}</option>)}
             </select>
           </label>
