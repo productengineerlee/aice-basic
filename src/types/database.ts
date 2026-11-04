@@ -28,9 +28,13 @@ export interface Database {
       question_stat_seed: Table<{ question_id: string; attempt_count: number; correct_count: number }>;
       qna_posts: Table<{ id: string; user_id: string; certification_id: string | null; title: string; content: string; is_active: boolean; created_at: string; updated_at: string }>;
       qna_comments: Table<{ id: string; post_id: string; user_id: string; content: string; is_active: boolean; created_at: string; updated_at: string }>;
+      review_items: Table<{ user_id: string; question_id: string; wrong_count: number; correct_streak: number; last_wrong_at: string; next_review_at: string; graduated_at: string | null; created_at: string; updated_at: string }>;
+      practice_answers: Table<{ id: string; user_id: string; question_id: string; selected_label: string; is_correct: boolean; time_spent_ms: number | null; mode: "review" | "daily" | "random"; answered_at: string }>;
     };
     Views: Record<string, never>;
-    Functions: Record<string, never>;
+    Functions: {
+      record_wrong_answers: { Args: { p_user_id: string; p_question_ids: string[]; p_wrong_at?: string }; Returns: undefined };
+    };
     Enums: { user_role: UserRole; exam_status: ExamStatus; exam_kind: ExamKind; question_type: QuestionType; grading_type: GradingType; attempt_status: AttemptStatus };
     CompositeTypes: Record<string, never>;
   };

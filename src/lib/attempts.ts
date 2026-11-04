@@ -304,6 +304,19 @@ export async function saveAttemptDraft(slug: string, attemptId: string, userId: 
   return { savedAt, answeredCount };
 }
 
+/** 자격증 회차에서 답을 고르고 틀린 문항을 오답노트(review_items)에 기록한다. 미응답은 제외.
+ * 오답노트 기록이 실패해도 채점 결과 저장은 이미 끝났으므로 제출을 실패시키지 않고 로그만 남긴다. */
+async function recordWrongAnswers(admin: AdminClient, context: Context, userId: string, result: GradingResult, wrongAt: string) {
+  if (!context.exam.certification_id) return;
+  const questionIds = result.questions
+    .filter((question) => !question.isCorrect && question.userAnswer.trim() !== "")
+    .map((question) => context.questionByNumber.get(question.number)?.id)
+    .filter((id): id is string => Boolean(id));
+  if (!questionIds.length) return;
+  const { error } = await admin.rpc("record_wrong_answers", { p_user_id: userId, p_question_ids: questionIds, p_wrong_at: wrongAt });
+  if (error) console.error("[review-items] 오답노트 기록 실패", error.message);
+}
+
 export async function persistGradingResult(
   context: Context,
   attemptId: string,
@@ -350,6 +363,8 @@ export async function persistGradingResult(
   }).eq("id", attemptId).eq("user_id", userId).in("status", ["in_progress", "expired"]).select("id").maybeSingle();
   if (attemptError) fail("최종 응시 결과를 저장하지 못했습니다.");
   if (!updatedAttempt) fail("이미 채점이 완료된 응시입니다.", 409);
+
+  await recordWrongAnswers(admin, context, userId, result, submittedAt);
 
   return { ...result, id: attemptId, submittedAt };
 }

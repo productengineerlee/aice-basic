@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { AlertTriangle, Bookmark, ChevronLeft, ChevronRight, Clock3, FileQuestion, Menu, Save, Send, X } from "lucide-react";
 import type { PublicExam } from "@/lib/exams";
+import { formatPrompt } from "@/lib/format-prompt";
 
 type Stored = {
   attemptId?: string;
@@ -29,24 +30,6 @@ function formatTime(seconds: number) {
   return `${String(Math.floor(safe / 60)).padStart(2, "0")}:${String(safe % 60).padStart(2, "0")}`;
 }
 
-function formatPrompt(prompt: string) {
-  const bulletPattern = /(\S)\s+([oOㅇ○])\s+/g;
-  if (bulletPattern.test(prompt)) {
-    let isFirstItem = true;
-    return prompt.replace(bulletPattern, (_, prev: string) => {
-      const separator = isFirstItem ? "\n\n" : "\n";
-      isFirstItem = false;
-      return `${prev}${separator}ㅇ `;
-    });
-  }
-  // Some prompts use "-" as the bullet marker instead of o/O/ㅇ/○.
-  let isFirstDash = true;
-  return prompt.replace(/(\S)\s+-\s*(?=\S)/g, (_, prev: string) => {
-    const separator = isFirstDash ? "\n\n" : "\n";
-    isFirstDash = false;
-    return `${prev}${separator}ㅇ `;
-  });
-}
 
 export function ExamRunner({ exam }: { exam: PublicExam }) {
   const key = `aice-attempt:${exam.slug}:v1`;

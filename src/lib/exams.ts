@@ -84,16 +84,14 @@ export async function getExam(slug: string): Promise<PublicExam | null> {
 
 export type SiteStats = { attemptCount: number; answeredCount: number };
 
-/** Site-wide usage counters for the landing page stat strip. Counts every attempt row
- * regardless of status (in_progress/expired/graded) — a fresh start counts immediately,
- * matching what a visitor would intuitively call "누적 응시 횟수". */
+/** 랜딩 페이지 이용 현황. 행을 내려받지 않고 DB에서 개수만 센다(PostgREST 기본 1,000행 제한에 걸리지 않음).
+ * 누적 문제 풀이 = 저장된 문항 답안 수(답을 고른 문항만 행이 생긴다). */
 export async function getSiteStats(): Promise<SiteStats> {
   const admin = createAdminClient();
-  const { data, error } = await admin.from("attempts").select("answered_count");
-  if (error) throw new Error("이용 현황을 불러오지 못했습니다.");
-  const rows = data ?? [];
-  return {
-    attemptCount: rows.length,
-    answeredCount: rows.reduce((sum, row) => sum + (row.answered_count ?? 0), 0),
-  };
+  const [attempts, answers] = await Promise.all([
+    admin.from("attempts").select("id", { count: "exact", head: true }),
+    admin.from("attempt_answers").select("id", { count: "exact", head: true }),
+  ]);
+  if (attempts.error || answers.error) throw new Error("이용 현황을 불러오지 못했습니다.");
+  return { attemptCount: attempts.count ?? 0, answeredCount: answers.count ?? 0 };
 }

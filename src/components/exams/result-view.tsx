@@ -3,7 +3,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, BarChart3, CheckCircle2, ChevronDown, Home, XCircle } from "lucide-react";
+import { ArrowLeft, ArrowRight, BarChart3, BookX, CheckCircle2, ChevronDown, Home, XCircle } from "lucide-react";
 import type { GradingResult } from "@/lib/grading";
 import { levelLabel } from "@/lib/diagnostic-level";
 
@@ -74,6 +74,7 @@ export function ResultView({ slug }: { slug: string }) {
 
   if (!result) return <main className="result-empty"><BarChart3 /><h1>{loading ? "채점 결과를 불러오는 중입니다" : loadError ? "결과를 불러오지 못했습니다" : "채점 결과가 없습니다"}</h1><p>{loading ? "서버가 버지니아에 있어 불러오는데 조금 시간이 걸려요. 잠시만 기다려 주세요." : loadError ? "네트워크 상태를 확인하고 새로고침해 주세요." : "모의고사를 제출하면 결과가 이곳에 표시됩니다."}</p><Link href="/license">기출문제 목록으로 돌아가기</Link></main>;
 
+  const reviewSavedCount = result.certificationCode ? result.questions.filter((question) => !question.isCorrect && question.userAnswer.trim() !== "").length : 0;
   const listHref = result.certificationCode ? `/license/${result.certificationCode}` : "/license";
   const scoreNote = result.certificationCode === "korean-history"
     ? <p className="score-note">※ 배점은 100점만으로 문항별 1점~3점 차등배점을 기준으로 채점하였습니다.</p>
@@ -81,7 +82,7 @@ export function ResultView({ slug }: { slug: string }) {
 
   return <main className="result-page">
     <header className={result.passed ? "pass" : "fail"}><div className="result-head-inner"><div className="result-head-links"><Link href={listHref}><ArrowLeft />회차 목록</Link><Link href="/"><Home />홈가기</Link></div><div className="result-status">{result.passed ? <CheckCircle2 /> : <XCircle />}<span>{result.passed ? "모의 합격" : "모의 불합격"}</span></div><h1>{result.examTitle}</h1><p>제출 즉시 자동채점한 결과입니다.</p><div className="total-score"><b>{result.totalScore}</b><span>/ {result.maxScore}점</span></div><div className="score-meta"><span>합격 기준 {result.passingScore}점</span><span>정답 {result.correctCount}/{result.questionCount}</span><span>응답 {result.answeredCount}/{result.questionCount}</span></div>{scoreNote}</div></header>
-    <section className="result-container">
+    <section className="result-container">{reviewSavedCount > 0 && <Link className="review-saved-note" href={`/review?cert=${result.certificationCode}`}><BookX /><span>틀린 문제 <b>{reviewSavedCount}개</b>가 오답노트에 저장됐어요</span><em>오답노트 보기<ArrowRight /></em></Link>}
       <div className="result-grid">
         <article className="result-card"><h2>영역별 점수</h2><div className="section-bars">{result.sections.map(section => <div key={section.code}><b>{section.earnedScore}<small>/{section.maxScore}</small></b><div className="bar-track"><i style={section.percentage > 0 ? { height: `${Math.max(section.percentage, 4)}%` } : { height: 0 }} /></div><span>{section.title}</span></div>)}</div></article>
         <article className="result-card radar-card"><h2>영역별 역량 균형</h2><Radar values={result.sections.map(section => section.percentage)} labels={result.sections.map(section => sectionShortLabel[section.code] ?? section.title)} /><div className="radar-labels">{result.sections.map(section => <span key={section.code}>{section.title}<b>{section.percentage}%</b></span>)}</div></article>
