@@ -33,18 +33,20 @@
 - [ ] `package.json` name, README 갱신
 - [ ] 브랜드명 확정 (gichulbank / 기출뱅크 등). 참고: `certiq.vercel.app`은 타인이 사용 중
 
-### 2단계: 도메인 전환
-- [ ] Vercel 프로젝트 이름 변경, 도메인 `gichulbank.vercel.app` 추가 (2026-11-05 확인 시 DEPLOYMENT_NOT_FOUND → 사용 가능성 높음)
-- [ ] `aice-basic.vercel.app` → `gichulbank.vercel.app` **308 영구 리다이렉트** (Vercel Domains 설정 또는 `next.config.ts` 의 host 조건 redirects). 경로 유지됨
+### 2단계: 도메인 전환 (진행 중 — 2026-11-05 기준)
+- [x] 리다이렉트 코드 준비: `next.config.ts` 에 host 조건 308 리다이렉트 (`aice-basic.vercel.app` → `gichulbank.vercel.app`, 경로·쿼리 유지, `/auth/callback` 만 옛 도메인에서 처리). 로컬 검증 완료, **커밋·배포 보류**
+- [x] (사용자) Vercel 환경변수 `NEXT_PUBLIC_SITE_URL` = `https://gichulbank.vercel.app`, Supabase Site URL·Redirect URLs 변경 — 사용자가 완료했다고 알림
+- [ ] **(막힘) Vercel에 `gichulbank.vercel.app` 도메인 추가** — 아직 404 DEPLOYMENT_NOT_FOUND. 새 대시보드 Settings 메뉴에 "Domains" 항목이 없어 위치 확인 중 (후보: Settings → Environments → Production, 프로젝트 메뉴, Find 검색)
+- [ ] 도메인 응답 200 확인 후에만 리다이렉트 코드 커밋·push (먼저 배포하면 회원이 열리지 않는 주소로 이동함)
+- [ ] 배포 후 검증: 옛 주소 → 새 주소 308(경로 유지), 새 주소 페이지·로그인 정상
 - [ ] `aice-basic.vercel.app` 도메인은 삭제하지 말고 계속 연결 유지
-- [ ] Supabase Auth: Site URL / Redirect URLs 새 주소로 변경 (이메일 인증·비밀번호 재설정)
 - [ ] 안내: 기존 회원은 새 주소에서 1회 재로그인 필요 (쿠키가 도메인별)
-- [ ] 장기: 독자 도메인 구매 검토
+- [ ] 이름이 이미 사용 중이면: 다른 vercel.app 이름 또는 독자 도메인 구매 검토
 
-### 3단계: gichulbank(구) 학습 기능 이식
-- [ ] 오답노트 + 간격 반복 복습
-- [ ] 약점 분석 (섹션/태그별)
-- [ ] 스트릭·업적, 일일 학습 세트
+### 3단계: gichulbank(구) 학습 기능 이식 — ✅ 완료 (상세: STAGE3_LEARNING_FEATURES.md)
+- [x] 오답노트 + 간격 반복 복습 (/review, /practice)
+- [x] 약점 분석 (과목·시대별 + 유형별, /mypage)
+- [x] 스트릭, 오늘의 추천 10문제 (업적·보상은 보류)
 - 로직은 `E:\Projects\gichulbank\src\lib\api\*` 참고, 데이터는 `attempt_answers` 기반으로 재구성
 
 ### 4단계: AI 추천 대비 데이터 정비
@@ -53,7 +55,7 @@
 - [ ] 문제 단위 연습 모드(회차 모의고사 외) 로그도 같은 구조로 저장
 
 ### 마무리
-- [ ] 메인화면(랜딩) 디자인 개편: 3단계 기능 이식 후, 도메인 전환 공지 전에 진행
+- [x] 메인화면(랜딩) 디자인 개편 (밝은 학습앱 + 회원 개인화 요약)
 - [ ] 기존 `E:\Projects\gichulbank` 폴더: 모든 작업 완료 후 최종 확인을 거쳐 삭제 (그 전까지 기능 이식 참고용으로 유지)
 - [ ] 폴더명 `aice_basic` → `gichulbank` 변경 (구 폴더 삭제 후)
 
