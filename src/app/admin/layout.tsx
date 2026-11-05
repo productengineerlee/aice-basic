@@ -11,7 +11,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const { user, profile } = await requireAdmin();
   return <div className="admin-shell">
     <aside className="admin-sidebar">
-      <Link className="admin-brand" href="/admin"><Image src="/logo-mark.png" alt="" width={32} height={32} className="brand-mark" />기출<b>뱅크</b></Link>
+      <Link className="admin-brand" href="/admin"><Image src="/mascot.png" alt="" width={32} height={32} className="brand-mark" />기출<b>뱅크</b></Link>
       <nav>
         <Link href="/admin"><LayoutDashboard />관리자 홈</Link>
         <Link href="/admin/exams"><BookOpenCheck />시험·문항 관리</Link>
