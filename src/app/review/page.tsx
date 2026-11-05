@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { BookX, CalendarClock, CheckCircle2, GraduationCap, RotateCcw } from "lucide-react";
 import { ExamHeader } from "@/components/exams/exam-header";
 import { createClient } from "@/lib/supabase/server";
-import { formatPrompt } from "@/lib/format-prompt";
+import { AI_EXPLANATION_NOTE, formatExplanation, formatPrompt } from "@/lib/format-prompt";
 import { loadReviewNotebook, PRACTICE_SESSION_SIZE, type ReviewFilter, type ReviewItem } from "@/lib/review";
 import "../exams/exams.css";
 import "./review.css";
@@ -108,7 +108,7 @@ export default async function ReviewPage({ searchParams }: { searchParams: Promi
                   {item.choices.map((choice) => <li key={choice.label} className={choice.isCorrect ? "correct" : ""}><span>{choice.label}</span><p>{choice.content}</p>{choice.isCorrect && <CheckCircle2 />}</li>)}
                 </ol>}
                 <div className="review-answer"><b>정답</b><span>{item.correctAnswer}</span></div>
-                <div className="review-explanation"><b>해설</b><p>{item.explanation ?? "해설을 준비 중입니다."}</p></div>
+                <div className="review-explanation"><b>해설</b><p>{formatExplanation(item.explanation) ?? "해설을 준비 중입니다."}{formatExplanation(item.explanation) && <small className="explanation-note">{AI_EXPLANATION_NOTE}</small>}</p></div>
                 {item.tags.length > 0 && <div className="review-tags">{item.tags.map((tag) => <span key={tag}>#{tag}</span>)}</div>}
               </div>
             </details>)}

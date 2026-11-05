@@ -49,6 +49,14 @@
 - [x] 스트릭, 오늘의 추천 10문제 (업적·보상은 보류)
 - 로직은 `E:\Projects\gichulbank\src\lib\api\*` 참고, 데이터는 `attempt_answers` 기반으로 재구성
 
+### 해설 작성 (2026-11-05 진행)
+- 원본: `data/explanations/<시험slug>.json` (첫 줄 `정답 ○` + 근거 + 보기별 설명, AI 작성). 화면에서는 첫 줄을 빼고 "AI가 작성한 해설" 안내와 함께 표시
+- 도구: `scripts/export_questions_for_explanations.mjs`(작업용 내보내기), `scripts/apply_explanations.mjs`(검사 → `--apply` 시 빈 해설만 채움, 관리자 수정분 보존)
+- [x] 한국사 69~79회 550문항, 경영정보시각화 A·B 120문항 반영 (670건) → 자격증 870문항 전부 해설 있음
+- [x] 공인중개사 200문항 반영. 반영 전 DB 정답 14건(1차 15번, 2차 4·5·8·24·25·27·28·46·47·65·108·109·110번)이 공단 최종정답과 달라 `scripts/fix_gongin_2025_answer_keys.mjs --apply`로 정답 수정·재채점(응시 2회, 2차 1회 185→210점)·오답노트 정리 완료. 공식 정답표는 `data/gongin/official-answers-2025.json`(gitignore 대상, 로컬에만 있음)
+- [ ] 문항 이미지 크롭 오류 재작업: 한국사 69회 48번(47번 자료가 들어감), 79회 33번(연표 사건명 잘림), 79회 48번(말풍선 글 잘림)
+- [ ] 태그 오류: 한국사 78회 20번 "사헌부" → "의금부"
+
 ### 4단계: AI 추천 대비 데이터 정비
 - [ ] `attempt_answers`에 문항별 풀이 시간 컬럼 추가
 - [ ] `questions.competency_tags`, `difficulty` 일관되게 채우기

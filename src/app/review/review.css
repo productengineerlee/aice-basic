@@ -69,3 +69,4 @@
 
 @media(max-width:800px){.review-summary{grid-template-columns:repeat(3,1fr)}.review-practice-cta{grid-column:1/-1}}
 @media(max-width:560px){.review-summary{grid-template-columns:1fr}.review-summary article{padding:14px}.review-item summary{padding:14px}.review-item-body{padding:0 14px 14px}}
+.explanation-note{display:block;margin-top:8px;font-size:11px;color:#8a9aa8;white-space:normal}
