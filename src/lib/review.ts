@@ -1,6 +1,7 @@
 import "server-only";
 
 import { createAdminClient } from "@/lib/supabase/admin";
+import { fetchAll, fetchByIds } from "@/lib/supabase/paging";
 
 export type ReviewFilter = "due" | "all" | "graduated";
 
@@ -38,17 +39,7 @@ export type ReviewNotebook = {
 };
 
 const PAGE_SIZE = 20;
-const CHUNK = 150;
 
-async function inChunks<T>(ids: string[], fetch: (chunk: string[]) => PromiseLike<{ data: T[] | null; error: unknown }>): Promise<T[]> {
-  const rows: T[] = [];
-  for (let i = 0; i < ids.length; i += CHUNK) {
-    const { data, error } = await fetch(ids.slice(i, i + CHUNK));
-    if (error) throw new Error("오답노트를 불러오지 못했습니다.");
-    rows.push(...(data ?? []));
-  }
-  return rows;
-}
 
 /** 오답노트 데이터. 호출 전에 userId가 로그인한 본인인지 확인해야 한다(서버 전용, admin client 사용).
  * 정답·해설은 사용자가 이미 제출해서 틀린 문항에 대해서만 내려준다. */
@@ -61,24 +52,17 @@ type Joined = { review: ReviewRow; question: QuestionRow; exam: ExamRow; cert: C
 
 /** 회원의 오답 행 전체를 문항·회차·자격증과 묶어서 가져온다. 자격증에 속하지 않는(AICE) 문항은 제외. */
 async function loadJoinedReviews(admin: AdminClient, userId: string): Promise<{ joined: Joined[]; certs: CertRow[] }> {
-  // PostgREST는 한 번에 최대 1,000행만 돌려주므로 오답이 많은 회원도 빠짐없이 읽도록 나눠서 가져온다.
-  const reviews: ReviewRow[] = [];
-  for (let from = 0; ; from += 1000) {
-    const { data, error } = await admin
-      .from("review_items")
-      .select("question_id,wrong_count,correct_streak,last_wrong_at,next_review_at,graduated_at")
-      .eq("user_id", userId)
-      .order("question_id")
-      .range(from, from + 999);
-    if (error) throw new Error("오답노트를 불러오지 못했습니다.");
-    reviews.push(...(data ?? []));
-    if (!data || data.length < 1000) break;
-  }
+  const reviews: ReviewRow[] = await fetchAll((from, to) => admin
+    .from("review_items")
+    .select("question_id,wrong_count,correct_streak,last_wrong_at,next_review_at,graduated_at")
+    .eq("user_id", userId)
+    .order("question_id")
+    .range(from, to), "오답노트를 불러오지 못했습니다.");
 
-  const questions: QuestionRow[] = await inChunks(reviews.map((row) => row.question_id), (chunk) =>
-    admin.from("questions").select("id,exam_id,number,prompt,image_url,competency_tags").in("id", chunk).eq("is_active", true));
-  const exams: ExamRow[] = await inChunks([...new Set(questions.map((question) => question.exam_id))], (chunk) =>
-    admin.from("exams").select("id,slug,title,certification_id").in("id", chunk).eq("status", "published"));
+  const questions: QuestionRow[] = await fetchByIds(reviews.map((row) => row.question_id), (chunk, from, to) =>
+    admin.from("questions").select("id,exam_id,number,prompt,image_url,competency_tags").in("id", chunk).eq("is_active", true).order("id").range(from, to));
+  const exams: ExamRow[] = await fetchByIds([...new Set(questions.map((question) => question.exam_id))], (chunk, from, to) =>
+    admin.from("exams").select("id,slug,title,certification_id").in("id", chunk).eq("status", "published").order("id").range(from, to));
   const certIds = [...new Set(exams.map((exam) => exam.certification_id).filter((id): id is string => Boolean(id)))];
   const certs: CertRow[] = certIds.length
     ? (await admin.from("certifications").select("id,code,name,sort_order").in("id", certIds).order("sort_order")).data ?? []
@@ -141,8 +125,8 @@ export async function loadReviewNotebook(userId: string, certCode: string, filte
   const pageQuestionIds = pageRows.map((row) => row.question.id);
   const [choices, keys] = pageQuestionIds.length
     ? await Promise.all([
-        inChunks(pageQuestionIds, (chunk) => admin.from("question_choices").select("id,question_id,label,content,sort_order").in("question_id", chunk).order("sort_order")),
-        inChunks(pageQuestionIds, (chunk) => admin.from("answer_keys").select("question_id,correct_choice_id,correct_value,explanation").in("question_id", chunk)),
+        fetchByIds(pageQuestionIds, (chunk, from, to) => admin.from("question_choices").select("id,question_id,label,content,sort_order").in("question_id", chunk).order("question_id").order("sort_order").range(from, to)),
+        fetchByIds(pageQuestionIds, (chunk, from, to) => admin.from("answer_keys").select("question_id,correct_choice_id,correct_value,explanation").in("question_id", chunk).order("question_id").range(from, to)),
       ])
     : [[], []];
   const keyByQuestion = new Map(keys.map((key) => [key.question_id, key]));
@@ -224,8 +208,8 @@ export async function loadPracticeQueue(userId: string, certCode: string, scope:
     .slice(0, PRACTICE_SESSION_SIZE);
 
   const choices = picked.length
-    ? await inChunks(picked.map((row) => row.question.id), (chunk) =>
-        admin.from("question_choices").select("question_id,label,content,sort_order").in("question_id", chunk).order("sort_order"))
+    ? await fetchByIds(picked.map((row) => row.question.id), (chunk, from, to) =>
+        admin.from("question_choices").select("question_id,label,content,sort_order").in("question_id", chunk).order("question_id").order("sort_order").range(from, to))
     : [];
   const choicesByQuestion = Map.groupBy(choices, (choice) => choice.question_id);
 
