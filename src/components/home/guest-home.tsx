@@ -18,9 +18,10 @@ const LOOP = [
   { title: "졸업", body: "3번 연속 맞히면 끝" },
 ];
 
-/** 실제 풀이 화면을 닮은 예시. 색은 정답 표시에만 아주 옅게 쓴다. */
+/** 실제 풀이 화면을 닮은 예시. 자료까지 넣어 문항만 읽어도 풀 수 있게 한다(강화도 조약 1876 → 임오군란 1882).
+    색은 정답 표시에만 아주 옅게 쓴다. */
 function AppPreview() {
-  const choices = ["별기군이 창설되었다.", "홍범 14조가 반포되었다.", "통리기무아문이 설치되었다."];
+  const choices = ["병인양요가 일어났다.", "임오군란이 일어났다.", "신미양요가 일어났다."];
   return (
     <div className="mx-auto w-full max-w-md rounded-xl border border-rule bg-white p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_12px_32px_-12px_rgba(0,0,0,0.12)]">
       <div className="flex items-center justify-between text-sm">
@@ -28,8 +29,9 @@ function AppPreview() {
         <span className="font-semibold text-ink">3 / 10</span>
       </div>
       <div className="mt-2 h-1 overflow-hidden rounded-full bg-rule"><div className="h-full w-[30%] bg-ink" /></div>
-      <p className="mt-5 text-xs text-mute">제74회 31번 · 근대</p>
-      <p className="mt-1.5 font-semibold leading-relaxed text-ink">밑줄 그은 &lsquo;이 사건&rsquo; 이후에 있었던 사실로 옳은 것은?</p>
+      <p className="mt-5 text-xs text-mute">예시 문항 · 근대</p>
+      <p className="mt-1.5 font-semibold leading-relaxed text-ink [word-break:keep-all]">다음 조약이 체결된 이후에 있었던 사실로 옳은 것은?</p>
+      <p className="mt-3 rounded-md border border-rule bg-paper px-3 py-2.5 text-sm leading-relaxed text-ink-soft [word-break:keep-all]">운요호 사건을 계기로 조선과 일본이 맺은 조약으로, 부산 외 두 곳의 항구를 열기로 하였다.</p>
       <ul className="mt-4 space-y-2 text-sm">
         {choices.map((choice, index) => {
           const correct = index === 1;
