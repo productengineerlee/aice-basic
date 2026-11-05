@@ -8,7 +8,7 @@
 .qna-list li{padding:16px 20px;border-bottom:1px solid #efede8}
 .qna-list li:last-child{border-bottom:0}
 .qna-list li>a{display:flex;align-items:center;gap:10px}
-.qna-list .qna-cat{flex-shrink:0;font-size:11px;font-weight:700;color:#4b5058;background:#f7f6f3;border-radius:6px;padding:4px 8px}
+.qna-list .qna-cat{flex-shrink:0;font-size:12px;font-weight:700;color:#4b5058;background:#f7f6f3;border-radius:6px;padding:4px 8px}
 .qna-list .qna-title{flex:1;font-size:14px;color:#1f2328;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .qna-list .qna-comment-count{flex-shrink:0;font-size:12px;font-weight:700;color:#858a91;background:#f7f6f3;border-radius:6px;padding:2px 9px;min-width:22px;text-align:center}
 .qna-meta{display:flex;gap:10px;margin-top:8px;font-size:12px;color:#858a91}
@@ -31,7 +31,7 @@
 .qna-back{display:inline-flex;align-items:center;gap:6px;color:#4b5058;font-size:13px;margin-bottom:18px}
 
 .qna-post{background:#fff;border:1px solid #e5e2dc;border-radius:12px;padding:28px}
-.qna-post .qna-cat{display:inline-block;font-size:11px;font-weight:700;color:#4b5058;background:#f7f6f3;border-radius:6px;padding:4px 8px;margin-bottom:10px}
+.qna-post .qna-cat{display:inline-block;font-size:12px;font-weight:700;color:#4b5058;background:#f7f6f3;border-radius:6px;padding:4px 8px;margin-bottom:10px}
 .qna-post h1{font-size:22px;color:#1f2328;margin:0 0 8px;line-height:1.4}
 .qna-content{font-size:14px;line-height:1.8;color:#1f2328;white-space:pre-wrap;margin:20px 0 0}
 .qna-post-actions{display:flex;gap:10px;margin-top:20px;padding-top:18px;border-top:1px solid #efede8}
@@ -43,7 +43,7 @@
 .qna-comments ul{list-style:none;margin:0 0 20px;padding:0;display:flex;flex-direction:column;gap:12px}
 .qna-comments li{background:#fff;border:1px solid #efede8;border-radius:10px;padding:16px 18px}
 .qna-comments li p{margin:6px 0 0;font-size:13px;line-height:1.7;color:#1f2328;white-space:pre-wrap}
-.qna-comments li button{margin-top:8px;font-size:11px;color:#a2522e;font-weight:700}
+.qna-comments li button{margin-top:8px;font-size:12px;color:#a2522e;font-weight:700}
 .qna-comment-form{display:flex;flex-direction:column;gap:10px}
 .qna-comment-form textarea{border:1px solid #e5e2dc;border-radius:6px;padding:12px 14px;font-size:13px;font-family:inherit;resize:vertical}
 .qna-comment-form button{align-self:flex-end;background:#1f2328;color:#fff;font-weight:700;font-size:13px;padding:10px 18px;border-radius:6px}

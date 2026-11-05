@@ -48,14 +48,14 @@ export default async function MyPage({ searchParams }: { searchParams: Promise<{
 
       <section className="learning-summary"><article><div><span>전체 응시</span><strong>{learning.totalAttempts}<small>회</small></strong></div></article><article><div><span>평균 점수</span><strong>{learning.summary.averagePercentage}<small>%</small></strong></div></article><article><div><span>최고 점수</span><strong>{learning.summary.bestPercentage}<small>%</small></strong></div></article><article><div><span>합격률</span><strong>{learning.summary.passRate}<small>%</small></strong></div></article></section>
 
-      <section className="mypage-panel"><div className="mypage-panel-head"><div><span>점수 변화</span><h2>최근 점수 변화</h2><p>최근 채점 완료 12회의 총점을 백분율로 환산했습니다.</p></div><b>{learning.summary.gradedCount}회 채점 완료</b></div><ScoreTrend items={learning.trends} /></section>
+      <section className="mypage-panel"><div className="mypage-panel-head"><div><h2>최근 점수 변화</h2><p>최근 채점 완료 12회의 총점을 백분율로 환산했습니다.</p></div><b>{learning.summary.gradedCount}회 채점 완료</b></div><ScoreTrend items={learning.trends} /></section>
 
-      <section className="mypage-panel streak-panel"><div className="mypage-panel-head"><div><span>연속 학습</span><h2>연속 학습</h2><p>회차를 제출하거나 오답을 복습한 날을 학습한 날로 셉니다(한국 시간 기준).</p></div><b>{streak.studiedToday ? "오늘 학습 완료" : streak.current > 0 ? "오늘 이어가면 +1일" : "오늘부터 시작해요"}</b></div>
+      <section className="mypage-panel streak-panel"><div className="mypage-panel-head"><div><h2>연속 학습</h2><p>회차를 제출하거나 오답을 복습한 날을 학습한 날로 셉니다(한국 시간 기준).</p></div><b>{streak.studiedToday ? "오늘 학습 완료" : streak.current > 0 ? "오늘 이어가면 +1일" : "오늘부터 시작해요"}</b></div>
         <div className="streak-body"><div className="streak-stats"><div><strong>{streak.current}<small>일</small></strong><span>현재 연속</span></div><div><strong>{streak.best}<small>일</small></strong><span>최장 연속</span></div><div><strong>{streak.totalDays}<small>일</small></strong><span>총 학습일</span></div></div>
         <div className="streak-grid" aria-label="최근 4주 학습 기록">{streak.recent.map(day => <i key={day.date} title={`${day.date} · ${day.count}문항`} className={day.count === 0 ? "" : day.count < 10 ? "l1" : day.count < 30 ? "l2" : "l3"} />)}</div></div>
       </section>
 
-      <section id="insights" className="mypage-panel"><div className="mypage-panel-head"><div><span>약점 분석</span><h2>자격증별 약점 분석</h2><p>회차 응시와 오답 복습 기록을 합쳐 과목(시대)·유형별 정답률을 계산했습니다.</p></div>{insights.selected && <b>정답률 {insights.selected.accuracy}% · {insights.selected.answered}문항</b>}</div>
+      <section id="insights" className="mypage-panel"><div className="mypage-panel-head"><div><h2>자격증별 약점 분석</h2><p>회차 응시와 오답 복습 기록을 합쳐 과목(시대)·유형별 정답률을 계산했습니다.</p></div>{insights.selected && <b>정답률 {insights.selected.accuracy}% · {insights.selected.answered}문항</b>}</div>
         {insights.selected ? <>
           {insights.certifications.length > 1 && <nav className="insight-tabs">{insights.certifications.map(cert => <Link key={cert.code} className={cert.code === insights.selected?.code ? "active" : ""} href={certHref(cert.code)}>{cert.name}</Link>)}</nav>}
           <div className="section-bars">{insights.selected.sections.map(section => <div key={section.key} className={`section-bar level-${section.enough ? section.level : "none"}`}><span>{section.title}</span><div><i style={{ width: `${section.accuracy}%` }} /></div><b>{section.enough ? `${section.accuracy}%` : "표본 부족"}</b><small>{section.correct}/{section.answered}</small></div>)}</div>
