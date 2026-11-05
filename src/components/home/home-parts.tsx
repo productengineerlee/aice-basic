@@ -6,7 +6,7 @@ import type { CertificationSummary } from "@/lib/certifications";
 
 const NAV_LINK = "rounded-md px-3 py-2 text-ink-soft hover:bg-black/[0.04] hover:text-ink";
 
-export function HomeHeader({ loggedIn }: { loggedIn: boolean }) {
+export function HomeHeader({ loggedIn, isAdmin = false }: { loggedIn: boolean; isAdmin?: boolean }) {
   return (
     <header className="sticky top-0 z-50 border-b border-rule bg-paper/90 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-5">
@@ -19,6 +19,7 @@ export function HomeHeader({ loggedIn }: { loggedIn: boolean }) {
           {loggedIn && <Link className={NAV_LINK} href="/review">오답노트</Link>}
           {loggedIn && <Link className={NAV_LINK} href="/mypage">학습 분석</Link>}
           <Link className={NAV_LINK} href="/qna">QnA</Link>
+          {isAdmin && <Link className={NAV_LINK} href="/admin">관리자</Link>}
         </nav>
         <div className="flex items-center gap-1 text-sm font-medium">
           {loggedIn ? (

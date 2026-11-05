@@ -1,8 +1,7 @@
 import Link from "next/link";
-import Image from "next/image";
 import { redirect } from "next/navigation";
-import { ArrowLeft, ArrowRight, BarChart3, BookOpenCheck, LogOut, Target } from "lucide-react";
-import { signOut } from "@/app/auth/actions";
+import { ArrowLeft, ArrowRight, BarChart3, BookOpenCheck, Target } from "lucide-react";
+import { HomeHeader } from "@/components/home/home-parts";
 import { loadLearningHistory, type TrendItem } from "@/lib/learning-history";
 import { loadLearningInsights, loadStudyStreak } from "@/lib/insights";
 import { createClient } from "@/lib/supabase/server";
@@ -42,7 +41,7 @@ export default async function MyPage({ searchParams }: { searchParams: Promise<{
   const certHref = (code: string) => `${linkWith({ cert: code })}#insights`;
 
   return <main className="mypage-shell">
-    <header><Link className="mypage-brand" href="/" aria-label="랜딩 페이지"><Image src="/mascot.png" alt="" width={32} height={32} className="brand-mark" />기출<b>뱅크</b></Link><nav><Link href="/license">기출문제</Link><Link href="/review">오답노트</Link>{profile?.role === "admin" && <Link href="/admin">관리자 콘솔</Link>}<form action={signOut}><button><LogOut />로그아웃</button></form></nav></header>
+    <HomeHeader loggedIn isAdmin={profile?.role === "admin"} />
     <section className="mypage-container">
       <Link className="mypage-back" href="/dashboard"><ArrowLeft />대시보드</Link>
       <div className="mypage-title"><div><span>내 학습</span><h1>{name}님의 학습 분석</h1><p>응시 기록과 역량별 성취도를 바탕으로 다음 학습 방향을 확인하세요.</p></div><Link href="/license"><BookOpenCheck />기출문제 풀기</Link></div>

@@ -1,7 +1,7 @@
-import Link from "next/link";
-import Image from "next/image";
+import { HomeHeader } from "@/components/home/home-parts";
 import { createClient } from "@/lib/supabase/server";
 
+/** 메인과 같은 상단 메뉴. 로그인·관리자 여부만 조회해 HomeHeader에 넘긴다. */
 export async function ExamHeader() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -9,5 +9,5 @@ export async function ExamHeader() {
     ? await supabase.from("profiles").select("role").eq("id", user.id).maybeSingle()
     : { data: null };
 
-  return <header className="exam-header"><Link className="brand" href="/" aria-label="랜딩 페이지"><Image src="/mascot.png" alt="기출뱅크" width={32} height={32} className="brand-mark" /><span>기출<b>뱅크</b></span></Link><nav><Link href="/license">기출문제</Link>{user && <Link href="/review">오답노트</Link>}<Link href="/qna">QnA</Link><Link href="/dashboard">내 학습</Link>{profile?.role === "admin" && <Link href="/admin">관리자 콘솔</Link>}</nav></header>;
+  return <HomeHeader loggedIn={Boolean(user)} isAdmin={profile?.role === "admin"} />;
 }
