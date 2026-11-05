@@ -59,6 +59,7 @@ export function CertGrid({ certifications, loggedIn }: { certifications: Certifi
             </div>
             <h3 className="mt-5 text-lg font-extrabold text-slate-900">{cert.name}</h3>
             {cert.description && <p className="mt-1 line-clamp-2 text-sm leading-relaxed text-slate-500">{cert.description}</p>}
+            {cert.questionCount > 0 && <p className="mt-3 text-xs font-semibold text-slate-400">{cert.questionCount.toLocaleString("ko-KR")}문항 · 전 문항 해설 제공</p>}
             <div className="mt-auto flex gap-2 pt-5 text-sm font-bold">
               <Link className="flex flex-1 items-center justify-center gap-1 rounded-xl bg-slate-100 px-3 py-2.5 text-slate-700 hover:bg-slate-200" href={`/license/${cert.code}`}>회차 풀기</Link>
               <Link className="flex flex-1 items-center justify-center gap-1 rounded-xl bg-blue-600 px-3 py-2.5 text-white hover:bg-blue-700" href={loggedIn ? `/practice?mode=daily&cert=${cert.code}` : "/auth/signup"}>

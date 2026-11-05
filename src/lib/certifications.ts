@@ -2,7 +2,7 @@ import "server-only";
 
 import { createAdminClient } from "@/lib/supabase/admin";
 
-export type CertificationSummary = { id: string; code: string; name: string; description: string | null; examCount: number };
+export type CertificationSummary = { id: string; code: string; name: string; description: string | null; examCount: number; questionCount: number };
 
 export type CertificationSchedule = {
   id: string;
@@ -36,15 +36,17 @@ export async function listCertifications(): Promise<CertificationSummary[]> {
 
   const { data: exams, error: examError } = await admin
     .from("exams")
-    .select("certification_id")
+    .select("certification_id,questions(count)")
     .in("certification_id", certifications.map((cert) => cert.id))
     .eq("status", "published");
   if (examError) throw new Error("자격증 시험 수를 불러오지 못했습니다.");
 
-  return certifications.map((cert) => ({
-    ...cert,
-    examCount: (exams ?? []).filter((exam) => exam.certification_id === cert.id).length,
-  }));
+  return certifications.map((cert) => {
+    const certExams = (exams ?? []).filter((exam) => exam.certification_id === cert.id);
+    // questions(count) 는 PostgREST 집계 임베드라 [{ count }] 형태로 온다.
+    const questionCount = certExams.reduce((sum, exam) => sum + ((exam.questions as unknown as { count: number }[])[0]?.count ?? 0), 0);
+    return { ...cert, examCount: certExams.length, questionCount };
+  });
 }
 
 export async function getCertification(code: string): Promise<CertificationDetail | null> {
