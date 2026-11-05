@@ -3,7 +3,7 @@ import { ClipboardList } from "lucide-react";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { AttemptStatus } from "@/types/database";
 
-const AICE_LABEL = "AICE (자격증 아님)";
+const AICE_LABEL = "AICE";
 const statusLabel: Record<AttemptStatus, string> = {
   in_progress: "진행중",
   expired: "시간종료",
