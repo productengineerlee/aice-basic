@@ -6,6 +6,8 @@ import { ArrowRight, CheckCircle2, GraduationCap, RotateCcw, XCircle } from "luc
 import { formatPrompt } from "@/lib/format-prompt";
 import type { PracticeQuestion } from "@/lib/review";
 
+type RunnerQuestion = PracticeQuestion & { reasonLabel?: string };
+
 type Feedback = {
   isCorrect: boolean;
   correctLabel: string;
@@ -17,10 +19,13 @@ type Feedback = {
 type Outcome = { questionId: string; isCorrect: boolean; graduated: boolean };
 
 interface PracticeRunnerProps {
-  questions: PracticeQuestion[];
+  questions: RunnerQuestion[];
   title: string;
-  earlyPractice: boolean;
-  reviewHref: string;
+  mode: "review" | "daily";
+  earlyPractice?: boolean;
+  /** 끝난 뒤 돌아갈 곳 */
+  doneHref: string;
+  doneLabel: string;
 }
 
 const GRADUATION_STREAK = 3;
@@ -35,7 +40,7 @@ function reviewMessage(feedback: Feedback) {
   return `연속 정답 ${review.correctStreak}/${GRADUATION_STREAK} · ${days}일 후 다시 복습해요.`;
 }
 
-export function PracticeRunner({ questions, title, earlyPractice, reviewHref }: PracticeRunnerProps) {
+export function PracticeRunner({ questions, title, mode, earlyPractice = false, doneHref, doneLabel }: PracticeRunnerProps) {
   const [index, setIndex] = useState(0);
   const [selected, setSelected] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<Feedback | null>(null);
@@ -58,7 +63,7 @@ export function PracticeRunner({ questions, title, earlyPractice, reviewHref }: 
       const response = await fetch("/api/practice/answer", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ questionId: question.questionId, label: selected, timeSpentMs: performance.now() - shownAt.current, mode: "review" }),
+        body: JSON.stringify({ questionId: question.questionId, label: selected, timeSpentMs: performance.now() - shownAt.current, mode }),
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error ?? "채점하지 못했습니다.");
@@ -85,7 +90,7 @@ export function PracticeRunner({ questions, title, earlyPractice, reviewHref }: 
     const graduated = outcomes.filter((item) => item.graduated).length;
     return <div className="practice-summary">
       <CheckCircle2 />
-      <h1>복습 완료!</h1>
+      <h1>{mode === "daily" ? "오늘의 추천 문제 완료!" : "복습 완료!"}</h1>
       <p>{outcomes.length}문제 중 <b>{correct}문제</b>를 맞혔어요.</p>
       <div className="practice-summary-stats">
         <div><span>정답</span><b>{correct}</b></div>
@@ -93,8 +98,8 @@ export function PracticeRunner({ questions, title, earlyPractice, reviewHref }: 
         <div><span>졸업</span><b>{graduated}</b></div>
       </div>
       <div className="practice-summary-actions">
-        <Link href={reviewHref}>오답노트로 돌아가기</Link>
-        <button type="button" onClick={() => window.location.reload()}><RotateCcw />다시 복습하기</button>
+        <Link href={doneHref}>{doneLabel}</Link>
+        {mode === "review" ? <button type="button" onClick={() => window.location.reload()}><RotateCcw />다시 복습하기</button> : <Link className="secondary" href="/review">오답노트 보기</Link>}
       </div>
     </div>;
   }
@@ -110,7 +115,8 @@ export function PracticeRunner({ questions, title, earlyPractice, reviewHref }: 
 
     <article className="practice-card">
       <div className="review-item-meta">
-        <span className="review-badge due">틀린 횟수 {question.wrongCount}</span>
+        {question.reasonLabel && <span className="review-badge reason">{question.reasonLabel}</span>}
+        {question.wrongCount > 0 && <span className="review-badge due">틀린 횟수 {question.wrongCount}</span>}
         {question.correctStreak > 0 && <span className="review-badge wait">연속 정답 {question.correctStreak}/{GRADUATION_STREAK}</span>}
         <span>{question.certificationName} · {question.examTitle} · {question.number}번</span>
       </div>

@@ -59,3 +59,7 @@
 .practice-summary-actions button svg{width:16px}
 
 @media(max-width:560px){.practice-card{padding:16px}.practice-choices button{font-size:14px}}
+.review-badge.reason{background:#f3effd;color:#6b46c1}
+.practice-summary-actions a.secondary{background:#fff;color:#334155;border:1px solid #cfdae3}
+.daily-cert-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-top:18px}.daily-cert-list a{display:flex;justify-content:space-between;align-items:center;gap:10px;background:#fff;border:1px solid #dfe7ed;border-radius:12px;padding:18px;font-size:15px;font-weight:800;color:#173650}.daily-cert-list a:hover{border-color:#9cc4ea}.daily-cert-list svg{width:18px;color:#1976d2}
+.review-badge.reason{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}

@@ -63,7 +63,7 @@ export default async function MyPage({ searchParams }: { searchParams: Promise<{
           <h3 className="insight-subtitle">자주 틀리는 유형</h3>
           {insights.selected.weakTags.length ? <div className="weak-grid">{insights.selected.weakTags.map(tag => <article className={`level-${tag.level}`} key={tag.key}><div className="weak-top"><div><span>{levelLabel[tag.level]}</span><h3>{tag.title}</h3></div><b>{tag.accuracy}<small>%</small></b></div><div className="weak-meter"><i style={{ width: `${tag.accuracy}%` }} /></div><small>정답 {tag.correct}/{tag.answered}</small></article>)}</div>
             : <p className="insight-note">3문항 이상 풀어본 유형 중 정답률 80% 미만인 유형이 아직 없습니다.</p>}
-          <Link className="insight-practice" href={`/review?cert=${insights.selected.code}`}><Target />이 자격증 오답 복습하기<ArrowRight /></Link>
+          <div className="insight-actions"><Link className="insight-practice" href={`/practice?mode=daily&cert=${insights.selected.code}`}><Target />약점 위주 추천 문제 풀기<ArrowRight /></Link><Link className="insight-practice ghost" href={`/review?cert=${insights.selected.code}`}>오답 복습하기<ArrowRight /></Link></div>
         </> : <div className="analysis-empty"><Target /><h3>분석할 풀이 기록이 없습니다</h3><p>기출문제를 제출하면 과목별 정답률과 약점 유형이 표시됩니다.</p></div>}
       </section>
 
