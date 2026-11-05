@@ -33,11 +33,11 @@
 - [ ] `package.json` name, README 갱신
 - [ ] 브랜드명 확정 (gichulbank / 기출뱅크 등). 참고: `certiq.vercel.app`은 타인이 사용 중
 
-### 2단계: 도메인 전환 (진행 중 — 2026-11-05 기준)
-- [x] 리다이렉트 코드 준비: `next.config.ts` 에 host 조건 308 리다이렉트 (`aice-basic.vercel.app` → `gichulbank.vercel.app`, 경로·쿼리 유지, `/auth/callback` 만 옛 도메인에서 처리). 로컬 검증 완료, **커밋·배포 보류**
+### 2단계: 도메인 전환 — ✅ 완료 (2026-11-05)
+- [x] 리다이렉트 코드 준비: `next.config.ts` 에 host 조건 308 리다이렉트 (`aice-basic.vercel.app` → `gichulbank.vercel.app`, 경로·쿼리 유지, `/auth/callback` 만 옛 도메인에서 처리). 로컬 검증 후 배포
 - [x] (사용자) Vercel 환경변수 `NEXT_PUBLIC_SITE_URL` = `https://gichulbank.vercel.app`, Supabase Site URL·Redirect URLs 변경 — 사용자가 완료했다고 알림
-- [ ] **(막힘) Vercel에 `gichulbank.vercel.app` 도메인 추가** — 아직 404 DEPLOYMENT_NOT_FOUND. 새 대시보드 Settings 메뉴에 "Domains" 항목이 없어 위치 확인 중 (후보: Settings → Environments → Production, 프로젝트 메뉴, Find 검색)
-- [ ] 도메인 응답 200 확인 후에만 리다이렉트 코드 커밋·push (먼저 배포하면 회원이 열리지 않는 주소로 이동함)
+- [x] (사용자) Vercel에 `gichulbank.vercel.app` 도메인 추가 — 새 대시보드에서는 Settings 메뉴에 Domains 항목이 없고 Environments(Production) 화면에 도메인 목록이 있음
+- [x] 새 도메인 200 확인 후 리다이렉트 배포
 - [ ] 배포 후 검증: 옛 주소 → 새 주소 308(경로 유지), 새 주소 페이지·로그인 정상
 - [ ] `aice-basic.vercel.app` 도메인은 삭제하지 말고 계속 연결 유지
 - [ ] 안내: 기존 회원은 새 주소에서 1회 재로그인 필요 (쿠키가 도메인별)
