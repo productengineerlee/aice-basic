@@ -4,7 +4,7 @@ import { BookX, CalendarClock, CheckCircle2, GraduationCap, RotateCcw } from "lu
 import { ExamHeader } from "@/components/exams/exam-header";
 import { createClient } from "@/lib/supabase/server";
 import { formatPrompt } from "@/lib/format-prompt";
-import { loadReviewNotebook, type ReviewFilter, type ReviewItem } from "@/lib/review";
+import { loadReviewNotebook, PRACTICE_SESSION_SIZE, type ReviewFilter, type ReviewItem } from "@/lib/review";
 import "../exams/exams.css";
 import "./review.css";
 
@@ -45,6 +45,7 @@ export default async function ReviewPage({ searchParams }: { searchParams: Promi
     const qs = params.toString();
     return qs ? `/review?${qs}` : "/review";
   };
+  const practiceHref = (scope: "due" | "all") => `/practice?${new URLSearchParams({ ...(notebook.selectedCert && { cert: notebook.selectedCert }), ...(scope === "all" && { scope }) })}`;
   const totalActive = notebook.certifications.reduce((sum, cert) => sum + cert.count, 0);
 
   return <main className="exam-app">
@@ -52,7 +53,7 @@ export default async function ReviewPage({ searchParams }: { searchParams: Promi
     <section className="exam-container review-container">
       <div className="exam-titlebar">
         <div><span>WRONG ANSWER NOTE</span><h1>오답노트</h1></div>
-        <p>회차 기출에서 틀린 문제가 자동으로 모입니다. 복습 간격(1·3·7·14·30일)에 맞춰 다시 풀고, 3번 연속 맞히면 졸업합니다.</p>
+        <p>회차 기출에서 틀린 문제가 자동으로 모입니다. 복습일(1·3·7일 간격)에 다시 풀고, 3번 연속 맞히면 졸업합니다.</p>
       </div>
 
       {notebook.certifications.length === 0 ? (
@@ -73,8 +74,12 @@ export default async function ReviewPage({ searchParams }: { searchParams: Promi
           <article className="accent"><CalendarClock /><div><span>오늘 복습할 문제</span><strong>{notebook.counts.due}<small>문제</small></strong></div></article>
           <article><GraduationCap /><div><span>졸업한 문제</span><strong>{notebook.counts.graduated}<small>문제</small></strong></div></article>
           <div className="review-practice-cta">
-            <button type="button" disabled><RotateCcw />한 문제씩 복습하기</button>
-            <small>문제 단위 복습 모드는 곧 열립니다</small>
+            {notebook.counts.due > 0
+              ? <Link href={practiceHref("due")}><RotateCcw />오늘 복습 {Math.min(notebook.counts.due, PRACTICE_SESSION_SIZE)}문제 풀기</Link>
+              : notebook.counts.active > 0
+                ? <Link className="ghost" href={practiceHref("all")}><RotateCcw />남은 오답 미리 풀기</Link>
+                : <button type="button" disabled><RotateCcw />복습할 문제가 없어요</button>}
+            <small>{notebook.counts.due > PRACTICE_SESSION_SIZE ? `한 번에 ${PRACTICE_SESSION_SIZE}문제씩 복습합니다` : "한 문제씩 풀고 바로 정답을 확인해요"}</small>
           </div>
         </section>
 

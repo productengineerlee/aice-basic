@@ -52,12 +52,17 @@ async function inChunks<T>(ids: string[], fetch: (chunk: string[]) => PromiseLik
 
 /** 오답노트 데이터. 호출 전에 userId가 로그인한 본인인지 확인해야 한다(서버 전용, admin client 사용).
  * 정답·해설은 사용자가 이미 제출해서 틀린 문항에 대해서만 내려준다. */
-export async function loadReviewNotebook(userId: string, certCode: string, filter: ReviewFilter, requestedPage: number): Promise<ReviewNotebook> {
-  const admin = createAdminClient();
-  const now = Date.now();
+type AdminClient = ReturnType<typeof createAdminClient>;
+type ReviewRow = { question_id: string; wrong_count: number; correct_streak: number; last_wrong_at: string; next_review_at: string; graduated_at: string | null };
+type QuestionRow = { id: string; exam_id: string; number: number; prompt: string; image_url: string | null; competency_tags: string[] };
+type ExamRow = { id: string; slug: string; title: string; certification_id: string | null };
+type CertRow = { id: string; code: string; name: string; sort_order: number };
+type Joined = { review: ReviewRow; question: QuestionRow; exam: ExamRow; cert: CertRow };
 
+/** 회원의 오답 행 전체를 문항·회차·자격증과 묶어서 가져온다. 자격증에 속하지 않는(AICE) 문항은 제외. */
+async function loadJoinedReviews(admin: AdminClient, userId: string): Promise<{ joined: Joined[]; certs: CertRow[] }> {
   // PostgREST는 한 번에 최대 1,000행만 돌려주므로 오답이 많은 회원도 빠짐없이 읽도록 나눠서 가져온다.
-  const reviews: { question_id: string; wrong_count: number; correct_streak: number; last_wrong_at: string; next_review_at: string; graduated_at: string | null }[] = [];
+  const reviews: ReviewRow[] = [];
   for (let from = 0; ; from += 1000) {
     const { data, error } = await admin
       .from("review_items")
@@ -70,29 +75,48 @@ export async function loadReviewNotebook(userId: string, certCode: string, filte
     if (!data || data.length < 1000) break;
   }
 
-  const questionIds = reviews.map((row) => row.question_id);
-  const questions = await inChunks(questionIds, (chunk) =>
-    admin.from("questions").select("id,exam_id,number,prompt,image_url,competency_tags").in("id", chunk));
-  const examIds = [...new Set(questions.map((question) => question.exam_id))];
-  const exams = await inChunks(examIds, (chunk) => admin.from("exams").select("id,slug,title,certification_id").in("id", chunk));
+  const questions: QuestionRow[] = await inChunks(reviews.map((row) => row.question_id), (chunk) =>
+    admin.from("questions").select("id,exam_id,number,prompt,image_url,competency_tags").in("id", chunk).eq("is_active", true));
+  const exams: ExamRow[] = await inChunks([...new Set(questions.map((question) => question.exam_id))], (chunk) =>
+    admin.from("exams").select("id,slug,title,certification_id").in("id", chunk).eq("status", "published"));
   const certIds = [...new Set(exams.map((exam) => exam.certification_id).filter((id): id is string => Boolean(id)))];
-  const certs = certIds.length
+  const certs: CertRow[] = certIds.length
     ? (await admin.from("certifications").select("id,code,name,sort_order").in("id", certIds).order("sort_order")).data ?? []
     : [];
 
   const questionById = new Map(questions.map((question) => [question.id, question]));
   const examById = new Map(exams.map((exam) => [exam.id, exam]));
   const certById = new Map(certs.map((cert) => [cert.id, cert]));
-
-  type Joined = { review: (typeof reviews)[number]; question: (typeof questions)[number]; exam: (typeof exams)[number]; cert: (typeof certs)[number] };
-  const joined: Joined[] = reviews.flatMap((review) => {
+  const joined = reviews.flatMap((review) => {
     const question = questionById.get(review.question_id);
     const exam = question ? examById.get(question.exam_id) : undefined;
     const cert = exam?.certification_id ? certById.get(exam.certification_id) : undefined;
     return question && exam && cert ? [{ review, question, exam, cert }] : [];
   });
+  return { joined, certs };
+}
 
-  const isDue = (row: Joined) => !row.review.graduated_at && new Date(row.review.next_review_at).getTime() <= now;
+const isDueAt = (now: number) => (row: Joined) => !row.review.graduated_at && new Date(row.review.next_review_at).getTime() <= now;
+
+/** 복습 예정 → 많이 틀린 순 → 최근에 틀린 순 */
+function byReviewPriority(now: number) {
+  const isDue = isDueAt(now);
+  return (a: Joined, b: Joined) => {
+    const due = Number(isDue(b)) - Number(isDue(a));
+    if (due) return due;
+    const wrong = b.review.wrong_count - a.review.wrong_count;
+    if (wrong) return wrong;
+    return new Date(b.review.last_wrong_at).getTime() - new Date(a.review.last_wrong_at).getTime();
+  };
+}
+
+export async function loadReviewNotebook(userId: string, certCode: string, filter: ReviewFilter, requestedPage: number): Promise<ReviewNotebook> {
+  const admin = createAdminClient();
+  const now = Date.now();
+
+  const { joined, certs } = await loadJoinedReviews(admin, userId);
+
+  const isDue = isDueAt(now);
   const certifications: ReviewCertTab[] = certs.map((cert) => ({
     code: cert.code,
     name: cert.name,
@@ -108,14 +132,7 @@ export async function loadReviewNotebook(userId: string, certCode: string, filte
 
   const filtered = inCert
     .filter((row) => filter === "graduated" ? Boolean(row.review.graduated_at) : filter === "due" ? isDue(row) : !row.review.graduated_at)
-    .sort((a, b) => {
-      // 복습 예정 → 많이 틀린 순 → 최근에 틀린 순
-      const due = Number(isDue(b)) - Number(isDue(a));
-      if (due) return due;
-      const wrong = b.review.wrong_count - a.review.wrong_count;
-      if (wrong) return wrong;
-      return new Date(b.review.last_wrong_at).getTime() - new Date(a.review.last_wrong_at).getTime();
-    });
+    .sort(byReviewPriority(now));
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const currentPage = Math.min(Math.max(1, Number.isFinite(requestedPage) ? Math.floor(requestedPage) : 1), totalPages);
@@ -173,4 +190,61 @@ export async function getReviewCounts(userId: string): Promise<{ active: number;
     admin.from("review_items").select("question_id", { count: "exact", head: true }).eq("user_id", userId).is("graduated_at", null).lte("next_review_at", nowIso),
   ]);
   return { active: active.count ?? 0, due: due.count ?? 0 };
+}
+
+export type PracticeScope = "due" | "all";
+
+export type PracticeQuestion = {
+  questionId: string;
+  certificationName: string;
+  examTitle: string;
+  number: number;
+  prompt: string;
+  imageUrl: string | null;
+  tags: string[];
+  wrongCount: number;
+  correctStreak: number;
+  choices: { label: string; content: string }[];
+};
+
+export type PracticeQueue = { certName: string | null; scope: PracticeScope; questions: PracticeQuestion[]; dueCount: number; activeCount: number };
+
+export const PRACTICE_SESSION_SIZE = 20;
+
+/** 복습 연습 대기열. 정답·해설은 넣지 않는다(채점은 /api/practice/answer 에서 서버가 한다). */
+export async function loadPracticeQueue(userId: string, certCode: string, scope: PracticeScope): Promise<PracticeQueue> {
+  const admin = createAdminClient();
+  const now = Date.now();
+  const isDue = isDueAt(now);
+  const { joined } = await loadJoinedReviews(admin, userId);
+  const inCert = joined.filter((row) => !row.review.graduated_at && (!certCode || row.cert.code === certCode));
+  const picked = inCert
+    .filter((row) => scope === "all" || isDue(row))
+    .sort(byReviewPriority(now))
+    .slice(0, PRACTICE_SESSION_SIZE);
+
+  const choices = picked.length
+    ? await inChunks(picked.map((row) => row.question.id), (chunk) =>
+        admin.from("question_choices").select("question_id,label,content,sort_order").in("question_id", chunk).order("sort_order"))
+    : [];
+  const choicesByQuestion = Map.groupBy(choices, (choice) => choice.question_id);
+
+  return {
+    certName: certCode ? inCert[0]?.cert.name ?? null : null,
+    scope,
+    dueCount: inCert.filter(isDue).length,
+    activeCount: inCert.length,
+    questions: picked.map(({ review, question, exam, cert }) => ({
+      questionId: question.id,
+      certificationName: cert.name,
+      examTitle: exam.title,
+      number: question.number,
+      prompt: question.prompt,
+      imageUrl: question.image_url,
+      tags: question.competency_tags,
+      wrongCount: review.wrong_count,
+      correctStreak: review.correct_streak,
+      choices: (choicesByQuestion.get(question.id) ?? []).map((choice) => ({ label: choice.label, content: choice.content })),
+    })),
+  };
 }
