@@ -2,22 +2,22 @@
 .practice-text-link{display:inline!important;background:none!important;color:#2f5577!important;padding:0!important;font-size:13px!important}
 .practice-head{margin-bottom:16px}
 .practice-head>div:first-child{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:8px}
-.practice-head span{font-size:13px;font-weight:800;color:#2f5577}
+.practice-head span{font-size:13px;font-weight:700;color:#2f5577}
 .practice-head b{font-size:14px;color:#1f2328}
 .practice-head small{display:block;margin-top:8px;font-size:12px;color:#8a6a2e;background:#f6f0e3;border-radius:8px;padding:8px 10px}
 .practice-progress{height:6px;background:#d5dee7;border-radius:6px;overflow:hidden}
 .practice-progress i{display:block;height:100%;background:#2f5577;transition:width .3s}
 
-.practice-card{background:#fff;border:1px solid #e5e2dc;border-radius:14px;padding:22px}
+.practice-card{background:#fff;border:1px solid #e5e2dc;border-radius:12px;padding:22px}
 .practice-choices{display:grid;gap:8px;margin:6px 0 16px}
 .practice-choices button{display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:1px solid #e5e2dc;border-radius:10px;padding:12px 14px;background:#fff;font:inherit;font-size:15px;color:#1f2328;cursor:pointer}
 .practice-choices button:hover:not(:disabled){border-color:#9fb2c4;background:#f7f6f3}
 .practice-choices button:disabled{cursor:default}
-.practice-choices button>span{flex-shrink:0;width:26px;height:26px;display:grid;place-items:center;border-radius:50%;background:#f7f6f3;font-size:13px;font-weight:800;color:#4b5058}
+.practice-choices button>span{flex-shrink:0;width:26px;height:26px;display:grid;place-items:center;border-radius:50%;background:#f7f6f3;font-size:13px;font-weight:700;color:#4b5058}
 .practice-choices button p{margin:0;flex:1;line-height:1.5}
 .practice-choices button>svg{width:20px;flex-shrink:0}
 .practice-choices button.selected{border-color:#2f5577;background:#f7f6f3}
-.practice-choices button.selected>span{background:#2f5577;color:#fff}
+.practice-choices button.selected>span{background:#1f2328;color:#fff}
 .practice-choices button.correct{border-color:#3f6b4f;background:#edf3ee}
 .practice-choices button.correct>span{background:#3f6b4f;color:#fff}
 .practice-choices button.correct>svg{color:#3f6b4f}
@@ -40,11 +40,11 @@
 .practice-feedback .review-explanation{margin:8px 0 0}
 
 .practice-actions{display:flex;justify-content:flex-end}
-.practice-actions .primary{display:flex;align-items:center;gap:6px;border:0;border-radius:10px;padding:13px 22px;background:#2f5577;color:#fff;font:inherit;font-size:15px;font-weight:800;cursor:pointer}
+.practice-actions .primary{display:flex;align-items:center;gap:6px;border:0;border-radius:10px;padding:13px 22px;background:#1f2328;color:#fff;font:inherit;font-size:15px;font-weight:700;cursor:pointer}
 .practice-actions .primary:disabled{background:#9fb2c4;cursor:not-allowed}
 .practice-actions .primary svg{width:17px}
 
-.practice-summary{text-align:center;background:#fff;border:1px solid #e5e2dc;border-radius:14px;padding:44px 24px}
+.practice-summary{text-align:center;background:#fff;border:1px solid #e5e2dc;border-radius:12px;padding:44px 24px}
 .practice-summary>svg{width:46px;height:46px;color:#3f6b4f}
 .practice-summary h1{font-size:24px;color:#1f2328;margin:12px 0 6px}
 .practice-summary>p{font-size:15px;color:#4b5058}
@@ -53,13 +53,13 @@
 .practice-summary-stats span{display:block;font-size:12px;color:#858a91}
 .practice-summary-stats b{font-size:24px;color:#1f2328}
 .practice-summary-actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
-.practice-summary-actions a,.practice-summary-actions button{display:flex;align-items:center;gap:6px;border-radius:10px;padding:12px 18px;font:inherit;font-size:14px;font-weight:800;cursor:pointer}
-.practice-summary-actions a{background:#2f5577;color:#fff}
+.practice-summary-actions a,.practice-summary-actions button{display:flex;align-items:center;gap:6px;border-radius:10px;padding:12px 18px;font:inherit;font-size:14px;font-weight:700;cursor:pointer}
+.practice-summary-actions a{background:#1f2328;color:#fff}
 .practice-summary-actions button{border:1px solid #d3cfc7;background:#fff;color:#1f2328}
 .practice-summary-actions button svg{width:16px}
 
 @media(max-width:560px){.practice-card{padding:16px}.practice-choices button{font-size:14px}}
 .review-badge.reason{background:#f7f6f3;color:#2f5577}
 .practice-summary-actions a.secondary{background:#fff;color:#1f2328;border:1px solid #d3cfc7}
-.daily-cert-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-top:18px}.daily-cert-list a{display:flex;justify-content:space-between;align-items:center;gap:10px;background:#fff;border:1px solid #e5e2dc;border-radius:12px;padding:18px;font-size:15px;font-weight:800;color:#1f2328}.daily-cert-list a:hover{border-color:#9fb2c4}.daily-cert-list svg{width:18px;color:#2f5577}
+.daily-cert-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-top:18px}.daily-cert-list a{display:flex;justify-content:space-between;align-items:center;gap:10px;background:#fff;border:1px solid #e5e2dc;border-radius:12px;padding:18px;font-size:15px;font-weight:700;color:#1f2328}.daily-cert-list a:hover{border-color:#9fb2c4}.daily-cert-list svg{width:18px;color:#2f5577}
 .review-badge.reason{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}

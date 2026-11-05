@@ -1,22 +1,22 @@
 .exam-titlebar h1{word-break:keep-all}
 .license-empty{color:#4b5058;font-size:14px;padding:40px 0;text-align:center}
 .license-card-desc{color:#4b5058;font-size:13px;line-height:1.6;margin:2px 0 14px;flex:1}
-.kind-pill.quiz{display:inline-flex;align-items:center;gap:4px;background:#f6f0e3;color:#8a6a2e}
+.kind-pill.quiz{display:inline-flex;align-items:center;gap:4px;background:#f7f6f3;color:#4b5058;border:1px solid #e5e2dc}
 
 .license-shell{max-width:1000px;margin:0 auto;padding:36px 24px 90px}
 .license-back{display:flex;align-items:center;gap:5px;width:max-content;font-size:12px;color:#4b5058;margin-bottom:18px}
 .license-back svg{width:15px}
-.license-hero{background:#fff;border:1px solid #e5e2dc;border-radius:16px;padding:30px}
+.license-hero{background:#fff;border:1px solid #e5e2dc;border-radius:12px;padding:30px}
 .license-hero h1{font-size:26px;color:#1f2328;margin:6px 0 8px}
 .license-hero p{color:#4b5058;font-size:14px;line-height:1.6;margin:0}
 .license-hero-meta{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
-.license-hero-meta span{background:#f7f6f3;border-radius:20px;padding:7px 12px;font-size:12px;color:#4b5058;font-weight:600}
+.license-hero-meta span{background:#f7f6f3;border-radius:6px;padding:7px 12px;font-size:12px;color:#4b5058;font-weight:600}
 
 .license-section{margin-top:36px}
 .license-section-head{display:flex;align-items:baseline;gap:10px;margin-bottom:16px;flex-wrap:wrap}
 .license-section-head h2{font-size:19px;color:#1f2328;margin:0}
 .license-section-head p{font-size:12px;color:#858a91;margin:0}
-.respondent-count{color:#2f5577;font-weight:800;font-size:13px}
+.respondent-count{color:#2f5577;font-weight:700;font-size:13px}
 
 .schedule-table{border:1px solid #e5e2dc;border-radius:12px;overflow:hidden}
 .schedule-row{display:grid;grid-template-columns:1.2fr 1fr 1fr 1.4fr;gap:10px;padding:13px 16px;font-size:13px;color:#1f2328}
@@ -26,7 +26,7 @@
 
 .section-bars{display:flex;align-items:flex-end;justify-content:space-around;gap:12px;height:220px;padding:20px 12px 0;background:#f7f6f3;border-radius:10px;border-bottom:2px solid #e5e2dc}
 .section-bars>div{display:flex;flex-direction:column;align-items:center;height:100%;flex:1;max-width:170px}
-.section-bars b{margin-bottom:8px;color:#1f2328;font-size:16px;font-weight:800;white-space:nowrap}
+.section-bars b{margin-bottom:8px;color:#1f2328;font-size:16px;font-weight:700;white-space:nowrap}
 .section-bars b small{color:#858a91;font-weight:400;font-size:11px;margin-left:2px}
 .bar-track{width:44px;flex:1;display:flex;align-items:flex-end}
 .bar-track i{display:block;width:100%;background:#2f5577;border-radius:6px 6px 0 0;transition:height .3s}
@@ -37,11 +37,11 @@
 .stat-meter i{display:block;height:100%;background:#2f5577;border-radius:6px}
 
 .stat-group+.stat-group{margin-top:22px}
-.stat-group h3{font-size:13px;font-weight:800;color:#2f5577;margin:0 0 10px;padding-bottom:8px;border-bottom:1px solid #efede8}
+.stat-group h3{font-size:13px;font-weight:700;color:#2f5577;margin:0 0 10px;padding-bottom:8px;border-bottom:1px solid #efede8}
 
 .round-tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
-.round-tabs button{background:#f7f6f3;border:1px solid #e5e2dc;border-radius:20px;padding:8px 16px;font-size:13px;font-weight:700;color:#4b5058;cursor:pointer}
-.round-tabs button.active{background:#2f5577;border-color:#2f5577;color:#fff}
+.round-tabs button{background:#f7f6f3;border:1px solid #e5e2dc;border-radius:6px;padding:8px 16px;font-size:13px;font-weight:700;color:#4b5058;cursor:pointer}
+.round-tabs button.active{background:#1f2328;border-color:#1f2328;color:#fff}
 
 .round-question-chart{display:flex;align-items:flex-end;gap:1px;height:180px;padding:14px 10px 24px;background:#f7f6f3;border-radius:10px;border-bottom:2px solid #e5e2dc}
 .chart-bar{position:relative;flex:1;min-width:0;height:100%;display:flex;align-items:flex-end;cursor:default}
@@ -66,10 +66,10 @@
 .hardest-row b{flex-shrink:0;color:#a2522e;font-size:14px}
 
 .license-exam-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
-.license-exam-card{background:#fff;border:1px solid #e5e2dc;border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:10px}
+.license-exam-card{background:#fff;border:1px solid #e5e2dc;border-radius:12px;padding:22px;display:flex;flex-direction:column;gap:10px}
 .license-exam-card h3{font-size:16px;color:#1f2328;margin:0}
 .license-exam-card .catalog-meta{font-size:12px}
-.license-exam-card a{margin-top:auto;display:flex;align-items:center;justify-content:center;gap:6px;background:#2f5577;color:#fff;border-radius:8px;padding:11px;font-size:13px;font-weight:700}
+.license-exam-card a{margin-top:auto;display:flex;align-items:center;justify-content:center;gap:6px;background:#1f2328;color:#fff;border-radius:8px;padding:11px;font-size:13px;font-weight:700}
 
 .notebook-list{display:flex;flex-direction:column;gap:10px}
 .notebook-card{background:#fff;border:1px solid #efede8;border-radius:10px;padding:16px 18px}
@@ -78,7 +78,7 @@
 .notebook-meta .wrong{color:#a2522e;font-weight:700}
 .notebook-meta .correct{color:#3f6b4f;font-weight:700}
 
-.license-accordion{margin-top:36px;background:#fff;border:1px solid #e5e2dc;border-radius:14px;overflow:hidden}
+.license-accordion{margin-top:36px;background:#fff;border:1px solid #e5e2dc;border-radius:12px;overflow:hidden}
 .license-accordion>summary{list-style:none;cursor:pointer;padding:20px 22px;display:flex;justify-content:space-between;align-items:center;gap:12px}
 .license-accordion>summary::-webkit-details-marker{display:none}
 .license-accordion>summary .license-section-head{margin-bottom:0}
@@ -94,4 +94,4 @@
   .bar-track{width:32px}
   .round-question-chart{height:140px}
 }
-.daily-cta{display:flex;align-items:center;gap:12px;margin-top:18px;max-width:420px;padding:14px 16px;border-radius:12px;background:#2f5577;color:#fff}.daily-cta span{display:flex;flex-direction:column;gap:2px;flex:1}.daily-cta b{font-size:15px}.daily-cta small{font-size:12px;opacity:.85}
+.daily-cta{display:flex;align-items:center;gap:12px;margin-top:18px;max-width:420px;padding:14px 16px;border-radius:12px;background:#1f2328;color:#fff}.daily-cta span{display:flex;flex-direction:column;gap:2px;flex:1}.daily-cta b{font-size:15px}.daily-cta small{font-size:12px;opacity:.85}
