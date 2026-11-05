@@ -45,7 +45,8 @@ export function CertGrid({ certifications, loggedIn }: { certifications: Certifi
       {certifications.map((cert) => (
         <article key={cert.code} className="flex flex-col rounded-xl border border-rule bg-white p-6 transition-colors hover:border-ink/25">
           <h3 className="text-lg font-bold tracking-tight text-ink">{cert.name}</h3>
-          {cert.description && <p className="mt-1.5 line-clamp-2 text-sm leading-relaxed text-mute [word-break:keep-all]">{cert.description}</p>}
+          {/* 설명이 한 줄이든 두 줄이든 아래 구분선 높이가 카드끼리 맞도록 두 줄 높이를 확보한다 */}
+          <p className="mt-1.5 line-clamp-2 min-h-[3.25em] text-sm leading-relaxed text-mute [word-break:keep-all]">{cert.description}</p>
           <dl className="mt-5 flex gap-6 border-t border-rule pt-4 text-sm">
             <div><dt className="text-xs text-mute">기출</dt><dd className="mt-0.5 font-semibold text-ink">{cert.examCount}회차</dd></div>
             {cert.questionCount > 0 && <div><dt className="text-xs text-mute">문항</dt><dd className="mt-0.5 font-semibold text-ink">{cert.questionCount.toLocaleString("ko-KR")}</dd></div>}
