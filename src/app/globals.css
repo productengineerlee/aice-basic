@@ -1,5 +1,18 @@
 @import "tailwindcss";
 
+/* 메인·자격증 화면 공용 색. 원색·그라데이션 대신 종이색 바탕 + 먹색 글자 + 차분한 남색 한 가지만 쓴다.
+   bg-paper, text-ink, border-rule, text-accent, text-clay 처럼 Tailwind 유틸리티로 쓴다. */
+@theme {
+  --color-paper: #f7f6f3;
+  --color-ink: #1f2328;
+  --color-ink-soft: #4b5058;
+  --color-mute: #858a91;
+  --color-rule: #e5e2dc;
+  --color-accent: #2f5577;
+  --color-accent-soft: #eef2f6;
+  --color-clay: #a2522e;
+}
+
 /* ============================================================
    TOKENS
    ============================================================ */

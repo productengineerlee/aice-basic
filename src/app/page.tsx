@@ -38,7 +38,7 @@ export default async function Home() {
   const [{ data: { user } }, certifications] = await Promise.all([supabase.auth.getUser(), listCertifications()]);
 
   return (
-    <div className="min-h-screen bg-white text-slate-700">
+    <div className="min-h-screen bg-white text-ink-soft">
       <HomeHeader loggedIn={Boolean(user)} />
       <main>
         {user
