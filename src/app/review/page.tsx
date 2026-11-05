@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { BookX, CalendarClock, CheckCircle2, GraduationCap, RotateCcw } from "lucide-react";
+import { BookX, CheckCircle2, RotateCcw } from "lucide-react";
 import { ExamHeader } from "@/components/exams/exam-header";
 import { createClient } from "@/lib/supabase/server";
 import { AI_EXPLANATION_NOTE, formatExplanation, formatPrompt } from "@/lib/format-prompt";
@@ -52,7 +52,7 @@ export default async function ReviewPage({ searchParams }: { searchParams: Promi
     <ExamHeader />
     <section className="exam-container review-container">
       <div className="exam-titlebar">
-        <div><span>WRONG ANSWER NOTE</span><h1>오답노트</h1></div>
+        <div><span>틀린 문제 복습</span><h1>오답노트</h1></div>
         <p>회차 기출에서 틀린 문제가 자동으로 모입니다. 복습일(1·3·7일 간격)에 다시 풀고, 3번 연속 맞히면 졸업합니다.</p>
       </div>
 
@@ -70,9 +70,9 @@ export default async function ReviewPage({ searchParams }: { searchParams: Promi
         </nav>
 
         <section className="review-summary">
-          <article><BookX /><div><span>남은 오답</span><strong>{notebook.counts.active}<small>문제</small></strong></div></article>
-          <article className="accent"><CalendarClock /><div><span>오늘 복습할 문제</span><strong>{notebook.counts.due}<small>문제</small></strong></div></article>
-          <article><GraduationCap /><div><span>졸업한 문제</span><strong>{notebook.counts.graduated}<small>문제</small></strong></div></article>
+          <article><div><span>남은 오답</span><strong>{notebook.counts.active}<small>문제</small></strong></div></article>
+          <article className="accent"><div><span>오늘 복습할 문제</span><strong>{notebook.counts.due}<small>문제</small></strong></div></article>
+          <article><div><span>졸업한 문제</span><strong>{notebook.counts.graduated}<small>문제</small></strong></div></article>
           <div className="review-practice-cta">
             {notebook.counts.due > 0
               ? <Link href={practiceHref("due")}><RotateCcw />오늘 복습 {Math.min(notebook.counts.due, PRACTICE_SESSION_SIZE)}문제 풀기</Link>

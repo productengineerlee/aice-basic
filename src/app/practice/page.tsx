@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { ArrowRight, CheckCircle2, Sparkles } from "lucide-react";
+import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { ExamHeader } from "@/components/exams/exam-header";
 import { PracticeRunner } from "@/components/practice/practice-runner";
 import { createClient } from "@/lib/supabase/server";
@@ -41,7 +41,6 @@ async function DailyPractice({ userId, cert }: { userId: string; cert: string })
   if (!set) {
     const certifications = await listCertifications();
     return <div className="review-empty">
-      <Sparkles />
       <h2>오늘의 추천 문제</h2>
       <p>복습할 오답, 약한 과목, 아직 안 푼 문제를 섞어 매일 10문제를 골라 드립니다. 자격증을 선택하세요.</p>
       <div className="daily-cert-list">{certifications.map((item) => <Link key={item.code} href={`/practice?mode=daily&cert=${item.code}`}>{item.name}<ArrowRight /></Link>)}</div>

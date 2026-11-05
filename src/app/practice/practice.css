@@ -1,65 +1,65 @@
 .practice-container{max-width:820px}
-.practice-text-link{display:inline!important;background:none!important;color:#1976d2!important;padding:0!important;font-size:13px!important}
+.practice-text-link{display:inline!important;background:none!important;color:#2f5577!important;padding:0!important;font-size:13px!important}
 .practice-head{margin-bottom:16px}
 .practice-head>div:first-child{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:8px}
-.practice-head span{font-size:13px;font-weight:800;color:#1976d2}
-.practice-head b{font-size:14px;color:#173650}
-.practice-head small{display:block;margin-top:8px;font-size:12px;color:#8a6a2e;background:#fff8eb;border-radius:8px;padding:8px 10px}
-.practice-progress{height:6px;background:#e3eaf0;border-radius:6px;overflow:hidden}
-.practice-progress i{display:block;height:100%;background:#1976d2;transition:width .3s}
+.practice-head span{font-size:13px;font-weight:800;color:#2f5577}
+.practice-head b{font-size:14px;color:#1f2328}
+.practice-head small{display:block;margin-top:8px;font-size:12px;color:#8a6a2e;background:#f6f0e3;border-radius:8px;padding:8px 10px}
+.practice-progress{height:6px;background:#d5dee7;border-radius:6px;overflow:hidden}
+.practice-progress i{display:block;height:100%;background:#2f5577;transition:width .3s}
 
-.practice-card{background:#fff;border:1px solid #dfe7ed;border-radius:14px;padding:22px}
+.practice-card{background:#fff;border:1px solid #e5e2dc;border-radius:14px;padding:22px}
 .practice-choices{display:grid;gap:8px;margin:6px 0 16px}
-.practice-choices button{display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:1px solid #dbe3ea;border-radius:10px;padding:12px 14px;background:#fff;font:inherit;font-size:15px;color:#334155;cursor:pointer}
-.practice-choices button:hover:not(:disabled){border-color:#9cc4ea;background:#f6faff}
+.practice-choices button{display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:1px solid #e5e2dc;border-radius:10px;padding:12px 14px;background:#fff;font:inherit;font-size:15px;color:#1f2328;cursor:pointer}
+.practice-choices button:hover:not(:disabled){border-color:#9fb2c4;background:#f7f6f3}
 .practice-choices button:disabled{cursor:default}
-.practice-choices button>span{flex-shrink:0;width:26px;height:26px;display:grid;place-items:center;border-radius:50%;background:#f1f5f9;font-size:13px;font-weight:800;color:#5d6e7d}
+.practice-choices button>span{flex-shrink:0;width:26px;height:26px;display:grid;place-items:center;border-radius:50%;background:#f7f6f3;font-size:13px;font-weight:800;color:#4b5058}
 .practice-choices button p{margin:0;flex:1;line-height:1.5}
 .practice-choices button>svg{width:20px;flex-shrink:0}
-.practice-choices button.selected{border-color:#1976d2;background:#eef6fe}
-.practice-choices button.selected>span{background:#1976d2;color:#fff}
-.practice-choices button.correct{border-color:#7fcaa5;background:#f0faf5}
-.practice-choices button.correct>span{background:#2ca06b;color:#fff}
-.practice-choices button.correct>svg{color:#2ca06b}
-.practice-choices button.wrong{border-color:#f0a8a8;background:#fdf2f2}
-.practice-choices button.wrong>span{background:#d95d5d;color:#fff}
-.practice-choices button.wrong>svg{color:#d95d5d}
+.practice-choices button.selected{border-color:#2f5577;background:#f7f6f3}
+.practice-choices button.selected>span{background:#2f5577;color:#fff}
+.practice-choices button.correct{border-color:#3f6b4f;background:#edf3ee}
+.practice-choices button.correct>span{background:#3f6b4f;color:#fff}
+.practice-choices button.correct>svg{color:#3f6b4f}
+.practice-choices button.wrong{border-color:#e6cbbd;background:#f7ece6}
+.practice-choices button.wrong>span{background:#a2522e;color:#fff}
+.practice-choices button.wrong>svg{color:#a2522e}
 
-.practice-error{color:#b44545;font-size:13px;margin:0 0 12px}
+.practice-error{color:#a2522e;font-size:13px;margin:0 0 12px}
 .practice-feedback{border-radius:10px;padding:14px 16px;margin-bottom:16px;font-size:14px;line-height:1.6}
-.practice-feedback.correct{background:#f0faf5;border:1px solid #bfe5d0}
-.practice-feedback.wrong{background:#fdf4f4;border:1px solid #f3cccc}
+.practice-feedback.correct{background:#edf3ee;border:1px solid #c8d8cc}
+.practice-feedback.wrong{background:#f7ece6;border:1px solid #e6cbbd}
 .practice-feedback p{margin:6px 0}
 .practice-feedback-title{display:flex;align-items:center;gap:8px;font-size:16px}
 .practice-feedback-title>svg{width:22px}
-.practice-feedback.correct .practice-feedback-title>svg{color:#2ca06b}
-.practice-feedback.wrong .practice-feedback-title>svg{color:#d95d5d}
+.practice-feedback.correct .practice-feedback-title>svg{color:#3f6b4f}
+.practice-feedback.wrong .practice-feedback-title>svg{color:#a2522e}
 .practice-feedback-title .review-badge{display:inline-flex;align-items:center;gap:4px}
 .practice-feedback-title .review-badge svg{width:13px}
-.practice-review-note{color:#4b6072;font-size:13px}
+.practice-review-note{color:#4b5058;font-size:13px}
 .practice-feedback .review-explanation{margin:8px 0 0}
 
 .practice-actions{display:flex;justify-content:flex-end}
-.practice-actions .primary{display:flex;align-items:center;gap:6px;border:0;border-radius:10px;padding:13px 22px;background:#1976d2;color:#fff;font:inherit;font-size:15px;font-weight:800;cursor:pointer}
-.practice-actions .primary:disabled{background:#b9cbdc;cursor:not-allowed}
+.practice-actions .primary{display:flex;align-items:center;gap:6px;border:0;border-radius:10px;padding:13px 22px;background:#2f5577;color:#fff;font:inherit;font-size:15px;font-weight:800;cursor:pointer}
+.practice-actions .primary:disabled{background:#9fb2c4;cursor:not-allowed}
 .practice-actions .primary svg{width:17px}
 
-.practice-summary{text-align:center;background:#fff;border:1px solid #dfe7ed;border-radius:14px;padding:44px 24px}
-.practice-summary>svg{width:46px;height:46px;color:#2ca06b}
-.practice-summary h1{font-size:24px;color:#173650;margin:12px 0 6px}
-.practice-summary>p{font-size:15px;color:#5d6e7d}
+.practice-summary{text-align:center;background:#fff;border:1px solid #e5e2dc;border-radius:14px;padding:44px 24px}
+.practice-summary>svg{width:46px;height:46px;color:#3f6b4f}
+.practice-summary h1{font-size:24px;color:#1f2328;margin:12px 0 6px}
+.practice-summary>p{font-size:15px;color:#4b5058}
 .practice-summary-stats{display:flex;justify-content:center;gap:12px;margin:20px 0}
-.practice-summary-stats div{min-width:90px;border:1px solid #e3e9ee;border-radius:10px;padding:12px}
-.practice-summary-stats span{display:block;font-size:12px;color:#7b8a97}
-.practice-summary-stats b{font-size:24px;color:#173650}
+.practice-summary-stats div{min-width:90px;border:1px solid #e5e2dc;border-radius:10px;padding:12px}
+.practice-summary-stats span{display:block;font-size:12px;color:#858a91}
+.practice-summary-stats b{font-size:24px;color:#1f2328}
 .practice-summary-actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
 .practice-summary-actions a,.practice-summary-actions button{display:flex;align-items:center;gap:6px;border-radius:10px;padding:12px 18px;font:inherit;font-size:14px;font-weight:800;cursor:pointer}
-.practice-summary-actions a{background:#1976d2;color:#fff}
-.practice-summary-actions button{border:1px solid #cfdae3;background:#fff;color:#334155}
+.practice-summary-actions a{background:#2f5577;color:#fff}
+.practice-summary-actions button{border:1px solid #d3cfc7;background:#fff;color:#1f2328}
 .practice-summary-actions button svg{width:16px}
 
 @media(max-width:560px){.practice-card{padding:16px}.practice-choices button{font-size:14px}}
-.review-badge.reason{background:#f3effd;color:#6b46c1}
-.practice-summary-actions a.secondary{background:#fff;color:#334155;border:1px solid #cfdae3}
-.daily-cert-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-top:18px}.daily-cert-list a{display:flex;justify-content:space-between;align-items:center;gap:10px;background:#fff;border:1px solid #dfe7ed;border-radius:12px;padding:18px;font-size:15px;font-weight:800;color:#173650}.daily-cert-list a:hover{border-color:#9cc4ea}.daily-cert-list svg{width:18px;color:#1976d2}
+.review-badge.reason{background:#f7f6f3;color:#2f5577}
+.practice-summary-actions a.secondary{background:#fff;color:#1f2328;border:1px solid #d3cfc7}
+.daily-cert-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-top:18px}.daily-cert-list a{display:flex;justify-content:space-between;align-items:center;gap:10px;background:#fff;border:1px solid #e5e2dc;border-radius:12px;padding:18px;font-size:15px;font-weight:800;color:#1f2328}.daily-cert-list a:hover{border-color:#9fb2c4}.daily-cert-list svg{width:18px;color:#2f5577}
 .review-badge.reason{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
