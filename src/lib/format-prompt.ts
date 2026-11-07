@@ -9,7 +9,9 @@ export function formatPrompt(prompt: string) {
       return `${prev}${separator}ㅇ `;
     });
   }
-  // Some prompts use "-" as the bullet marker instead of o/O/ㅇ/○.
+  // AICE 샘플처럼 한 줄짜리 지문에서 문장 끝(". -" / ") -") 뒤에 "-" 를 글머리표로 쓴 경우만 줄바꿈한다.
+  // "귀속적 욕구 - 아동수당" 같은 연결 표기나 여러 줄 지문은 그대로 둔다.
+  if (prompt.includes("\n") || !/[.)]\s+-\s*\S/.test(prompt)) return prompt;
   let isFirstDash = true;
   return prompt.replace(/(\S)\s+-\s*(?=\S)/g, (_, prev: string) => {
     const separator = isFirstDash ? "\n\n" : "\n";

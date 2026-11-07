@@ -3,7 +3,8 @@ import { redirect } from "next/navigation";
 import { BookX, CheckCircle2, RotateCcw } from "lucide-react";
 import { ExamHeader } from "@/components/exams/exam-header";
 import { createClient } from "@/lib/supabase/server";
-import { AI_EXPLANATION_NOTE, formatExplanation, formatPrompt } from "@/lib/format-prompt";
+import { AI_EXPLANATION_NOTE, formatExplanation } from "@/lib/format-prompt";
+import { PromptText } from "@/components/prompt-text";
 import { loadReviewNotebook, PRACTICE_SESSION_SIZE, type ReviewFilter, type ReviewItem } from "@/lib/review";
 import "../exams/exams.css";
 import "./review.css";
@@ -101,7 +102,7 @@ export default async function ReviewPage({ searchParams }: { searchParams: Promi
                 <div className="review-item-stats"><b>틀린 횟수 {item.wrongCount}</b><span>마지막 오답 {shortDate(item.lastWrongAt)}</span>{item.correctStreak > 0 && <span>연속 정답 {item.correctStreak}/3</span>}</div>
               </summary>
               <div className="review-item-body">
-                <p className="review-full-prompt">{formatPrompt(item.prompt)}</p>
+                <PromptText className="review-full-prompt" prompt={item.prompt} />
                 {/* eslint-disable-next-line @next/next/no-img-element -- Supabase Storage 원본 이미지를 그대로 보여준다 */}
                 {item.imageUrl && <img className="review-image" src={item.imageUrl} alt={`${item.number}번 문제 이미지`} loading="lazy" />}
                 {item.choices.length > 0 && <ol className="review-choices">

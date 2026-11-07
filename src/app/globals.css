@@ -213,3 +213,17 @@ footer { border-top: 1px solid var(--line); }
 @keyframes state-spin{to{transform:rotate(360deg)}}
 @keyframes state-shimmer{to{background-position:-200% 0}}
 @media(max-width:540px){.system-state h1{font-size:20px}.system-state>div:last-child{flex-direction:column;width:min(280px,100%)}.system-state button,.system-state a{width:100%}}
+
+/* 문항 지문 안의 코드 블록(``` 로 감싼 부분). 지문 컨테이너가 pre-line 이어도 들여쓰기를 지키도록 pre 로 둔다 */
+.prompt-code {
+  margin: 12px 0;
+  padding: 14px 16px;
+  overflow-x: auto;
+  border: 1px solid #e5e2dc;
+  border-radius: 6px;
+  background: #f7f6f3;
+  color: #1f2328;
+  font: 13.5px/1.6 ui-monospace, "Cascadia Mono", Consolas, "D2Coding", monospace;
+  white-space: pre;
+  tab-size: 4;
+}

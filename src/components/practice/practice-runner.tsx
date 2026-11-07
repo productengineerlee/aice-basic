@@ -3,7 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, CheckCircle2, GraduationCap, RotateCcw, XCircle } from "lucide-react";
-import { AI_EXPLANATION_NOTE, formatExplanation, formatPrompt } from "@/lib/format-prompt";
+import { AI_EXPLANATION_NOTE, formatExplanation } from "@/lib/format-prompt";
+import { PromptText } from "@/components/prompt-text";
 import type { PracticeQuestion } from "@/lib/review";
 
 type RunnerQuestion = PracticeQuestion & { reasonLabel?: string };
@@ -120,7 +121,7 @@ export function PracticeRunner({ questions, title, mode, earlyPractice = false, 
         {question.correctStreak > 0 && <span className="review-badge wait">연속 정답 {question.correctStreak}/{GRADUATION_STREAK}</span>}
         <span>{question.certificationName} · {question.examTitle} · {question.number}번</span>
       </div>
-      <p className="review-full-prompt">{formatPrompt(question.prompt)}</p>
+      <PromptText className="review-full-prompt" prompt={question.prompt} />
       {/* eslint-disable-next-line @next/next/no-img-element -- Supabase Storage 원본 이미지를 그대로 보여준다 */}
       {question.imageUrl && <img className="review-image" src={question.imageUrl} alt={`${question.number}번 문제 이미지`} />}
 
