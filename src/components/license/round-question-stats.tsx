@@ -5,7 +5,8 @@ import type { RoundStat } from "@/lib/license-stats";
 
 function roundLabel(examTitle: string) {
   const match = examTitle.match(/제(\d+)회/);
-  return match ? `${match[1]}회` : examTitle;
+  if (!match) return examTitle;
+  return examTitle.includes("예상문제") ? `예상 ${match[1]}회` : `${match[1]}회`;
 }
 
 export function RoundQuestionStats({ rounds }: { rounds: RoundStat[] }) {

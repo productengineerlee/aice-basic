@@ -2,7 +2,10 @@ import "server-only";
 
 import { createAdminClient } from "@/lib/supabase/admin";
 
-export type CertificationSummary = { id: string; code: string; name: string; description: string | null; examCount: number; questionCount: number };
+export type CertificationSummary = { id: string; code: string; name: string; description: string | null; examCount: number; mockCount: number; questionCount: number };
+
+/** 기출이 아닌 예상문제(모의고사) 세트는 slug 에 "-mock-" 을 넣어 구분한다. 예: sazor2-mock-01 */
+export const isMockExamSlug = (slug: string) => slug.includes("-mock-");
 
 export type CertificationSchedule = {
   id: string;
@@ -36,7 +39,7 @@ export async function listCertifications(): Promise<CertificationSummary[]> {
 
   const { data: exams, error: examError } = await admin
     .from("exams")
-    .select("certification_id,questions(count)")
+    .select("certification_id,slug,questions(count)")
     .in("certification_id", certifications.map((cert) => cert.id))
     .eq("status", "published");
   if (examError) throw new Error("자격증 시험 수를 불러오지 못했습니다.");
@@ -45,7 +48,8 @@ export async function listCertifications(): Promise<CertificationSummary[]> {
     const certExams = (exams ?? []).filter((exam) => exam.certification_id === cert.id);
     // questions(count) 는 PostgREST 집계 임베드라 [{ count }] 형태로 온다.
     const questionCount = certExams.reduce((sum, exam) => sum + ((exam.questions as unknown as { count: number }[])[0]?.count ?? 0), 0);
-    return { ...cert, examCount: certExams.length, questionCount };
+    const mockCount = certExams.filter((exam) => isMockExamSlug(exam.slug)).length;
+    return { ...cert, examCount: certExams.length - mockCount, mockCount, questionCount };
   });
 }
 
