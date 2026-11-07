@@ -67,8 +67,10 @@ export async function gradeExam(context: Context, submitted: SubmittedAnswers): 
     const questionChoices = choices.filter((choice) => choice.question_id === question.id);
     const userChoice = questionChoices.find((choice) => `${question.number}:${choice.label}` === userAnswer);
     const correctChoice = key.correct_choice_id ? choiceById.get(key.correct_choice_id) : null;
-    const correctChoiceId = correctChoice ? `${question.number}:${correctChoice.label}` : null;
-    const isCorrect = Boolean(userAnswer) && (correctChoiceId ? userAnswer === correctChoiceId : checkValue(userAnswer, key));
+    // 객관식은 정답 보기 외에 accepted_values 의 보기 번호도 정답(시행기관이 복수 정답 처리한 문항)
+    const isCorrect = Boolean(userAnswer) && (correctChoice
+      ? userChoice !== undefined && (userChoice.label === correctChoice.label || key.accepted_values.includes(userChoice.label))
+      : checkValue(userAnswer, key));
     const section = sectionById.get(question.section_id);
     return {
       number: question.number,

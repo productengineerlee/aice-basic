@@ -80,7 +80,7 @@ export default async function LicenseDetailPage({ params }: { params: Promise<{ 
 
         {roundStats.length > 0 && (
           <section className="license-section">
-            <div className="license-section-head"><h2>회차별 문항 정답 현황</h2><p>회차를 선택하면 그 회차 50문항의 정답률을 문항 번호 순으로 보여줍니다.</p></div>
+            <div className="license-section-head"><h2>회차별 문항 정답 현황</h2><p>회차를 선택하면 그 회차 전체 문항의 정답률을 문항 번호 순으로 보여줍니다.</p></div>
             <RoundQuestionStats rounds={roundStats} />
           </section>
         )}

@@ -36,14 +36,14 @@ export async function gradePracticeAnswer(userId: string, questionId: string, se
   const [{ data: exam }, { data: choices }, { data: key }] = await Promise.all([
     admin.from("exams").select("status,certification_id").eq("id", question.exam_id).maybeSingle(),
     admin.from("question_choices").select("id,label,content").eq("question_id", questionId),
-    admin.from("answer_keys").select("correct_choice_id,explanation").eq("question_id", questionId).maybeSingle(),
+    admin.from("answer_keys").select("correct_choice_id,accepted_values,explanation").eq("question_id", questionId).maybeSingle(),
   ]);
   if (exam?.status !== "published" || !exam.certification_id) throw new PracticeError("풀 수 없는 문항입니다.", 404);
   const correctChoice = choices?.find((choice) => choice.id === key?.correct_choice_id);
   if (!correctChoice) throw new PracticeError("정답 정보가 없는 문항입니다.", 422);
   if (!choices?.some((choice) => choice.label === selectedLabel)) throw new PracticeError("올바른 보기가 아닙니다.", 400);
 
-  const isCorrect = selectedLabel === correctChoice.label;
+  const isCorrect = selectedLabel === correctChoice.label || Boolean(key?.accepted_values?.includes(selectedLabel));
   const answeredAt = new Date();
 
   const { error: logError } = await admin.from("practice_answers").insert({
